@@ -4,7 +4,7 @@ function App() {
   return (
     <div className="App">
       hii im clerin
-      thuva
+      redy to test
     </div>
   );
 }
