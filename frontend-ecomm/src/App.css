@@ -1,3 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Tektur:wght@400..900&display=swap');
+
+.tektur-custom {
+  font-family: "Tektur", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+}
+
 .App {
   text-align: center;
 }
@@ -462,6 +473,36 @@ footer {
   color: yellow;
 }
 
+.navname{
+  color: white;
+  font-family: 'Tektur', sans-serif;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.navname:hover{
+  color: rgb(13, 118, 216);
+}
+.searchbar{
+  background-color: #f7f7f738;
+  color: rgb(255, 255, 255);
+  border: none;
+  width: 200px;
+  
+}
+
+.searchbar::placeholder{
+  color: rgb(255, 255, 255);
+  border: none;
+  width: 200px;
+  
+}
+.searchbtn{
+  background-color: #009c08;
+  color: white;
+  border: none;
+  margin-left: 6px;
+}
 /* Checkout Steps */
 
 .checkout-progress div {
