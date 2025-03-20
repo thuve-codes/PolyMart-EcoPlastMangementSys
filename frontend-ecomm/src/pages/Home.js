@@ -6,7 +6,7 @@ export default function Home() {
         useEffect(() => {
             fetch(process.env.REACT_APP_API_URL + '/products')   
             .then(response => response.json())
-            .then(response => setProducts(response))
+            .then(response => setProducts(response.products))
         },[])
 
     return (
@@ -15,7 +15,7 @@ export default function Home() {
 
     <section id="products" className="container mt-5">
       <div className="row">
-        <ProductCard />
+        {products.map(product => <ProductCard product={product}/> )}
       </div>
     </section>
 

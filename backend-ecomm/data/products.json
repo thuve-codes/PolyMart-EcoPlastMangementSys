@@ -6,8 +6,8 @@
       "description": "Durable and spacious plastic storage box for home and office use.",
       "ratings": "4.5",
       "images": [
-        { "image": "storage_box_1.jpg" },
-        { "image": "storage_box_2.jpg" }
+        { "image": "/images/storage_box_1.jpg" },
+        { "image": "/images/storage_box_2.jpg" }
       ],
       "category": "Storage",
       "seller": "PolyMart Official",
