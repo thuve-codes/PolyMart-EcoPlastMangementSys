@@ -1,16 +1,20 @@
+import { Link } from "react-router-dom";
 import polymartLogo from "./images/polymart-logo.png";
 
-export default function Header2() {
+
+export default function Header2({cartItems}) {
   return (
     <>
       <nav className="navbar navbar-expand-lg bg-body-tertiary custom-navbar navbar" id="navbar">
         {/* Container for Navbar */}
         <div className="container-fluid">
           {/* Brand Logo */}
-          <a className="navbar-brand navname" href="#">
-            <img src={polymartLogo} alt="Polymart Logo" className="logo" /> Poly EStore
-          </a>
-
+          
+          <div className="navbar-brand navname" href="#">
+           <Link to={'/'}><img src={polymartLogo} alt="Polymart Logo" className="logo" /> Poly EStore </Link>
+          
+          </div>
+          
           {/* Navbar Toggle Button for Mobile */}
           <button
             className="navbar-toggler"
@@ -27,11 +31,9 @@ export default function Header2() {
           {/* Navbar Links */}
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             
-            {/* Search Bar (Centered) */}
-            <form className="d-flex search-form mx-auto">
-              <input className="form-control me-2 searchbar" type="search" placeholder="Enter here..." aria-label="Search" />
-              <button className="btn btn-outline-success searchbtn" type="submit">Search</button>
-            </form>
+          <div className="col-12 col-md-6 mt-2 mt-md-0">
+               
+           </div>            
 
             {/* Navbar Menu (Right Aligned) */}
             <ul className="navbar-nav ms-auto mb-2 mb-lg-0" id="navbar">
@@ -68,7 +70,7 @@ export default function Header2() {
                    //<img src={cart} alt="Polymart Logo" width={"35px"}/> 
                     }
                    </span>
-                    <span className="ml-1 navname" id="cart_count">2</span>
+                    <span className="ml-1 navname" id="cart_count">{cartItems.length}</span>
                 </div>
         </div>
       </nav>

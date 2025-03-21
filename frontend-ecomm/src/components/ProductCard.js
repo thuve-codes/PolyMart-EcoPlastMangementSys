@@ -1,4 +1,5 @@
 import polymartLogo from './images/polymart-logo.png';
+import {Link} from 'react-router-dom';
 
 export default function ProductCard({product}) {
     return (
@@ -15,11 +16,11 @@ export default function ProductCard({product}) {
             </h5>
             <div className="ratings mt-auto">
               <div className="rating-outer">
-                <div className="rating-inner"></div>
+                <div className="rating-inner" style={{width : `${product.ratings / 5 * 100}%`}}></div>
               </div>
             </div>
             <p className="card-text">{product.price}</p>
-            <a href="#" id="view_btn" className="btn btn-block">View Details</a>
+            <Link to={"/product/"+product._id} id="view_btn" className="btn btn-block">View Details</Link>
           </div>
         </div>
       </div>
