@@ -1,0 +1,201 @@
+[
+    {
+      "name": "Plastic Storage Box",
+      "price": "12.99",
+      "plastType": "Newly Made",
+      "description": "Durable and spacious plastic storage box for home and office use.",
+      "ratings": "4.5",
+      "images": [
+        { "image": "/images/storage_box_1.jpg" },
+        { "image": "/images/storage_box_2.jpg" }
+      ],
+      "category": "Storage",
+      "seller": "PolyMart Official",
+      "stock": "150",
+      "numOfReviews": "45",
+      "createdAt": "2025-03-20T08:00:00Z"
+    },
+    {
+      "name": "Recycled Plastic Chair",
+      "price": "29.99",
+      "plastType": "Recycled",
+      "description": "Eco-friendly plastic chair made from 100% recycled materials.",
+      "ratings": "4.7",
+      "images": [
+        { "image": "chair_1.jpg" },
+        { "image": "chair_2.jpg" }
+      ],
+      "category": "Furniture",
+      "seller": "Green Plastics",
+      "stock": "200",
+      "numOfReviews": "98",
+      "createdAt": "2025-03-15T10:30:00Z"
+    },
+    {
+      "name": "Plastic Water Bottle (1L)",
+      "price": "5.49",
+      "plastType": "Newly Made",
+      "description": "BPA-free plastic water bottle, leak-proof and reusable.",
+      "ratings": "4.2",
+      "images": [
+        { "image": "water_bottle_1.jpg" }
+      ],
+      "category": "Kitchenware",
+      "seller": "HydroPlast",
+      "stock": "500",
+      "numOfReviews": "320",
+      "createdAt": "2025-02-28T12:00:00Z"
+    },
+    {
+      "name": "Recycled Plastic Trash Bin",
+      "price": "18.99",
+      "plastType": "Recycled",
+      "description": "Stylish and sturdy trash bin made from recycled plastics.",
+      "ratings": "4.6",
+      "images": [
+        { "image": "trash_bin_1.jpg" }
+      ],
+      "category": "Home Essentials",
+      "seller": "EcoHouse",
+      "stock": "120",
+      "numOfReviews": "67",
+      "createdAt": "2025-01-10T09:15:00Z"
+    },
+    {
+      "name": "Plastic Lunch Box",
+      "price": "8.99",
+      "plastType": "Newly Made",
+      "description": "Microwave-safe and leak-proof plastic lunch box for daily use.",
+      "ratings": "4.3",
+      "images": [
+        { "image": "lunch_box_1.jpg" },
+        { "image": "lunch_box_2.jpg" }
+      ],
+      "category": "Kitchenware",
+      "seller": "LunchMate",
+      "stock": "350",
+      "numOfReviews": "210",
+      "createdAt": "2025-03-05T14:45:00Z"
+    },
+    {
+      "name": "Recycled Plastic Flower Pot",
+      "price": "6.49",
+      "plastType": "Recycled",
+      "description": "Lightweight and durable flower pot made from recycled plastics.",
+      "ratings": "4.8",
+      "images": [
+        { "image": "flower_pot_1.jpg" }
+      ],
+      "category": "Gardening",
+      "seller": "EcoGrow",
+      "stock": "300",
+      "numOfReviews": "150",
+      "createdAt": "2025-02-14T11:20:00Z"
+    },
+    {
+      "name": "Plastic Storage Rack",
+      "price": "39.99",
+      "plastType": "Newly Made",
+      "description": "Multi-tier plastic storage rack for organizing household items.",
+      "ratings": "4.5",
+      "images": [
+        { "image": "storage_rack_1.jpg" }
+      ],
+      "category": "Storage",
+      "seller": "OrganizePro",
+      "stock": "100",
+      "numOfReviews": "75",
+      "createdAt": "2025-03-01T16:10:00Z"
+    },
+    {
+      "name": "Recycled Plastic Cutting Board",
+      "price": "10.99",
+      "plastType": "Recycled",
+      "description": "Hygienic and eco-friendly plastic cutting board made from recycled materials.",
+      "ratings": "4.7",
+      "images": [
+        { "image": "cutting_board_1.jpg" }
+      ],
+      "category": "Kitchenware",
+      "seller": "EcoCut",
+      "stock": "250",
+      "numOfReviews": "120",
+      "createdAt": "2025-01-22T07:30:00Z"
+    },
+    {
+      "name": "Plastic Garden Hose",
+      "price": "24.99",
+      "plastType": "Newly Made",
+      "description": "Flexible and durable plastic garden hose with high-pressure resistance.",
+      "ratings": "4.4",
+      "images": [
+        { "image": "garden_hose_1.jpg" }
+      ],
+      "category": "Gardening",
+      "seller": "AquaFlow",
+      "stock": "180",
+      "numOfReviews": "60",
+      "createdAt": "2025-02-10T13:40:00Z"
+    },
+    {
+      "name": "Recycled Plastic Utensil Set",
+      "price": "14.99",
+      "plastType": "Recycled",
+      "description": "Sustainable and reusable plastic utensil set, made from 100% recycled plastics.",
+      "ratings": "4.9",
+      "images": [
+        { "image": "utensil_set_1.jpg" }
+      ],
+      "category": "Kitchenware",
+      "seller": "GreenTable",
+      "stock": "200",
+      "numOfReviews": "185",
+      "createdAt": "2025-03-09T09:50:00Z"
+    },
+    {
+      "name": "Plastic Toy Set",
+      "price": "19.99",
+      "plastType": "Newly Made",
+      "description": "Colorful and safe plastic toy set for children aged 3+.",
+      "ratings": "4.3",
+      "images": [
+        { "image": "toy_set_1.jpg" }
+      ],
+      "category": "Toys",
+      "seller": "KiddoPlast",
+      "stock": "300",
+      "numOfReviews": "90",
+      "createdAt": "2025-03-12T15:25:00Z"
+    },
+    {
+      "name": "Recycled Plastic Picnic Table",
+      "price": "79.99",
+      "plastType": "Recycled",
+      "description": "Weather-resistant picnic table made from recycled plastics.",
+      "ratings": "4.6",
+      "images": [
+        { "image": "picnic_table_1.jpg" }
+      ],
+      "category": "Furniture",
+      "seller": "EcoLiving",
+      "stock": "50",
+      "numOfReviews": "30",
+      "createdAt": "2025-02-20T10:00:00Z"
+    },
+    {
+      "name": "Plastic Food Container Set",
+      "price": "16.99",
+      "plastType": "Newly Made",
+      "description": "Airtight and stackable food container set for kitchen storage.",
+      "ratings": "4.5",
+      "images": [
+        { "image": "food_container_1.jpg" }
+      ],
+      "category": "Kitchenware",
+      "seller": "SealFresh",
+      "stock": "400",
+      "numOfReviews": "250",
+      "createdAt": "2025-02-05T18:00:00Z"
+    }
+  ]
+  
