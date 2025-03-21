@@ -31,17 +31,13 @@ export default function ProductDetail({cartItems, setCartItems}) {
         if(product.stock == qty) {
             return;
         }
-        setQty((state) => state + 1);
-        
+        setQty((state) => state + 1);  
     }
 
     function decreaseQty() {
         if(qty > 1) {
             setQty((state) => state - 1);
-        }
-        
-        
-
+        }  
     }
 
     return (
