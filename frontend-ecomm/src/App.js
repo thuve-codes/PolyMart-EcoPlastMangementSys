@@ -2,6 +2,7 @@ import './App.css';
 import Footer from './components/Footer';
 import Header2 from './components/Header2';
 import Home from './pages/Home';
+import Chatpage from './pages/chatpage';
 import { useState } from 'react';
 
 import { BrowserRouter , Router,Routes, Route } from 'react-router-dom';
@@ -23,9 +24,10 @@ function App() {
       <Header2 cartItems={cartItems}/>
         <div>
         <Routes>
-          <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home />} />
           <Route path="/search" element={<Home />} />
           <Route path="/product/:id" element={<ProductDetail cartItems={cartItems} setCartItems={setCartItems}/>} />
+          <Route path="/" element={<Chatpage />} />
           <Route path="/cart" element={<Cart cartItems={cartItems} setCartItems={setCartItems}/>} />
         </Routes>
         </div>

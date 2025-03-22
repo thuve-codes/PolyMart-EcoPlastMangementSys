@@ -9,7 +9,7 @@ export default function Home() {
     const [products, setProducts] = useState([]);
     const [searchParams, setSearchParams] = useSearchParams();
         useEffect(() => {
-            fetch(process.env.REACT_APP_API_URL + '/products?'+searchParams)   
+            fetch('http://localhost:5001/api/v1' + '/products?'+searchParams)   
             .then(response => response.json())
             .then(response => setProducts(response.products))
         },[searchParams])
