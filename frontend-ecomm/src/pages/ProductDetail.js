@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import ChatPopup from "../components/Chatpopup"; // Ensure correct path
 
 export default function ProductDetail({ cartItems, setCartItems }) {
+    const API_URL = "http://localhost:5001";
     const [product, setProduct] = useState(null);
     const [qty, setQty] = useState(1);
     const [isPopupOpen, setIsPopupOpen] = useState(false); // State for popup
@@ -11,7 +12,7 @@ export default function ProductDetail({ cartItems, setCartItems }) {
     const { id } = useParams();
 
     useEffect(() => {
-        fetch('http://localhost:5001/api/v1'+ '/product/' + id)
+        fetch(`${API_URL}/api/v1/product/` + id)
             .then(response => response.json())
             .then(response => setProduct(response.product))
             .catch(error => console.error("Error fetching product:", error));
@@ -30,8 +31,9 @@ export default function ProductDetail({ cartItems, setCartItems }) {
     }
 
     function increaseQty() {
-        if (product && product.stock === qty) return;
-        setQty((state) => state + 1);
+        if (product && qty < product.stock) {
+            setQty((prevQty) => prevQty + 1);
+        }
     }
 
     function decreaseQty() {

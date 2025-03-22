@@ -3,13 +3,14 @@ import ProductCard from '../components/ProductCard';
 import Search from '../components/Search';
 import { useSearchParams } from 'react-router-dom';
 
+const API_URL = "http://localhost:5001";
 
 export default function Home() { 
 
     const [products, setProducts] = useState([]);
     const [searchParams, setSearchParams] = useSearchParams();
         useEffect(() => {
-            fetch('http://localhost:5001/api/v1' + '/products?'+searchParams)   
+            fetch(`${API_URL}/api/v1` + '/products?'+searchParams)   
             .then(response => response.json())
             .then(response => setProducts(response.products))
         },[searchParams])

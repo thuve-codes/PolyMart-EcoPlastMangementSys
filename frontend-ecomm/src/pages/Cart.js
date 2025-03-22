@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 export default function Cart({cartItems,setCartItems}){
 
     const [complete, setComplete] = useState(false);
+    const API_URL = "http://localhost:5001";
 
     // Hardcore value means Fixed value made with html or any
     function increaseQty(item) {
@@ -41,7 +42,7 @@ export default function Cart({cartItems,setCartItems}){
     }
 
     function placeOrderHandler(){
-        fetch('http://localhost:5001/api/v1' + '/order',{
+        fetch(`${API_URL}/api/v1/order`,{
             method: 'POST',
             headers: { 'content-Type' : 'application/json'},
             body: JSON.stringify(cartItems)
