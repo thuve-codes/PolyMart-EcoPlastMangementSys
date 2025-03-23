@@ -166,3 +166,75 @@ a.secondary {
     filter: invert();
   }
 }
+
+
+
+.headingPrimary,
+.headingSecondary {
+  text-align: center;  /* Center text horizontally */
+  color: rgb(0, 0, 0);        /* White text color */
+  margin-bottom: 20px; /* Adds space below the headings */
+}
+
+/* Optional: Adjust font sizes */
+.headingPrimary {
+  font-size: 2rem; /* You can adjust the font size as needed */
+  font-weight: bold;
+}
+
+.headingSecondary {
+  font-size: 1.5rem; /* Slightly smaller for the secondary heading */
+}
+
+.centeredTable {
+  margin: 0 auto;
+  width: 50%; /* You can adjust the width as needed */
+  background-color: rgba(20, 47, 201, 0.559); /* Transparent black background */
+  color: white; /* White text color */
+  border-collapse: collapse; /* Makes the table borders collapse into a single border */
+}
+
+/* Styling for table cells */
+.centeredTable td {
+  padding: 10px;
+  text-align: left;
+}
+
+/* Styling for the form labels */
+.centeredTable label {
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+  
+}
+
+
+.submitButton {
+  padding: 10px 20px;
+  background-color: #4CAF50; /* Green button */
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.submitButton:hover {
+  background-color: #45a049;
+}
+
+
+.headingPrimary {
+  font-size: 36px;
+  font-weight: bold;
+  color: #2d2d2d;
+}
+
+.headingSecondary {
+  font-size: 24px;
+  color: #777;
+  margin-bottom: 20px;
+}
+
+.imageContainer{
+  padding: 50px;
+}
