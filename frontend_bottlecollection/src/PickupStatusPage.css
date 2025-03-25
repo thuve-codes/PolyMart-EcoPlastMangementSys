@@ -1,0 +1,88 @@
+/* PickupStatusPage.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f4f4;
+  }
+  
+  h1 {
+    color: #333;
+  }
+  
+  h2 {
+    color: #555;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  
+  th, td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+  }
+  
+  th {
+    background-color: #f4f4f4;
+  }
+  
+  .status-pending {
+    background-color: #fce4e4;
+  }
+  
+  .status-in-progress {
+    background-color: #fff3cd;
+  }
+  
+  .status-completed {
+    background-color: #d4edda;
+  }
+  
+  .status-canceled {
+    background-color: #f8d7da;
+  }
+  
+  .notifications {
+    margin-top: 20px;
+  }
+  
+  .notification {
+    background-color: #d1ecf1;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .notification.confirmation {
+    background-color: #d1ecf1;
+  }
+  
+  .notification.progress {
+    background-color: #fff3cd;
+  }
+  
+  .notification.completion {
+    background-color: #d4edda;
+  }
+  
+  .notification:hover {
+    opacity: 0.8;
+  }
+  
+  .notification p {
+    margin: 0;
+  }
+  
+  h2 {
+    margin-top: 30px;
+  }
+  
+  table th, table td {
+    text-align: center;
+  }
+  

@@ -1,0 +1,141 @@
+.reward-container {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  h1 {
+    color: #ff9800;
+  }
+  
+  h2 {
+    margin: 20px 0;
+    color: #4caf50;
+  }
+  
+  h3 {
+    margin-top: 20px;
+  }
+  
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  ul li {
+    background: #f8f9fa;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
+  }
+  
+  .available {
+    border: 2px solid green;
+    color: green;
+  }
+  
+  .unavailable {
+    border: 2px solid red;
+    color: red;
+    opacity: 0.5;
+  }
+  
+  .special-deals {
+    background-color: #ffeb3b;
+    padding: 10px;
+    border-radius: 10px;
+  }
+  
+  .form-group {
+    margin: 15px 0;
+  }
+  
+  .form-group label {
+    font-weight: bold;
+    margin-right: 10px;
+  }
+  
+  input, select {
+    padding: 8px;
+    font-size: 16px;
+  }
+  
+  button {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #388e3c;
+  }
+
+  .reward-banner {
+    width: 100%;
+    max-height: 250px; /* Adjust height as needed */
+    object-fit: cover; /* Ensures the image fits well */
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+
+  .reward-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .reward-banner {
+    width: 100%;
+    max-height: 250px;
+    object-fit: cover;
+    margin-bottom: 20px;
+  }
+  
+ 
+  .reward-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1000px;
+  }
+  
+  /* Text section on the left */
+  .reward-text {
+    flex: 1;
+    text-align: left;
+  }
+  
+  /* Right-side image */
+  .reward-image-container {
+    flex: 0.5; /* Adjust width */
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .reward-side-image {
+    width: 150px; 
+    max-width: 150px;
+    height: auto;
+    border-radius: 10px; /* Optional rounded corners */
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2); /* Optional shadow */
+  }
+  
+  /* Make it responsive */
+  @media (max-width: 768px) {
+    .reward-content {
+      flex-direction: column;
+      align-items: center;
+    }
+    .reward-image-container {
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .reward-side-image {
+      width: 200px;
+    }
+  }
+  

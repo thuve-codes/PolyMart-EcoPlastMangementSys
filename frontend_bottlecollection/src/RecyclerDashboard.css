@@ -1,0 +1,43 @@
+/* RecyclerDashboard.css */
+h1, h2 {
+    color: #4CAF50; /* Green color for headings */
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  
+  th, td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+  }
+  
+  th {
+    background-color: #f4f4f4;
+  }
+  
+  button {
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  button:hover {
+    background-color: #45a049;
+  }
+  
+  section {
+    margin-bottom: 30px;
+  }
+  
+  p {
+    font-size: 14px;
+    color: #555;
+  }
+  

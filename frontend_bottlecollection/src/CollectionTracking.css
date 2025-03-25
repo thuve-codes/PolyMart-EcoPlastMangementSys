@@ -1,0 +1,47 @@
+.tracking-container {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .tracking-table {
+    width: 80%;
+    margin: auto;
+    border-collapse: collapse;
+  }
+  
+  .tracking-table th, .tracking-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .tracking-table th {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .assign-btn, .update-btn {
+    padding: 8px 12px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .assign-btn {
+    background-color: #008cba;
+    color: white;
+  }
+  
+  .update-btn {
+    background-color: #ff9800;
+    color: white;
+  }
+  
+  .assign-btn:hover {
+    background-color: #005f73;
+  }
+  
+  .update-btn:hover {
+    background-color: #e65100;
+  }
+  
