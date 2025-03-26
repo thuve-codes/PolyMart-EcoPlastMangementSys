@@ -17,7 +17,7 @@ function Dashboard() {
           <li><a href="/">Dashboard</a></li>
           <li><a href="/redeem">Redeem</a></li>
           <li><a href="/leaderboard">Leaderboard</a></li>
-          <li><a href="#">Notifications</a></li>
+          <li><a href="/Notifications">Notifications</a></li>
         </ul>
       </nav>
 
@@ -29,7 +29,7 @@ function Dashboard() {
       {/* Main Dashboard Content */}
       <div className="dashboard-container">
         <div className="user-info">
-          <h3>Welcome, [User]</h3>
+          <h3>Welcome to Rewards & Cashback system</h3>
           <p>Your Current Points: <span className="points">120</span></p>
           <button className="redeem-btn">Redeem Rewards</button>
         </div>

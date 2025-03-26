@@ -43,8 +43,8 @@ body {
   display: flex;
 }
 
-.navbar ul li {
-  margin: 0 15px;
+.navbar ul li a.active {
+  background-color: #16a085;
 }
 
 .navbar ul li a {
@@ -126,7 +126,7 @@ body {
 }
 
 .transactions li {
-  background: #ecf0f1;
+  background: #eff1ec;
   margin: 5px 0;
   padding: 12px;
   border-radius: 5px;
@@ -134,20 +134,3 @@ body {
   
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .navbar {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .navbar ul {
-    margin-top: 10px;
-  }
-
-  .dashboard-container {
-    max-width: 90%;
-  }
-
-  
-}

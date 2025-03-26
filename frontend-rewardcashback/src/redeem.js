@@ -55,7 +55,7 @@ function Redeem() {
           <li><a href="/">Dashboard</a></li>
           <li><a href="/redeem">Redeem</a></li>
           <li><a href="/leaderboard">Leaderboard</a></li>
-          <li><a href="#">Notifications</a></li>
+          <li><a href="/Notifications">Notifications</a></li>
         </ul>
       </nav>
 
