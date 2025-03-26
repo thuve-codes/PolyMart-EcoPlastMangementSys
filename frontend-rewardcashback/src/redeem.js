@@ -7,6 +7,7 @@ function Redeem() {
   const [bottleType, setBottleType] = useState('');
   const [weight, setWeight] = useState('');
   const [redeemPoints, setRedeemPoints] = useState(0);
+  const [calculationDetails, setCalculationDetails] = useState('');
 
   const pointRates = {
     plastic: 10,
@@ -39,9 +40,13 @@ function Redeem() {
       return;
     }
 
-    const earnedPoints = weightValue * (pointRates[bottleType] || 0);
+    const rate = pointRates[bottleType] || 0;
+    const earnedPoints = weightValue * rate;
+
     setPoints((prevPoints) => prevPoints + earnedPoints);
     setRedeemPoints(earnedPoints);
+
+    setCalculationDetails(`${bottleType.charAt(0).toUpperCase() + bottleType.slice(1)} Bottle ${weightValue}kg × ${rate} = ${earnedPoints} Points`);
   };
 
   return (
@@ -52,6 +57,7 @@ function Redeem() {
           <img src={logo} alt="Polymart Logo" className="logo" />
         </div>
         <ul>
+          <li><a href="#">Home</a></li>
           <li><a href="/">Dashboard</a></li>
           <li><a href="/redeem">Redeem</a></li>
           <li><a href="/leaderboard">Leaderboard</a></li>
@@ -93,6 +99,15 @@ function Redeem() {
             </table>
           </div>
           <button onClick={calcPoints}>Calculate Points</button>
+
+          {/* Display Calculation Process */}
+          {calculationDetails && (
+            <div className="calculation-details">
+              <h3>Calculation:</h3>
+              <p>{calculationDetails}</p>
+            </div>
+          )}
+
           <h2>⭐ Your Total Reward Points: {points}</h2>
 
           <h3>🏆 Available Offers:</h3>
