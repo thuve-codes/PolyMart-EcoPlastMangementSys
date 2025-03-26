@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import './page2.css';
-
-
 import logo from './assets/images/polymart-logo.png';
 
 function Redeem() {
@@ -30,18 +28,25 @@ function Redeem() {
   ];
 
   const calcPoints = () => {
-    if (bottleType && weight) {
-      const earnedPoints = parseFloat(weight) * (pointRates[bottleType] || 0);
-      setPoints((prevPoints) => prevPoints + earnedPoints);
-      setRedeemPoints(earnedPoints);
-    } else {
+    if (!bottleType || weight === '') {
       alert('Please select a bottle type and enter weight!');
+      return;
     }
+
+    const weightValue = parseFloat(weight);
+    if (isNaN(weightValue) || weightValue <= 0) {
+      alert('Please enter a valid positive weight!');
+      return;
+    }
+
+    const earnedPoints = weightValue * (pointRates[bottleType] || 0);
+    setPoints((prevPoints) => prevPoints + earnedPoints);
+    setRedeemPoints(earnedPoints);
   };
 
-  return (<div>
-   
- {/* Navigation Bar */}
+  return (
+    <div>
+      {/* Navigation Bar */}
       <nav className="navbar">
         <div className="logo-container">
           <img src={logo} alt="Polymart Logo" className="logo" />
@@ -55,9 +60,7 @@ function Redeem() {
       </nav>
 
       <div className="dashboard-container">
-       
         <div className="reward-container">
-       
           <h1>🎉 Earn Reward Points & Get Exclusive Offers! 🎉</h1>
           <div className="form-group">
             <table className="bottle-selection-table">
@@ -77,7 +80,13 @@ function Redeem() {
                 <tr>
                   <td><label>Enter Weight (kg):</label></td>
                   <td>
-                    <input type="number" value={weight} onChange={(e) => setWeight(e.target.value)} />
+                    <input 
+                      type="number" 
+                      value={weight} 
+                      onChange={(e) => setWeight(e.target.value)}
+                      min="0.01" 
+                      step="0.01" 
+                    />
                   </td>
                 </tr>
               </tbody>
@@ -105,13 +114,9 @@ function Redeem() {
               </ul>
             </>
           )}
-
-          <div className="reward-image-container">
-          
-          </div>
         </div>
       </div>
-      </div>
+    </div>
   );
 }
 
