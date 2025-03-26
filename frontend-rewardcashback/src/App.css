@@ -29,13 +29,13 @@ body {
 
 /* Navigation Bar */
 .navbar {
-  background: #2c3e50;
-  color: white;
+  background: #874e4e;
+  color: rgb(30, 164, 12);
   padding: 15px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 4px 10px rgba(22, 137, 225, 0.1);
 }
 
 .navbar ul {
@@ -65,9 +65,9 @@ body {
 }
 
 .logo {
-  width: 180px;
-  height: auto;
-  margin-right: 20px;
+  width: 150px;
+  height: 80px;;
+  margin-right: 5px;
 }
 
 /* Dashboard Container */
@@ -75,7 +75,7 @@ body {
   max-width: 700px;
   margin: 40px auto;
   padding: 20px;
-  background: white;
+  background: rgb(71, 216, 153);
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
@@ -90,7 +90,7 @@ body {
 .user-info .points {
   font-size: 28px;
   font-weight: bold;
-  color: #27ae60;
+  color: #ea1e58;
 }
 
 .redeem-btn {
@@ -131,6 +131,7 @@ body {
   padding: 12px;
   border-radius: 5px;
   font-size: 14px;
+  
 }
 
 /* Responsive Design */
@@ -142,6 +143,7 @@ body {
 
   .navbar ul {
     margin-top: 10px;
+    padding:
   }
 
   .dashboard-container {

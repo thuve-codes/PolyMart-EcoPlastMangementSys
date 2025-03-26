@@ -19,7 +19,7 @@ function Dashboard() {
           <li><a href="#">Dashboard</a></li>
           <li><a href="#">Redeem</a></li>
           <li><a href="#">Leaderboard</a></li>
-          <li><a href="#">Profile</a></li>
+          <li><a href="#">Notifications</a></li>
         </ul>
       </nav>
 
