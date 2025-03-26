@@ -63,7 +63,7 @@ export default function ProductDetail({ cartItems, setCartItems }) {
 
                     <hr />
 
-                    <p id="product_price">${product.price}</p>
+                    <p id="product_price"> {product.price} <i>Only</i> </p>
                     <div className="stockCounter d-inline">
                         <button className="btn btn-danger minus" onClick={decreaseQty}>-</button>
                         <input type="number" className="form-control count d-inline" value={qty} readOnly />
