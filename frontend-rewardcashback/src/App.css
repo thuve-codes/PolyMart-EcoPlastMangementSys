@@ -102,7 +102,7 @@ body {
   cursor: pointer;
   margin-top: 15px;
   font-size: 16px;
-  transition: background 0.3s ease;
+  
 }
 
 .redeem-btn:hover {
@@ -143,10 +143,11 @@ body {
 
   .navbar ul {
     margin-top: 10px;
-    padding:
   }
 
   .dashboard-container {
     max-width: 90%;
   }
+
+  
 }
