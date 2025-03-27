@@ -4,6 +4,8 @@ import "./FAQ.css";
 const faqs = [
   { question: "What plastics can I recycle?", answer: "You can recycle PET and HDPE plastics." },
   { question: "How do I schedule a pickup?", answer: "Request a pickup through our website." },
+  { question: "What is the recycling process?", answer: "Plastics are collected, sorted, cleaned, and processed into new products." },
+  { question: "Are there any fees for recycling?", answer: "No, our recycling service is free of charge." },
 ];
 
 function FAQ() {

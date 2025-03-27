@@ -1,9 +1,5 @@
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost/pickupForm', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
 
 const formSchema = new mongoose.Schema({
     name: String,
@@ -19,3 +15,5 @@ const formSchema = new mongoose.Schema({
 });
 
 const Form = mongoose.model('Form', formSchema);
+
+module.exports = Form;

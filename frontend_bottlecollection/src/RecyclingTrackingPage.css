@@ -1,126 +1,146 @@
 /* Global Styles */
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f6f9;
-    margin: 0;
-    padding: 0;
-    color: #333;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f0f4f8;
+  margin: 0;
+  padding: 0;
+  color: #333;
+  line-height: 1.6;
+}
+
+h1, h2 {
+  color: #2c6b2f;
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+section {
+  background-color: #fff;
+  padding: 25px;
+  margin: 25px auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 1100px;
+  transition: transform 0.3s ease;
+}
+
+section:hover {
+  transform: scale(1.02);
+}
+
+h2 {
+  font-size: 28px;
+  margin-top: 0;
+  margin-bottom: 18px;
+}
+
+/* Table Styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 25px;
+  text-align: left;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+th, td {
+  padding: 14px;
+  border: 1px solid #ddd; /* Border around table cells */
+  text-align: center;
+  font-size: 17px;
+  color: #333; /* Ensure text is dark and visible */
+}
+
+thead
+th {
+  background-color: #2c6b2f;
+  color: white;
+  font-weight: 600;
+}
+
+tr:nth-child(even) {
+  background-color: #f8f8f8;
+}
+
+tr:hover {
+  background-color: #f0f0f0;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+td {
+  color: #333; /* Ensures the text in the table cells is visible */
+}
+
+td, th {
+  font-size: 16px;
+}
+
+/* Buttons */
+button {
+  background-color: #2c6b2f;
+  color: white;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 17px;
+  transition: background-color 0.3s, transform 0.2s;
+  margin-top: 15px;
+}
+
+button:hover {
+  background-color: #1d5e26;
+  transform: translateY(-2px);
+}
+
+/* Info Text */
+p {
+  font-size: 17px;
+  color: #555;
+  text-align: center;
+  margin-top: 12px;
+}
+
+p a {
+  color: #2c6b2f;
+  text-decoration: none;
+}
+
+p a:hover {
+  text-decoration: underline;
+}
+
+/* Page Container */
+.container {
+  padding: 40px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  table {
+    font-size: 14px;
   }
-  
-  h1, h2 {
-    color: #4CAF50;
-    text-align: center;
-    margin-bottom: 20px;
+
+  th, td {
+    padding: 10px;
   }
-  
+
   section {
-    background-color: white;
     padding: 20px;
-    margin: 20px auto;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    width: 90%;
-    max-width: 1200px;
   }
-  
+
   h2 {
     font-size: 24px;
-    margin-top: 0;
-    margin-bottom: 15px;
   }
-  
-  /* Table Styles */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-    text-align: left;
-  }
-  
-  th, td {
-    padding: 12px;
-    border: 1px solid #ddd;
-    text-align: center;
-  }
-  
-  th {
-    background-color: #4CAF50;
-    color: white;
-    font-weight: bold;
-  }
-  
-  tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-  
-  tr:hover {
-    background-color: #f1f1f1;
-  }
-  
-  /* Table Text */
-  td {
-    color: #555;
-  }
-  
-  td, th {
-    font-size: 16px;
-  }
-  
-  /* Buttons */
+
   button {
-    background-color: #4CAF50;
-    color: white;
     padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
     font-size: 16px;
-    transition: background-color 0.3s;
   }
-  
-  button:hover {
-    background-color: #45a049;
-  }
-  
-  /* Info Text */
-  p {
-    font-size: 16px;
-    color: #777;
-    text-align: center;
-    margin-top: 10px;
-  }
-  
-  p a {
-    color: #4CAF50;
-    text-decoration: none;
-  }
-  
-  p a:hover {
-    text-decoration: underline;
-  }
-  
-  /* Page Container */
-  .container {
-    padding: 40px 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  
-  @media (max-width: 768px) {
-    table {
-      font-size: 14px;
-    }
-  
-    th, td {
-      padding: 8px;
-    }
-  
-    section {
-      padding: 15px;
-    }
-  
-    h2 {
-      font-size: 20px;
-    }
-  }
-  
+}

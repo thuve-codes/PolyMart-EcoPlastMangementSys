@@ -1,23 +1,56 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom'; 
 import './RecyclerDashboard.css';
 
-// Dummy data for available plastic waste pickup requests
-const dummyPickupRequests = [
-  { id: 1, location: 'Downtown', material: 'Plastic', weight: '20kg', status: 'Available' },
-  { id: 2, location: 'Uptown', material: 'Plastic', weight: '15kg', status: 'Available' },
-  { id: 3, location: 'Suburb', material: 'Plastic', weight: '25kg', status: 'Scheduled' },
-];
 
 // Dummy recycler info
 const recyclerInfo = {
   name: 'John Doe',
-  capacity: 50, // Maximum capacity for plastic waste collection (in kg)
+  capacity: 50,
+  email: 'john@example.com', // Add this line
 };
 
+
 const RecyclerDashboard = () => {
-  const [pickupRequests, setPickupRequests] = useState(dummyPickupRequests);
+  const { email } = useParams();
+  const [pickupRequests, setPickupRequests] = useState([]);
   const [scheduledPickups, setScheduledPickups] = useState([]);
   const [availableCapacity, setAvailableCapacity] = useState(recyclerInfo.capacity);
+  const [recyclingHistory, setRecyclingHistory] = useState([]);
+
+  // Fetch the scheduled pickups from the API
+  const fetchScheduledPickups = async () => {
+    try {
+      const response = await fetch('/api/scheduled-pickups'); // Replace with your API endpoint
+      const data = await response.json();
+      setScheduledPickups(data); // Assume the data returned is an array of scheduled pickups
+    } catch (error) {
+      console.error('Error fetching scheduled pickups:', error);
+    }
+  };
+
+  // Fetch available pickup requests (dummy data for now, replace with real API call)
+  const fetchPickupRequests = async () => {
+    try {
+      const response = await fetch('/api/available-pickups'); // Replace with your API endpoint
+      const data = await response.json();
+      setPickupRequests(data); // Assume the data returned is an array of available pickup requests
+    } catch (error) {
+      console.error('Error fetching available pickups:', error);
+    }
+  };
+
+  const fetchRecyclingHistory = async () => {
+    try {
+      const response = await fetch(`/api/recycling-history/${email}`);  // Pass email to fetch history
+      const data = await response.json();
+      setRecyclingHistory(data);
+    } catch (error) {
+      console.error('Error fetching recycling history:', error);
+    }
+  };
+  
+  
 
   // Handle scheduling pickup
   const handleSchedulePickup = (request) => {
@@ -35,19 +68,13 @@ const RecyclerDashboard = () => {
     }
   };
 
-  // Simulate fetching updated pickup requests (this would typically come from an API)
   useEffect(() => {
-    // Example logic for updating the available pickup requests
-    const interval = setInterval(() => {
-      setPickupRequests((prevRequests) =>
-        prevRequests.map((request) =>
-          request.status === 'Available' ? { ...request, status: 'In Progress' } : request
-        )
-      );
-    }, 10000); // Update every 10 seconds for demo purposes
-
-    return () => clearInterval(interval); // Cleanup interval on component unmount
-  }, []);
+    if (email) {
+    fetchPickupRequests();
+    fetchScheduledPickups();
+    fetchRecyclingHistory();
+    }
+  }, [email]);
 
   return (
     <div style={{ padding: '20px' }}>
@@ -85,42 +112,53 @@ const RecyclerDashboard = () => {
                   <td>{request.weight}</td>
                   <td>{request.status}</td>
                   <td>
-                    <button onClick={() => handleSchedulePickup(request)}>Schedule Pickup</button>
+                    <button onClick={() => handleSchedulePickup(request)}>
+                      Schedule Pickup
+                    </button>
                   </td>
                 </tr>
               ) : null
             )}
           </tbody>
         </table>
-        <p>Click 'Schedule Pickup' to schedule a collection for an available request.</p>
       </section>
 
-      {/* Scheduled Pickups Section */}
+      {/* Recycling History Section */}
       <section>
-        <h2>Your Scheduled Pickups</h2>
+        <h2>Your Recycling History</h2>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr>
               <th>ID</th>
-              <th>Location</th>
               <th>Material</th>
               <th>Weight</th>
-              <th>Status</th>
+              <th>Pickup Date</th>
+              <th>Feedback</th>
+              <th>Disposal Purpose</th>
+              <th>Points</th>
             </tr>
           </thead>
           <tbody>
-            {scheduledPickups.map((pickup) => (
-              <tr key={pickup.id}>
-                <td>{pickup.id}</td>
-                <td>{pickup.location}</td>
-                <td>{pickup.material}</td>
-                <td>{pickup.weight}</td>
-                <td>{pickup.status}</td>
+            {recyclingHistory.length > 0 ? (
+              recyclingHistory.map((history) => (
+                <tr key={history._id}>
+                  <td>{history._id}</td>
+                  <td>{history.bottleType}</td>
+                  <td>{history.weight}</td>
+                  <td>{new Date(history.pickupDate).toLocaleDateString()}</td>
+                  <td>{history.feedback || 'No feedback'}</td>
+                  <td>{history.disposalPurpose}</td>
+                  <td>{history.points}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="7">No recycling history available.</td>
               </tr>
-            ))}
+            )}
           </tbody>
+
         </table>
-        <p>These are the pickups you have scheduled. Manage them as needed.</p>
       </section>
     </div>
   );

@@ -1,7 +1,6 @@
 import React from "react";
 import './Homepage.css';
 
-import Tracking from "./Components/Tracking";
 import ImpactStats from "./Components/ImpactStats";
 import Blog from "./Components/Blog";
 import FAQ from "./Components/FAQ";
@@ -83,7 +82,7 @@ function HomePage() {
       </section>
 
       <aside className="sidebar">
-        <Tracking />
+       
         <ImpactStats />
         <Blog />
         <FAQ />

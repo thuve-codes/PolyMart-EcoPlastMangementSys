@@ -4,7 +4,7 @@ import "./ImpactStats.css";
 function ImpactStats() {
   const [bottlesRecycled, setBottlesRecycled] = useState(0);
   const targetValue = 1000000; // Final value to reach
-  const duration = 2000;
+  const duration = 200000;
 
   useEffect(() => {
     let startTime = Date.now();
@@ -26,8 +26,8 @@ function ImpactStats() {
 
   return (
     <div className="impact-section">
-      <h3>Our Impact</h3>
-      <p><strong>{bottlesRecycled.toLocaleString()}</strong> bottles recycled so far!</p>
+      <h2>Our Impact</h2>
+      <p><h1><strong>{bottlesRecycled.toLocaleString()}</strong></h1> Bottles recycled so far!</p>
     </div>
   );
 }

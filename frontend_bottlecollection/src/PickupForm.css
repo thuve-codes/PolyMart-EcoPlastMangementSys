@@ -1,19 +1,16 @@
-.headingPrimary,
-.headingSecondary {
-  text-align: center; 
-  color: rgb(0, 0, 0);        
-  margin-bottom: 20px; 
-}
-
-
 .headingPrimary {
-  font-size: 2rem; 
+  font-size: 36px;
   font-weight: bold;
+  color: #32ac13;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .headingSecondary {
-  font-size: 1.5rem; 
+  font-size: 24px;
+  color: #777;
+  margin-bottom: 20px;
 }
+
 
 .centeredTable {
   margin: 20px auto;
@@ -25,21 +22,39 @@
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
   color: white; 
   border-collapse: collapse; 
+  /* Ensures the table has an even color and a smooth appearance */
 }
 
-
-.centeredTable td {
+.centeredTable td,
+.centeredTable th {
   padding: 10px;
   text-align: left;
   border-bottom: 1px solid #ddd;
+  word-wrap: break-word; /* To wrap text if necessary */
 }
 
+.centeredTable th {
+  background-color: #2A5298; /* Header background color */
+  color: white;
+  font-weight: bold;
+}
 
 .centeredTable label {
   font-size: 18px;
   font-weight: bold;
   color: white;
-  
+}
+
+.centeredTable tr:nth-child(odd) {
+  background-color: rgba(17, 74, 12, 0.381);  /* Slightly darker color for odd rows */
+}
+
+.centeredTable tr:nth-child(even) {
+  background-color: rgba(17, 74, 12, 0.381);  /* Slightly lighter color for even rows */
+}
+
+.centeredTable tr:hover {
+  background-color: rgba(0, 0, 0, 0.2); /* Hover effect to highlight rows */
 }
 
 /* Form Inputs inside Table */
@@ -60,140 +75,31 @@
   cursor: pointer;
   font-size: 16px;
   font-weight: bold;
+  
 }
 
 .submitButton:hover {
   background-color: #218838;
 }
 
-body {
-  padding-top: 80px; /* Adjust based on navbar height */
-}
-.headingPrimary {
-  font-size: 36px;
-  font-weight: bold;
-  color: #32ac13;
-}
-
-.headingSecondary {
-  font-size: 24px;
-  color: #777;
-  margin-bottom: 20px;
-}
-
-.imageContainer{
-  padding: 50px;
-}
-
-.feedback{
-  size-adjust: auto;
-}
-
-/* General Styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
-}
-
-.App-header {
-  padding-top: 80px; /* Adjust this value based on your navbar height */
-  text-align: center;
-}
-
-/* Navbar Container */
-.navbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 15px 30px;
-  background: linear-gradient(90deg, #1E3C72, #2A5298); /* Gradient Background */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  position: fixed;
-  width: 100%;
-  top: 0;
-  z-index: 1000;
-}
-
-/* Logo */
-.logo {
-  width: 140px;
-  cursor: pointer;
-}
 .headImage{
   width: 100%;
-  height: 300px;
-}
-/* Navigation Links */
-.nav-links {
-  list-style: none;
-  display: flex;
-  gap: 25px;
+  height: 250px;
 }
 
-.nav-links li {
-  display: inline-block;
+.form-group {
+  margin-bottom: 15px;
 }
 
-/* Navigation Links - Styling */
-.nav-links a {
-  text-decoration: none;
-  color: #19832d;
-  font-size: 18px;
-  font-weight: 500;
-  position: relative;
-  padding: 5px 0;
-  transition: all 0.3s ease-in-out;
-}
-
-/* Underline Hover Effect */
-.nav-links a::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -4px;
-  width: 0%;
-  height: 2px;
-  background-color: #FFD700; /* Gold underline */
-  transition: width 0.3s ease-in-out;
-}
-
-.nav-links a:hover::after {
+.bottle-selection-table {
   width: 100%;
+  border-collapse: collapse
 }
 
-/* Responsive Hamburger Menu */
-.menu-toggle {
-  display: none;
-  font-size: 28px;
-  color: #ffffff;
-  cursor: pointer;
-}
-
-/* Mobile Menu */
-@media screen and (max-width: 768px) {
-  .nav-links {
-      display: none;
-      flex-direction: column;
-      position: absolute;
-      top: 60px;
-      right: 0;
-      background: rgba(30, 60, 114, 0.95);
-      width: 100%;
-      text-align: center;
-      padding: 20px 0;
-  }
-
-  .nav-links.active {
-      display: flex;
-  }
-
-  .nav-links li {
-      padding: 10px 0;
-  }
-
-  .menu-toggle {
-      display: block;
-  }
+/* For the reward program banner */
+.reward-banner {
+  width: 90%; /* Ensure the banner takes the full width of its container *//* Maintain the aspect ratio */
+ /* Limit the height for better layout */
+  object-fit: cover; /* Ensure the image covers the area without distorting the aspect ratio */
+  margin-bottom: 20px; /* Space below the banner */
 }
