@@ -24,7 +24,7 @@ const Header = () => {
       </h2>
 
       <p className="mb-6 max-w-md">
-        nejnoeoeifhejrughejfneurhgoeif
+      PolyMart is a plastic waste management system that allows users to recycle plastic and earn rewards. Non-registered users can browse products, registered users can order plastic items, and eco-registered users can drop off plastic waste at collection centers to earn points. The system promotes sustainability by encouraging plastic recycling through a reward-based approach. ♻️
       </p>
 
       <button className="border border-gray-500 rounded-full px-8 py-2.5 hover:bg-gray-300 transition-all">
