@@ -155,7 +155,16 @@ function PickupForm() {
               </tr>
 
               <tr>
-                <td colSpan="2"><button className="submitButton" type="submit">Submit</button></td>
+                <td colSpan="2"><button className="submitButton" type="submit">Submit</button>
+                <button 
+                  className="viewDetailsButton" 
+                  type="button" 
+                  style={{ marginLeft: "10px" }} 
+                  onClick={() => alert(JSON.stringify(formData, null, 2))}
+                >
+                  View Details
+                </button>
+                </td>
               </tr>
             </tbody>
           </table>

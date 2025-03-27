@@ -5,9 +5,9 @@ import './RecyclerDashboard.css';
 
 // Dummy recycler info
 const recyclerInfo = {
-  name: 'John Doe',
+  name: 'Dhanush',
   capacity: 50,
-  email: 'john@example.com', // Add this line
+  email: 'dhanush@example.com',
 };
 
 

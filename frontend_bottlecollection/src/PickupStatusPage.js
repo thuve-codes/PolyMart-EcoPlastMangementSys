@@ -3,16 +3,16 @@ import './PickupStatusPage.css';
 
 // Dummy data for pickup requests
 const dummyPickupRequests = [
-  { id: 1, location: 'Downtown', material: 'Plastic', weight: '20kg', status: 'Pending', time: '2025-03-25 14:00' },
-  { id: 2, location: 'Uptown', material: 'Plastic', weight: '15kg', status: 'In Progress', time: '2025-03-25 15:00' },
-  { id: 3, location: 'Suburb', material: 'Plastic', weight: '25kg', status: 'Completed', time: '2025-03-24 10:30' },
+  { id: 1, location: 'Hatton', material: 'Plastic', weight: '20kg', status: 'Pending', time: '2025-03-25 14:00' },
+  { id: 2, location: 'Colombo', material: 'Plastic', weight: '15kg', status: 'In Progress', time: '2025-03-25 15:00' },
+  { id: 3, location: 'Malabe', material: 'Plastic', weight: '25kg', status: 'Completed', time: '2025-03-24 10:30' },
 ];
 
 // Dummy notification data
 const notifications = [
-  { id: 1, message: 'Your pickup request at Downtown has been confirmed. Estimated arrival time: 14:00.', type: 'confirmation' },
-  { id: 2, message: 'Pickup in progress at Uptown. Estimated arrival in 15 minutes.', type: 'progress' },
-  { id: 3, message: 'Pickup completed at Suburb. Thank you for your contribution!', type: 'completion' },
+  { id: 1, message: 'Your pickup request at Hatton has been confirmed. Estimated arrival time: 14:00.', type: 'confirmation' },
+  { id: 2, message: 'Pickup in progress at Colombo. Estimated arrival in 15 minutes.', type: 'progress' },
+  { id: 3, message: 'Pickup completed at Malabe. Thank you for your contribution!', type: 'completion' },
 ];
 
 const PickupStatusPage = () => {
