@@ -27,6 +27,7 @@ function App() {
         <Route path="/" element={<Home />} />
           <Route path="/search" element={<Home />} />
           <Route path="/product/:id" element={<ProductDetail cartItems={cartItems} setCartItems={setCartItems}/>} />
+          
           <Route path="/" element={<Chatpage />} />
           <Route path="/cart" element={<Cart cartItems={cartItems} setCartItems={setCartItems}/>} />
         </Routes>
