@@ -46,7 +46,7 @@ const Navbar = () => {
 
   return (
     <div className="w-full flex justify-between items-center p-4 sm:p-6 sm:px-24 absolute top-0">
-      <img src={assets.plastic} alt="" className="w-28 sm:w-32" />
+      <img src={assets.polymart} alt="" className="w-28 sm:w-32" />
       
       {userData ?
       <div className="w-8 h-8 flex justify-center items-center rounded-full bg-black text-white relative group">

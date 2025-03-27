@@ -6,6 +6,8 @@ import person_icon from './person_icon.svg'
 import hand_wave from './hand_wave.png'
 import header_img from './header_img.png'
 import logo_tb from './logo_tb.png'
+import polymart from './polymart.png'
+import botlogo from './botlogo.svg'
 
 export const assets = {
     arrow_icon,
@@ -15,5 +17,7 @@ export const assets = {
     person_icon,
     hand_wave,
     header_img,
-    logo_tb
+    logo_tb,
+    polymart,
+    botlogo
 }
