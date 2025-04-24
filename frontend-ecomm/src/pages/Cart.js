@@ -9,32 +9,76 @@ export default function Cart({ cartItems, setCartItems }) {
   const API_URL = "http://localhost:5001";
 
   // Example for your Product component
-function addToCartHandler(product) {
-  if (product.stock <= 0) {
-    toast.error('This product is out of stock');
-    return;
-  }
-
-  setCartItems(prevItems => {
-    const existingItem = prevItems.find(item => item.product._id === product._id);
+  async function placeOrderHandler(e) {
+    e.preventDefault();
     
-    if (existingItem) {
-      if (existingItem.qty >= product.stock) {
-        toast.error(`Only ${product.stock} available in stock`);
-        return prevItems;
-      }
-      return prevItems.map(item =>
-        item.product._id === product._id
-          ? { ...item, qty: item.qty + 1 }
-          : item
-      );
-    } else {
-      return [...prevItems, { product, qty: 1 }];
-    }
-  });
+    // Validate all required fields
+    const requiredFields = ['fullName', 'email', 'phone', 'address', 'city', 'zipCode', 'country'];
+    const missingFields = requiredFields.filter(field => !formData[field].trim());
   
-  toast.success(`${product.name} added to cart`);
-}
+    if (missingFields.length > 0) {
+      toast.error(`Missing required fields: ${missingFields.join(', ')}`);
+      return;
+    }
+  
+    // Validate payment details
+    const cardNum = formData.cardNumber.replace(/\s/g, '');
+    if (!/^\d{16}$/.test(cardNum)) {
+      toast.error('Invalid card number (must be 16 digits)');
+      return;
+    }
+  
+    try {
+      const orderData = {
+        cartItems: cartItems.map(item => ({
+          product: {
+            _id: item.product._id,
+            name: item.product.name,
+            price: item.product.price
+          },
+          qty: item.qty
+        })),
+        formData: {
+          ...formData,
+          // Ensure phone is string (some validations expect string)
+          phone: String(formData.phone)
+        },
+        subtotal,
+        shipping,
+        tax,
+        total
+      };
+  
+      const response = await fetch(`${API_URL}/api/v1/order`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData)
+      });
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        // Handle specific backend validation errors
+        if (data.error && data.error.includes('validation failed')) {
+          const validationErrors = Object.entries(data.errors || {})
+            .map(([field, error]) => `${field}: ${error.message}`);
+          toast.error(`Validation errors:\n${validationErrors.join('\n')}`);
+        } else {
+          throw new Error(data.message || 'Failed to place order');
+        }
+        return;
+      }
+  
+      // Success case
+      setCartItems([]);
+      setActiveStep('complete');
+      toast.success('Order confirmed!');
+      
+    } catch (error) {
+      console.error('Order error:', error);
+      toast.error(error.message || 'Failed to place order. Please try again.');
+    }
+  }
 
   const [formData, setFormData] = useState({
     fullName: "",

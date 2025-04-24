@@ -6,36 +6,38 @@ exports.createOrder = async (req, res) => {
     const { cartItems, formData, subtotal, shipping, tax, total } = req.body;
 
     // Validate input data
-    if (!cartItems || !Array.isArray(cartItems) || cartItems.length === 0) {
+    if (!cartItems || !Array.isArray(cartItems)) {
       return res.status(400).json({
         success: false,
-        error: 'Cart is empty'
+        error: 'Cart items must be an array',
       });
     }
 
-    if (!formData || !subtotal || !shipping || !tax || !total) {
+    if (!formData?.fullName || !formData?.email || !formData?.phone) {
       return res.status(400).json({
         success: false,
-        error: 'Missing required fields'
+        error: 'Missing required fields (fullName, email, phone)',
       });
     }
 
-    // Verify stock for all items
+    // Check product stock and prepare updates
     const products = await Product.find({
-      _id: { $in: cartItems.map(item => item.product._id) }
+      _id: { $in: cartItems.map((item) => item.product._id) },
     });
 
     const stockIssues = [];
     const validItems = [];
-    
-    cartItems.forEach(cartItem => {
-      const product = products.find(p => p._id.toString() === cartItem.product._id);
-      
+    const stockUpdates = []; // To track stock reductions
+
+    cartItems.forEach((cartItem) => {
+      const product = products.find(
+        (p) => p._id.toString() === cartItem.product._id
+      );
+
       if (!product) {
         stockIssues.push({
           productId: cartItem.product._id,
-          name: cartItem.product.name,
-          error: 'Product not found'
+          error: 'Product not found',
         });
       } else if (product.stock < cartItem.qty) {
         stockIssues.push({
@@ -43,83 +45,80 @@ exports.createOrder = async (req, res) => {
           name: product.name,
           available: product.stock,
           requested: cartItem.qty,
-          error: 'Insufficient stock'
+          error: 'Insufficient stock',
         });
       } else {
         validItems.push({
-          cartItem,
-          product
+          product: product._id,
+          name: product.name,
+          qty: cartItem.qty,
+          price: product.price,
+          image: product.images[0]?.image || '',
+        });
+
+        // Add to stock updates
+        stockUpdates.push({
+          productId: product._id,
+          decrement: cartItem.qty,
         });
       }
     });
 
-    // If any stock issues, return them
+    // If any stock issues, abort
     if (stockIssues.length > 0) {
       return res.status(400).json({
         success: false,
         error: 'Stock issues found',
-        stockIssues
+        stockIssues,
       });
     }
 
-    // Prepare items for order
-    const orderItems = validItems.map(({ cartItem, product }) => ({
-      product: product._id,
-      name: product.name,
-      qty: cartItem.qty,
-      price: product.price,
-      image: product.images[0]?.image || ''
-    }));
-
     // Create the order
     const order = await Order.create({
-      items: orderItems,
+      items: validItems,
       customerInfo: {
         fullName: formData.fullName,
         email: formData.email,
         phone: formData.phone,
-        address: formData.address,
-        city: formData.city,
-        zipCode: formData.zipCode,
-        country: formData.country
-      },
-      payment: {
-        cardNumber: formData.cardNumber,
-        expiryDate: formData.expiryDate,
-        cvv: formData.cvv
+        address: formData.address || '',
+        city: formData.city || '',
+        zipCode: formData.zipCode || '',
+        country: formData.country || '',
       },
       subtotal,
       shipping,
       tax,
       total,
-      status: 'Processing'
+      status: 'Processing',
     });
 
-    // // Update product stocks
-    // const bulkOps = validItems.map(({ cartItem, product }) => ({
-    //   updateOne: {
-    //     filter: { _id: product._id },
-    //     update: { $inc: { stock: -cartItem.qty } }
-    //   }
-    // }));
-
-    // await Product.bulkWrite(bulkOps);
+  // Update product stocks (reduce stock) when stock is stored as string
+await Promise.all(
+  stockUpdates.map(async (update) => {
+    const product = await Product.findById(update.productId);
+    if (product) {
+      const currentStock = parseInt(product.stock) || 0; // Convert string to number
+      const newStock = Math.max(0, currentStock - update.decrement); // Ensure doesn't go below 0
+      await Product.findByIdAndUpdate(
+        update.productId,
+        { $set: { stock: newStock.toString() } }, // Set new stock as string
+        { new: true }
+      );
+    }
+  })
+);
 
     res.status(201).json({
       success: true,
       order,
-      message: 'Order placed successfully'
+      message: 'Order placed successfully. Stock updated.',
     });
-
   } catch (error) {
     console.error('Order creation error:', error);
     res.status(500).json({
       success: false,
-      error: 'Failed to plackkkkkkkkkkkkkke order',
-      message: error.message
+      error: 'Failed to place order',
+      message: error.message,
     });
   }
 };
-
-
-
