@@ -366,7 +366,7 @@ function addToCartHandler(product) {
                     <h3><FaCreditCard /> Payment Details</h3>
                     <div className="form-group">
                       <input
-                        type="text"
+                        type="Number"
                         name="cardNumber"
                         value={formData.cardNumber}
                         onChange={handleChange}
@@ -376,24 +376,32 @@ function addToCartHandler(product) {
                     </div>
                     <div className="form-row">
                       <div className="form-group">
-                        <input
-                          type="text"
-                          name="expiryDate"
-                          value={formData.expiryDate}
-                          onChange={handleChange}
-                          placeholder="MM/YY"
-                          required
-                        />
+                      <input
+                        type="month"
+                        name="expiryDate"
+                        value={formData.expiryDate}
+                        onChange={handleChange}
+                        min={new Date().toISOString().slice(0, 7)} // sets minimum to current month
+                        required
+                      />
+
                       </div>
                       <div className="form-group">
-                        <input
-                          type="text"
-                          name="cvv"
-                          value={formData.cvv}
-                          onChange={handleChange}
-                          placeholder="CVV"
-                          required
-                        />
+                      <input
+                        type="Number" 
+                        name="cvv"
+                        value={formData.cvv}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (/^\d{0,4}$/.test(val)) {
+                            handleChange(e);
+                          }
+                        }}
+                        placeholder="CVV"
+                        maxLength="4"
+                        required
+                      />
+
                       </div>
                     </div>
                   </div>
