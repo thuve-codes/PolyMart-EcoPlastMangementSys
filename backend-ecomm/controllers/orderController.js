@@ -1,6 +1,8 @@
 const Order = require('../models/orderModel');
 const Product = require('../models/productModel');
 
+
+
 exports.createOrder = async (req, res) => {
   try {
     const { cartItems, formData, subtotal, shipping, tax, total } = req.body;
@@ -119,6 +121,75 @@ await Promise.all(
       success: false,
       error: 'Failed to place order',
       message: error.message,
+    });
+  }
+};
+
+// Get all orders
+// Get all orders with improved filtering and sorting
+exports.getAllOrders = async (req, res) => {
+  try {
+    const { 
+      page = 1, 
+      limit = 10,
+      status,
+      sortBy = 'createdAt',
+      sortOrder = 'desc',
+      customerEmail,
+      startDate,
+      endDate
+    } = req.query;
+
+    // Build query
+    const query = {};
+    
+    if (status) {
+      query.status = status;
+    }
+    
+    if (customerEmail) {
+      query['customerInfo.email'] = customerEmail;
+    }
+    
+    if (startDate || endDate) {
+      query.createdAt = {};
+      if (startDate) query.createdAt.$gte = new Date(startDate);
+      if (endDate) query.createdAt.$lte = new Date(endDate);
+    }
+
+    // Validate numerical parameters
+    const parsedPage = Math.max(1, parseInt(page));
+    const parsedLimit = Math.max(1, Math.min(100, parseInt(limit)));
+
+    // Build sort object
+    const sort = {};
+    sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
+
+    const [orders, count] = await Promise.all([
+      Order.find(query)
+        .sort(sort)
+        .limit(parsedLimit)
+        .skip((parsedPage - 1) * parsedLimit)
+        .populate('items.product', 'name price images'),
+      Order.countDocuments(query)
+    ]);
+
+    res.status(200).json({
+      success: true,
+      data: orders,
+      pagination: {
+        totalPages: Math.ceil(count / parsedLimit),
+        currentPage: parsedPage,
+        totalOrders: count,
+        limit: parsedLimit
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch orders',
+      message: error.message
     });
   }
 };
