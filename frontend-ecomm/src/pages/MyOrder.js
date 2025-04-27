@@ -7,6 +7,28 @@ import { FaBox, FaShippingFast, FaCheckCircle, FaTimesCircle, FaMoneyBillWave } 
 
 const API_URL = "http://localhost:5001";
 
+
+const cancelOrder = async (delorderId, setOrders) => {
+  if (!window.confirm('Are you sure you want to cancel this order?')) {
+    return;
+  }
+  try {
+    const response = await axios.delete(`${API_URL}/api/v1/order/${delorderId}`);
+    if (response.status === 204 || response.status === 200) {
+      toast.success('Order is Cancelled Successfully');
+      setOrders((prevOrders) => prevOrders.filter(order => order._id !== delorderId));
+    } else {
+      toast.error('Failed to cancel order. Try again.');
+    }
+  } catch (error) {
+    console.error(error);
+    toast.error('Failed to cancel order. Try again.');
+  }
+};
+
+
+
+
 // Styled components
 const Container = styled.div`
   max-width: 1200px;
@@ -221,6 +243,26 @@ const StatusIcon = ({ status }) => {
   }
 };
 
+const CancelBtn = styled.div`
+  display: flex;
+  justify-content: flex-end; // or 'center' depending on your layout
+  margin: 10px 0;
+  
+  button {
+    padding: 8px 16px;
+    background-color: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    
+    &:hover {
+      background-color: #cc0000;
+    }
+  }
+`;
+
 const MyOrders = () => {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
@@ -338,6 +380,21 @@ const MyOrders = () => {
             
             <OrderFooter>
               <OrderTotal>Total: LKR {order.total.toFixed(2)}</OrderTotal>
+              <CancelBtn>
+                {order.status === 'Processing' && (
+                  <button 
+                    onClick={() => {
+                      cancelOrder(order._id,setOrders)
+                      
+                      // You can also call delete logic here if needed
+                    }}
+                  >
+                    Cancel
+                  </button>
+                )}
+              </CancelBtn>
+
+              
             </OrderFooter>
           </OrderCard>
         ))}

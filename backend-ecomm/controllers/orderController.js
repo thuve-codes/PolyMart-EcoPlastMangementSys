@@ -193,3 +193,26 @@ exports.getAllOrders = async (req, res) => {
     });
   }
 };
+
+
+exports.deleteOrder = async (req, res, next) => {
+  try {
+    const orderId = req.params.id;
+
+    // Check if order exists
+    const order = await Order.findById(orderId); // use Order model directly
+    
+    if (!order) {
+      throw new NotFoundError('Order not found');
+    }
+
+    // Delete the order
+    await Order.findByIdAndDelete(orderId);
+
+    res.status(204).send(); // success, no content
+  } catch (error) {
+    next(error);
+  }
+};
+
+
