@@ -194,7 +194,6 @@ exports.getAllOrders = async (req, res) => {
   }
 };
 
-
 exports.deleteOrder = async (req, res, next) => {
   try {
     const orderId = req.params.id;

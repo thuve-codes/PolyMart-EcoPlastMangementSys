@@ -11,6 +11,13 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Cart from './pages/Cart';
 
+// Stripe imports
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+
+// Load your Stripe public key
+const stripePromise = loadStripe("pk_test_51RITe84gLRA5Z0ymYo5OqzxjQmB4hveFlxYRvFaON4L3emUQbxjxB696YCOP5xWNhySfLHFdcqqFnil0qNEyT92o00oIVxx6d0");
+
 function App() {
   const [cartItems, setCartItems] = useState([]);
 
@@ -21,17 +28,20 @@ function App() {
         <Header2 cartItems={cartItems} />
         
         <main> {/* Better semantic HTML */}
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/search" element={<Home />} />
-            <Route 
-              path="/product/:id" 
-              element={<ProductDetail cartItems={cartItems} setCartItems={setCartItems} />} 
-            />
-            <Route path="/chat" element={<Chatpage />} /> {/* Fixed path and element */}
-            <Route path="/orders" element={<MyOrders />} /> {/* Fixed variable name and path */}
-            <Route path="/cart" element={<Cart cartItems={cartItems} setCartItems={setCartItems} />} />
-          </Routes>
+          {/* Wrap Routes in Elements provider to enable Stripe */}
+          <Elements stripe={stripePromise}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/search" element={<Home />} />
+              <Route 
+                path="/product/:id" 
+                element={<ProductDetail cartItems={cartItems} setCartItems={setCartItems} />} 
+              />
+              <Route path="/chat" element={<Chatpage />} /> {/* Fixed path and element */}
+              <Route path="/orders" element={<MyOrders />} /> {/* Fixed variable name and path */}
+              <Route path="/cart" element={<Cart cartItems={cartItems} setCartItems={setCartItems} />} />
+            </Routes>
+          </Elements>
         </main>
         
         <Footer />

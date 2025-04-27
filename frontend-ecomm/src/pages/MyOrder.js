@@ -289,9 +289,9 @@ const MyOrders = () => {
         setLoading(false);
         toast.error(err.response?.data?.error || 'Failed to load orders');
 
-        if (err.response?.status === 401) {
-          navigate('/login');
-        }
+        // if (err.response?.status === 401) {
+        //   navigate('/login');
+        // }
       }
     };
 
@@ -303,10 +303,10 @@ const MyOrders = () => {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  const getImageUrl = (imagePath) => {
-    // Ensure the correct base URL for images
-    return `${API_URL}${imagePath}`;
-  };
+  // const getImageUrl = (imagePath) => {
+  //   // Ensure the correct base URL for images
+  //   return `${API_URL}${imagePath}`;
+  // };
 
   if (loading) {
     return (

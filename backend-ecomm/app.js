@@ -7,7 +7,6 @@ const cors = require('cors');
 const connectDatabase = require('./config/connectDatabase');
 
 
-
 // Import your new chat route
 const chatRoutes = require('./routes/chat'); // Add this line
 
@@ -37,7 +36,7 @@ app.use('/api/v1', chatRoutes); // This will handle the chat routes
 
 
 // Create Payment Intent Endpoint
-app.post("/create-payment-intent", async (req, res) => {
+app.post("/api/v1/payment", async (req, res) => {
   try {
     const { amount, currency } = req.body;
 
