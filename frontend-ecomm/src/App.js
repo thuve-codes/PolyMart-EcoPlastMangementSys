@@ -1,3 +1,4 @@
+import React from 'react';
 import './App.css';
 import Footer from './components/Footer';
 import Header2 from './components/Header2';
@@ -15,8 +16,13 @@ import Cart from './pages/Cart';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 
+const stripepubkey=process.env.REACT_APP_STRIPE_PUB_KEY;
+
+
 // Load your Stripe public key
-//const stripePromise = loadStripe("pk_test_51RITe84gLRA5Z0ymYo5OqzxjQmB4hveFlxYRvFaON4L3emUQbxjxB696YCOP5xWNhySfLHFdcqqFnil0qNEyT92o00oIVxx6d0");
+const stripePromise = loadStripe(stripepubkey);
+console.log(`"${stripepubkey}"`);  // Log the public key to confirm it's correct
+
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
