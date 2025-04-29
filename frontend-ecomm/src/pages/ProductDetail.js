@@ -4,7 +4,8 @@ import { toast } from 'react-toastify';
 import ChatPopup from "../components/Chatpopup";
 
 export default function ProductDetail({ cartItems, setCartItems }) {
-    const API_URL = "http://localhost:5001";
+    const API_URL = process.env.REACT_APP_API_URL;
+
     const [product, setProduct] = useState(null);
     const [qty, setQty] = useState(1);
     const [isPopupOpen, setIsPopupOpen] = useState(false);

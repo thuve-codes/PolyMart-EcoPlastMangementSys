@@ -1,42 +1,88 @@
-import React from 'react';
-import polymartLogo from './images/polymart-logo.png';
-import cart from './images/shopping-cart.png';
+import { Link, useLocation } from "react-router-dom";
+import polymartLogo from "./images/polymart-logo.png";
+import { FaShoppingCart } from "react-icons/fa";  // Importing a cart icon and search icon
 
-export default function Header() {  
-    return (
-            <nav className="navbar row">
-                <div className="col-12 col-md-3">
-                    <div className="navbar-brand">
-                        <img src={polymartLogo} alt="Polymart Logo" width={"150px"} />
-                    </div>
-                </div>
-                <div className="col-12 col-md-6 mt-2 mt-md-0">
-                    <form>
-                        <div className="input-group">
-                            <input
-                                type="text"
-                                id="search_field"
-                                className="form-control"
-                                placeholder="Enter Product Name ..."
-                            />
-                            <div className="input-group-append">
-                                <button id="search_btn" className="btn">
-                                    <i className="fa fa-search" aria-hidden="true"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div className="col-12 col-md-3 mt-4 mt-md-0 text-center">
-                    <button className="btn" id="login_btn">Login</button>
-                    
-                    <span id="cart" className="ml-3">Cart
-                    {
-                   //<img src={cart} alt="Polymart Logo" width={"35px"}/> 
-                    }
-                   </span>
-                    <span className="ml-1" id="cart_count">2</span>
-                </div>
-            </nav>
-    )
+export default function Header({ cartItems }) {
+  const location = useLocation();  // Get the current route
+
+  return (
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark custom-navbar" id="navbar">
+      <div className="container-fluid">
+        {/* Brand Logo */}
+        <div className="navbar-brand navname" href="#">
+          <Link to="/" className="nav-brand-link">
+            <img
+              src={polymartLogo}
+              alt="Polymart Logo"
+              className="logo"
+              style={{ maxHeight: '50px', objectFit: 'contain' }}
+            />{" "}
+            <span className="brand-text">Poly EStore</span>
+          </Link>
+        </div>
+
+        {/* Navbar Toggle Button for Mobile */}
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
+
+        {/* Navbar Links */}
+        <div className="collapse navbar-collapse" id="navbarSupportedContent">
+          <div className="col-12 col-md-6 mt-2 mt-md-0"></div>
+
+          
+
+          {/* Navbar Menu (Right Aligned) */}
+          <ul className="navbar-nav ms-auto mb-2 mb-lg-0" id="navbar">
+            <li className="nav-item">
+              <Link 
+                to="/" 
+                className={`nav-link navname ${location.pathname === '/' ? 'active' : ''}`}
+              >
+                Home
+              </Link>
+            </li>
+
+            <li className="nav-item">
+              <Link 
+                to="/orders" 
+                className={`nav-link navname ${location.pathname === '/orders' ? 'active' : ''}`}
+              >
+                My Orders
+              </Link>
+            </li>
+
+            <li className="nav-item">
+              <a className="nav-link navname" href="https://github.com/thuve-codes?tab=repositories">EcoUser</a>
+            </li>
+
+            <li className="nav-item">
+              <Link 
+              to="/aboutus"  
+              className={`nav-link navname ${location.pathname === '/aboutus' ? 'active' : ''}`}
+              >About Us</Link>
+            </li>
+          </ul>
+        </div>
+
+        <div className="col-12 col-md-3 mt-4 mt-md-0 text-center">
+          <button className="btn navname" id="login_btn">Login</button>
+          <Link to="/cart">
+            <span id="cart" className="ml-3 navname">
+              <FaShoppingCart size={20} /> {/* Cart Icon */}
+            </span>
+            <span className="ml-1 navname" id="cart_count">{cartItems.length}</span>
+          </Link>
+        </div>
+      </div>
+    </nav>
+  );
 }

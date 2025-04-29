@@ -5,7 +5,8 @@ import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { FaBox, FaShippingFast, FaCheckCircle, FaTimesCircle, FaMoneyBillWave } from 'react-icons/fa';
 
-const API_URL = "http://localhost:5001";
+const API_URL = process.env.REACT_APP_API_URL;
+
 
 
 const cancelOrder = async (delorderId, setOrders) => {

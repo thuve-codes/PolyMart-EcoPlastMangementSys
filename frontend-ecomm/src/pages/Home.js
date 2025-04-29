@@ -3,7 +3,8 @@ import ProductCard from '../components/ProductCard';
 import { useSearchParams } from 'react-router-dom';
 import { FaSearch } from 'react-icons/fa';  // Importing the search icon
 
-const API_URL = "http://localhost:5001";
+const API_URL = process.env.REACT_APP_API_URL;
+
 
 export default function Home() {
   const [products, setProducts] = useState([]);

@@ -1,7 +1,8 @@
 import React from 'react';
 import './App.css';
 import Footer from './components/Footer';
-import Header2 from './components/Header2';
+import Header from './components/Header';
+import AboutUs from './pages/AboutUs'; // Changed import to match the file name
 import Home from './pages/Home';
 import Chatpage from './pages/chatpage';
 import { useState } from 'react';
@@ -11,6 +12,8 @@ import MyOrders from './pages/MyOrder'; // Changed variable name to start with c
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Cart from './pages/Cart';
+
+
 
 // Stripe imports
 import { Elements } from '@stripe/react-stripe-js';
@@ -31,7 +34,7 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <ToastContainer position='top-center' theme='dark' />
-        <Header2 cartItems={cartItems} />
+        <Header cartItems={cartItems} />
         
         <main> {/* Better semantic HTML */}
           {/* Wrap Routes in Elements provider to enable Stripe */}
@@ -46,6 +49,7 @@ function App() {
               <Route path="/chat" element={<Chatpage />} /> {/* Fixed path and element */}
               <Route path="/orders" element={<MyOrders />} /> {/* Fixed variable name and path */}
               <Route path="/cart" element={<Cart cartItems={cartItems} setCartItems={setCartItems} />} />
+              <Route path="/aboutus" element={<AboutUs />} />
             </Routes>
           </Elements>
         </main>
