@@ -59,19 +59,19 @@ export default function Footer() {
         
         {/* Footer Bottom */}
         <div className="row align-items-center">
-          <div className="col-md-6 text-center text-md-start mb-3 mb-md-0">
-            <p className="small text-muted mb-0">
-              &copy; {currentYear} PolyMart. All rights reserved.
+        <div className="col-md-6 text-center text-md-start mb-3 mb-md-0">
+          <p className="fs-5 text-white mb-0">
+            &copy; {currentYear} PolyMart. All rights reserved.
+          </p>
+        </div>
+        <div className="col-md-6 text-center text-md-end">
+          <div className="d-flex justify-content-center justify-content-md-end">
+            <p className="text-white mb-0">  
+              Developed with ❤️ by WD 5.2 - G115
             </p>
           </div>
-          <div className="col-md-6 text-center text-md-end">
-            <div className="d-flex justify-content-center justify-content-md-end">
-              <p className="small text-muted mb-0">
-                Developed with ❤️ by WD 5.2 - G115
-              </p>
-            </div>
-          </div>
         </div>
+      </div>
       </div>
     </footer>
   );

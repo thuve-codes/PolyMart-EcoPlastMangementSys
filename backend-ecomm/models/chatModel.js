@@ -14,7 +14,19 @@ const chatSchema = new mongoose.Schema({
       sender: {
         type: String,
         required: true,
-        enum: ['User', 'Seller'],
+        enum: ['User', 'Seller','PolyMart Official',
+                'Green Plastics',
+                'HydroPlast',
+                'EcoHouse',
+                'LunchMate',
+                'EcoGrow',
+                'OrganizePro',
+                'EcoCut',
+                'AquaFlow',
+                'GreenTable',
+                'KiddoPlast',
+                'EcoLiving',
+                'SealFresh'], // Enum to restrict sender to either 'User' or 'Seller'
       },
       text: {
         type: String,
