@@ -21,7 +21,7 @@ exports.getProducts=async (req, res, next) => {
     exports.getSingleproduct= async(req, res, next) => {
 
         try {
-            console.log(req.params.id,'ID');
+            //console.log(req.params.id,'ID');
             const product = await ProductModel.findById(req.params.id);
 
         res.json({
@@ -37,3 +37,6 @@ exports.getProducts=async (req, res, next) => {
         }
         
     }
+
+
+    
