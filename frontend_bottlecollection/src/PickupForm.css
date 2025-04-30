@@ -1,0 +1,105 @@
+.headingPrimary {
+  font-size: 36px;
+  font-weight: bold;
+  color: #32ac13;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.headingSecondary {
+  font-size: 24px;
+  color: #777;
+  margin-bottom: 20px;
+}
+
+
+.centeredTable {
+  margin: 20px auto;
+  width: 50%; 
+  border-spacing: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: rgba(17, 74, 12, 0.559); 
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  color: white; 
+  border-collapse: collapse; 
+  /* Ensures the table has an even color and a smooth appearance */
+}
+
+.centeredTable td,
+.centeredTable th {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  word-wrap: break-word; /* To wrap text if necessary */
+}
+
+.centeredTable th {
+  background-color: #2A5298; /* Header background color */
+  color: white;
+  font-weight: bold;
+}
+
+.centeredTable label {
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+}
+
+.centeredTable tr:nth-child(odd) {
+  background-color: rgba(17, 74, 12, 0.381);  /* Slightly darker color for odd rows */
+}
+
+.centeredTable tr:nth-child(even) {
+  background-color: rgba(17, 74, 12, 0.381);  /* Slightly lighter color for even rows */
+}
+
+.centeredTable tr:hover {
+  background-color: rgba(0, 0, 0, 0.2); /* Hover effect to highlight rows */
+}
+
+/* Form Inputs inside Table */
+.centeredTable input, 
+.centeredTable select, 
+.centeredTable textarea {
+  width: 90%;
+  padding: 8px;
+  border-radius: 5px;
+}
+
+.submitButton {
+  background-color: #28a745;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  
+}
+
+.submitButton:hover {
+  background-color: #218838;
+}
+
+.headImage{
+  width: 100%;
+  height: 250px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.bottle-selection-table {
+  width: 100%;
+  border-collapse: collapse
+}
+
+/* For the reward program banner */
+.reward-banner {
+  width: 90%; /* Ensure the banner takes the full width of its container *//* Maintain the aspect ratio */
+ /* Limit the height for better layout */
+  object-fit: cover; /* Ensure the image covers the area without distorting the aspect ratio */
+  margin-bottom: 20px; /* Space below the banner */
+}
