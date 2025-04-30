@@ -3,7 +3,9 @@ import './RecyclerDashboard.css';
 import {
   LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer
 } from 'recharts';
-
+import jsPDF from 'jspdf';
+import QRCode from 'qrcode';
+import logo from './Assests/images/polymart-logo.png';
 
 const RecyclerDashboard = () => {
   const storedEmail = localStorage.getItem('userEmail') || '';
@@ -18,7 +20,7 @@ const RecyclerDashboard = () => {
 
   const [editingActivity, setEditingActivity] = useState(null); // Track the activity being edited
   const [updatedData, setUpdatedData] = useState({}); // Store the updated values
-
+  const [monthlyReport, setMonthlyReport] = useState(null);
 
   // Fetch Available Pickup Requests
   const fetchPickupRequests = async () => {
@@ -181,6 +183,116 @@ const RecyclerDashboard = () => {
     return recyclingHistory.reduce((total, activity) => total + (activity.points || 0), 0);
   };
   
+
+  const handleGenerateReport = () => {
+    const now = new Date();
+    const monthName = now.toLocaleString('default', { month: 'long' });
+    const year = now.getFullYear();
+  
+    const monthlyPickups = recyclingHistory.filter((pickup) => {
+      const date = new Date(pickup.pickupDate);
+      return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+    });
+  
+    const monthlyPoints = monthlyPickups.reduce((total, pickup) => {
+      return total + (pickup.points || 0);
+    }, 0);
+  
+    setMonthlyReport({
+      month: monthName,
+      year: year,
+      pickups: monthlyPickups.length,
+      points: monthlyPoints
+    });
+  
+    // Generate QR code (example: link to profile or report page)
+    const qrData = `https://polymart.eco/user-report/${monthName}-${year}`; // replace with your real URL
+    QRCode.toDataURL(qrData).then((qrUrl) => {
+      const doc = new jsPDF();
+      const img = new Image();
+      img.src = logo;
+  
+      img.onload = () => {
+        // Logo & header
+        doc.addImage(img, 'PNG', 20, 10, 40, 20);
+        doc.setFontSize(20);
+        doc.setFont("helvetica", "bold");
+        doc.text("Recycling Receipt", 105, 20, { align: "center" });
+  
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "normal");
+        doc.text(`Generated on: ${now.toLocaleString()}`, 105, 28, { align: "center" });
+  
+        doc.setLineWidth(0.5);
+        doc.line(20, 32, 190, 32);
+  
+        // Summary section
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.text("Monthly Summary", 20, 42);
+  
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "normal");
+        doc.text(`Month: ${monthName} ${year}`, 20, 52);
+        doc.text(`Total Pickups: ${monthlyPickups.length}`, 20, 60);
+        doc.text(`Total Points Earned: ${monthlyPoints}`, 20, 68);
+  
+        doc.line(20, 75, 190, 75);
+  
+        // Table
+        let y = 85;
+        doc.setFontSize(13);
+        doc.setFont("helvetica", "bold");
+        doc.text("Detailed Pickup History", 20, y);
+        y += 8;
+  
+        doc.setFontSize(11);
+        doc.text("Date", 20, y);
+        doc.text("Bottle Type", 60, y);
+        doc.text("Weight (kg)", 110, y);
+        doc.text("Points", 160, y);
+        y += 4;
+        doc.line(20, y, 190, y);
+        y += 6;
+  
+        doc.setFont("helvetica", "normal");
+  
+        monthlyPickups.forEach((item) => {
+          const date = new Date(item.pickupDate).toLocaleDateString();
+          doc.text(date, 20, y);
+          doc.text(item.bottleType || "-", 60, y);
+          doc.text((item.weight || 0).toFixed(2), 110, y);
+          doc.text((item.points || 0).toString(), 160, y);
+          y += 6;
+  
+          if (y > 280) {
+            doc.addPage();
+            y = 20;
+          }
+        });
+  
+        // Footer
+        if (y > 260) {
+          doc.addPage();
+          y = 20;
+        }
+  
+        doc.setFontSize(10);
+        doc.text("Thank you for being an active recycler!", 20, y + 10);
+        doc.text("PolyMart | polymart.eco", 20, y + 16);
+  
+        // QR Code (bottom right corner)
+        doc.addImage(qrUrl, 'PNG', 150, y + 5, 40, 40); // adjust size/position as needed
+  
+        // Save
+        doc.save(`Recycling_Receipt_${monthName}_${year}.pdf`);
+      };
+    });
+  };
+  
+  
+  
+
   // Fetch data on component mount
   useEffect(() => {
     const fetchData = async () => {
@@ -195,6 +307,7 @@ const RecyclerDashboard = () => {
     }
   }, [storedEmail]);
 
+  
   return (
     <div style={{ padding: '20px' }}>
       <h1>{storedName}'s Recycler Dashboard</h1>
@@ -208,6 +321,86 @@ const RecyclerDashboard = () => {
           Total Points: {calculateTotalPoints()}
         </p>
       </section>
+
+      <section
+        style={{
+          marginTop: '30px',
+          padding: '20px',
+          backgroundColor: '#f9f9f9',
+          borderRadius: '8px',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+          maxWidth: '600px',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          fontFamily: 'Arial, sans-serif',
+          color: '#333'
+        }}
+      >
+        <div
+          style={{
+            textAlign: 'center',
+            marginBottom: '20px'
+          }}
+        >
+          <img
+            src={logo}
+            alt="Logo"
+            className="logo"
+            style={{
+              maxWidth: '150px',
+              marginBottom: '10px'
+            }}
+          />
+          <h3
+            style={{
+              fontSize: '24px',
+              fontWeight: 'bold',
+              color: '#4CAF50'
+            }}
+          >
+            Monthly Report
+          </h3>
+        </div>
+
+        <button
+          onClick={handleGenerateReport}
+          style={{
+            padding: '12px 25px',
+            backgroundColor: '#4CAF50',
+            color: 'white',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+            fontSize: '16px',
+            marginBottom: '20px',
+            display: 'block',
+            width: '100%',
+            textAlign: 'center'
+          }}
+        >
+          Download Monthly Report (PDF)
+        </button>
+
+        {monthlyReport && (
+          <div
+            style={{
+              marginTop: '20px',
+              padding: '20px',
+              backgroundColor: '#ffffff',
+              border: '1px solid #e0e0e0',
+              borderRadius: '8px',
+              fontSize: '16px',
+              lineHeight: '1.6',
+              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+            }}
+          >
+           <p>Your monthy report has been sent to downloads</p>
+          </div>
+        )}
+      </section>
+
+
 
       {/* Monthly Activity Chart */}
       <section className="activity-chart-section">
