@@ -9,6 +9,8 @@ const statusRoutes = require('./routes/StatusRoutes');
 
 const pickupRoutes = require('./routes/pickups');
 const locationsRouter = require('./routes/locations');
+const reportRoutes = require('./routes/reportRoutes');  
+
 
 dotenv.config();
 connectDB();
@@ -28,6 +30,8 @@ app.use('/api/collections', collectionRoutes);
 app.use('/api/status', statusRoutes);
 app.use('/api/pickups', pickupRoutes);
 app.use('/api', locationsRouter);
+// Use the report routes
+app.use('/api/reports', reportRoutes);
 
 // Create a transporter for sending emails using Gmail
 const transporter = nodemailer.createTransport({
