@@ -19,6 +19,7 @@ function PickupFormUpdate() {
   const [errors, setErrors] = useState({
     contactNumber: "",
     pickupDate: "",
+    address: "", 
   });
 
   const navigate = useNavigate(); 
@@ -73,6 +74,20 @@ function PickupFormUpdate() {
       }));
     }
 
+    if (name === "address") {
+      if (value.trim().length < 10) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          address: "Address must be at least 10 characters long.",
+        }));
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          address: "",
+        }));
+      }
+    }    
+
     if (name === "pickupDate") {
       const today = new Date().toISOString().split('T')[0];
       if (value < today) {
@@ -109,12 +124,22 @@ function PickupFormUpdate() {
   };
 
   const handleUpdate = () => {
-    // Check if there are any validation errors
-    if (errors.contactNumber || errors.pickupDate) {
+    // Validate required fields before submission
+    if (!formData.address || formData.address.trim().length < 10) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        address: "Address must be at least 10 characters long.",
+      }));
       alert("Please correct the errors before updating.");
       return;
     }
-
+  
+    // Check if there are any validation errors
+    if (errors.contactNumber || errors.pickupDate || errors.address) {
+      alert("Please correct the errors before updating.");
+      return;
+    }
+  
     fetch('http://localhost:5000/api/bottles/update', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -125,8 +150,12 @@ function PickupFormUpdate() {
         alert("Form updated successfully!");
         navigate('/RecyclerDashboard');  // Redirect to the Recycler Dashboard
       })
-      .catch((error) => alert('Error updating form.'));
+      .catch((error) => {
+        console.error('Error updating form:', error);
+        alert('Error updating form.');
+      });
   };
+  
 
   const handleDelete = () => {
     fetch('http://localhost:5000/api/bottles/delete', {
@@ -181,8 +210,12 @@ function PickupFormUpdate() {
 
               <tr>
                 <td><label htmlFor="address">Address</label></td>
-                <td><textarea name="address" value={formData.address} onChange={handleChange} /></td>
+                <td>
+                  <textarea name="address" value={formData.address} onChange={handleChange} />
+                  {errors.address && <span className="error">{errors.address}</span>}
+                </td>
               </tr>
+
 
               <tr>
                 <td><label htmlFor="bottleType">Bottle Type</label></td>
