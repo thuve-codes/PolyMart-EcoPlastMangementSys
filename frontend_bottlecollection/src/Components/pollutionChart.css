@@ -1,0 +1,21 @@
+.chart-container {
+    width: 100%; /* Ensures the container takes up the full width */
+    height: 400px; /* Increased the height of the container */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    margin-top: 20px; /* Adjust space above */
+    background-color: #f4f4f4; /* Light background to differentiate the chart area */
+    border-radius: 8px;
+    /* Add a shadow for a subtle 3D effect */
+  }
+  
+  .chart-container h3 {
+    font-size: 1.6rem;
+    font-weight: bold;
+   
+    margin-bottom: 15px;
+  }
+  

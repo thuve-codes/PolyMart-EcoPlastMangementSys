@@ -41,3 +41,89 @@ h1, h2 {
     color: #555;
   }
   
+
+  /*editing the table*/
+  .edit-activity-container {
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+  }
+  
+  .edit-activity-container h3 {
+    margin-bottom: 20px;
+    font-size: 1.5em;
+  }
+  
+  .edit-activity-form table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .edit-activity-form td {
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .edit-activity-form label {
+    font-weight: bold;
+  }
+  
+  .edit-activity-form input {
+    width: 100%;
+    padding: 8px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .edit-activity-form input[type="date"] {
+    padding: 5px;
+  }
+  
+  .edit-activity-form .submit-btn-cell {
+    text-align: center;
+  }
+  
+  .edit-activity-form .update-btn {
+    padding: 10px 20px;
+    font-size: 1.1em;
+    color: white;
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .edit-activity-form .update-btn:hover {
+    background-color: #45a049;
+  }
+  
+  .activity-chart-section {
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    margin-bottom: 2rem;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .chart-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    text-align: center;
+    color: #000000; /* A rich green for eco vibe */
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  
+  
+  .chart-wrapper {
+    height: 350px;
+    width: 100%;
+  }
+  

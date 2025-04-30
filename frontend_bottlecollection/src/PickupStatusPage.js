@@ -1,42 +1,56 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import './PickupStatusPage.css';
 
-// Dummy data for pickup requests
-const dummyPickupRequests = [
-  { id: 1, location: 'Hatton', material: 'Plastic', weight: '20kg', status: 'Pending', time: '2025-03-25 14:00' },
-  { id: 2, location: 'Colombo', material: 'Plastic', weight: '15kg', status: 'In Progress', time: '2025-03-25 15:00' },
-  { id: 3, location: 'Malabe', material: 'Plastic', weight: '25kg', status: 'Completed', time: '2025-03-24 10:30' },
-];
-
-// Dummy notification data
-const notifications = [
-  { id: 1, message: 'Your pickup request at Hatton has been confirmed. Estimated arrival time: 14:00.', type: 'confirmation' },
-  { id: 2, message: 'Pickup in progress at Colombo. Estimated arrival in 15 minutes.', type: 'progress' },
-  { id: 3, message: 'Pickup completed at Malabe. Thank you for your contribution!', type: 'completion' },
-];
-
 const PickupStatusPage = () => {
-  const [pickupRequests, setPickupRequests] = useState(dummyPickupRequests);
-  const [userNotifications, setUserNotifications] = useState(notifications);
+  const [pickupRequests, setPickupRequests] = useState([]);
+  const [userNotifications, setUserNotifications] = useState([]);
+  const [isLoading, setIsLoading] = useState(true); // Loading spinner control
 
-  // Simulating real-time status updates
+  // Fetch pickup requests from server
   useEffect(() => {
-    const interval = setInterval(() => {
-      const updatedRequests = pickupRequests.map(request => {
-        if (request.status === 'Pending') {
-          return { ...request, status: 'In Progress' };
-        } else if (request.status === 'In Progress') {
-          return { ...request, status: 'Completed' };
+    const fetchPickupRequests = async () => {
+      try {
+        setIsLoading(true); // Start loading
+  
+        // Get the logged-in user's email (assuming it's stored in localStorage)
+        const userEmail = localStorage.getItem('userEmail');  // or sessionStorage, depending on your setup
+  
+        if (!userEmail) {
+          console.log('User is not logged in!');
+          return; // Handle the case where email is not found
         }
-        return request;
-      });
-      setPickupRequests(updatedRequests);
-    }, 10000); // Updates every 10 seconds for demo purposes
+  
+        // Fetch pickup requests using the logged-in user's email
+        const response = await axios.get('http://localhost:5000/api/status/pickup-requests', {
+          params: {
+            email: userEmail,  // Pass the email as a query parameter
+          },
+        });
+  
+        // Sort pickup requests by pickupDate (newest first)
+        const sortedPickups = response.data.sort((a, b) => new Date(b.pickupDate) - new Date(a.pickupDate));
+        setPickupRequests(sortedPickups);
+  
+        // Create notifications based on pickup data
+        const notifications = sortedPickups.map((request) => ({
+          id: request._id,
+          message: `Pickup request at ${request.address} for ${request.bottleType} scheduled on ${new Date(request.pickupDate).toLocaleString()}`,
+          type: request.status === 'Available' ? 'pending' : 'scheduled',
+        }));
+        setUserNotifications(notifications);
+      } catch (error) {
+        console.error('Error fetching pickup requests:', error);
+      } finally {
+        setIsLoading(false); // Done loading
+      }
+    };
+  
+    fetchPickupRequests();
+  }, []);
+  
 
-    return () => clearInterval(interval); // Cleanup interval on component unmount
-  }, [pickupRequests]);
-
-  // Function to handle notifications
+  // Handle notification click (remove on click)
   const handleNotificationClick = (id) => {
     const updatedNotifications = userNotifications.filter(notification => notification.id !== id);
     setUserNotifications(updatedNotifications);
@@ -46,50 +60,56 @@ const PickupStatusPage = () => {
     <div className="pickup-status-page">
       <h1>Pickup Request Status & Notifications</h1>
 
-      {/* Pickup Requests Table */}
-      <section>
-        <h2>Current Pickup Requests</h2>
-        <table className="pickup-requests-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Location</th>
-              <th>Material</th>
-              <th>Weight</th>
-              <th>Status</th>
-              <th>Scheduled Time</th>
-            </tr>
-          </thead>
-          <tbody>
-            {pickupRequests.map((request) => (
-              <tr key={request.id} className={`status-${request.status.toLowerCase()}`}>
-                <td>{request.id}</td>
-                <td>{request.location}</td>
-                <td>{request.material}</td>
-                <td>{request.weight}</td>
-                <td>{request.status}</td>
-                <td>{request.time}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
+      {isLoading ? (
+        <div className="loading-spinner">Loading...</div>
+      ) : (
+        <>
+          {/* Pickup Requests Table */}
+          <section>
+            <h2>Current Pickup Requests</h2>
+            <table className="pickup-requests-table">
+              <thead>
+                <tr>
+                  <th>Tracking ID</th>
+                  <th>Location</th>
+                  <th>Material</th>
+                  <th>Weight</th>
+                  <th>Status</th>
+                  <th>Scheduled Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pickupRequests.map((request) => (
+                  <tr key={request._id} className={`status-${request.status?.toLowerCase()}`}>
+                    <td>{request._id}</td>
+                    <td>{request.address}</td>
+                    <td>{request.bottleType}</td>
+                    <td>{request.weight}kg</td>
+                    <td>{request.status}</td>
+                    <td>{new Date(request.pickupDate).toLocaleString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </section>
 
-      {/* Notifications Section */}
-      <section>
-        <h2>Your Notifications</h2>
-        <div className="notifications">
-          {userNotifications.map((notification) => (
-            <div
-              key={notification.id}
-              className={`notification ${notification.type}`}
-              onClick={() => handleNotificationClick(notification.id)}
-            >
-              <p>{notification.message}</p>
+          {/* Notifications Section */}
+          <section>
+            <h2>Your Notifications</h2>
+            <div className="notifications">
+              {userNotifications.map((notification) => (
+                <div
+                  key={notification.id}
+                  className={`notification ${notification.type}`}
+                  onClick={() => handleNotificationClick(notification.id)}
+                >
+                  <p>{notification.message}</p>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </section>
+          </section>
+        </>
+      )}
     </div>
   );
 };

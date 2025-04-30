@@ -3,7 +3,9 @@ import './Homepage.css';
 
 import ImpactStats from "./Components/ImpactStats";
 import Blog from "./Components/Blog";
+import AwarenessArticles from "./Components/AwarenessArticles";
 import FAQ from "./Components/FAQ";
+import PlasticPollutionChart from './Components/PlasticPollutionChart';
 
 import { useState } from "react";
 import distribution from './Assests/images/distribution.png';
@@ -81,9 +83,14 @@ function HomePage() {
         </div>
       </section>
 
+      <section className="pollution-chart-section">
+        <PlasticPollutionChart />
+      </section>
+        
       <aside className="sidebar">
        
         <ImpactStats />
+        <AwarenessArticles />
         <Blog />
         <FAQ />
       </aside>

@@ -1,6 +1,3 @@
-// controllers/dbController.js
-
-// Sample function that queries the database for user details by email
 const getUserByEmail = async (email) => {
     // Assuming you're using a database like MongoDB, MySQL, or PostgreSQL
     // You'll replace this with actual database querying logic
@@ -20,10 +17,8 @@ const getUserByEmail = async (email) => {
   
   module.exports = { getUserByEmail };  // Export the function to be used in routes
   
-  const PickupRequest = require('./models/PickupRequest'); // Assuming you have a PickupRequest model
-
-// Fetch pickup requests by email and current date
-const getPickupRequestsByEmailAndDate = async (email, currentDate) => {
+  // Fetch pickup requests by email and current date
+  const getPickupRequestsByEmailAndDate = async (email, currentDate) => {
   try {
     return await PickupRequest.find({
       email: email,
@@ -32,6 +27,6 @@ const getPickupRequestsByEmailAndDate = async (email, currentDate) => {
   } catch (error) {
     throw new Error('Error fetching pickup requests: ' + error);
   }
-};
-
-module.exports = { getPickupRequestsByEmailAndDate };
+  };
+  
+  module.exports = { getPickupRequestsByEmailAndDate };

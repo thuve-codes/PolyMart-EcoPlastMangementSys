@@ -1,8 +1,6 @@
-import { useState } from 'react';
-import headImage from './Assests/images/plastic.jpg';
+import { useState, useEffect } from 'react';
 import './PickupForm.css';
-import bannerImage from "./Assests/images/redeem.png";
-import sideImage from "./Assests/images/points.jpg";
+import { useNavigate } from 'react-router-dom';
 
 function PickupFormUpdate() {
   const [formData, setFormData] = useState({
@@ -15,18 +13,79 @@ function PickupFormUpdate() {
     feedback: "",
     disposalPurpose: "",
     pickupDate: "",
+    points: 0,  // Include points in the form data
+  });
+  
+  const [errors, setErrors] = useState({
+    contactNumber: "",
+    pickupDate: "",
   });
 
-  const [redeemPoints, setRedeemPoints] = useState(0);
+  const navigate = useNavigate(); 
+
+  // Use the email stored in localStorage to pre-fill the email field
+  useEffect(() => {
+    const storedEmail = localStorage.getItem('userEmail');  // Retrieve email from localStorage
+    if (storedEmail) {
+      setFormData((prevData) => ({
+        ...prevData,
+        email: storedEmail,  // Pre-fill the email
+      }));
+
+      // Fetch the pickup data for the last submitted email
+      fetch(`http://localhost:5000/api/bottles/${storedEmail}`)
+        .then((response) => response.json())
+        .then((data) => {
+          if (data) {
+            setFormData(data);  // Set the retrieved data in the form
+            // Calculate points on data load if bottleType and weight are available
+            calculatePoints(data.weight, data.bottleType);
+          }
+        })
+        .catch((error) => console.error("Error fetching pickup data:", error));
+    }
+  }, []); // Run only once on component mount
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    // Update formData
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
+
+    // Recalculate points when bottleType or weight changes
     if (name === "bottleType" || name === "weight") {
-      calculatePoints(name === "weight" ? value : formData.weight, name === "bottleType" ? value : formData.bottleType);
+      calculatePoints(value, formData.bottleType);  // Recalculate with the new value
+    }
+
+    // Handle validation
+    if (name === "contactNumber" && value.length !== 10) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        contactNumber: "Contact number must be exactly 10 digits.",
+      }));
+    } else {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        contactNumber: "",
+      }));
+    }
+
+    if (name === "pickupDate") {
+      const today = new Date().toISOString().split('T')[0];
+      if (value < today) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          pickupDate: "Pickup date cannot be in the past.",
+        }));
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          pickupDate: "",
+        }));
+      }
     }
   };
 
@@ -34,188 +93,105 @@ function PickupFormUpdate() {
     let pointsPerKg = 0;
 
     switch (bottleType) {
-      case "plastic":
-        pointsPerKg = 2;
-        break;
-      case "glass":
-        pointsPerKg = 3;
-        break;
-      case "metal":
-        pointsPerKg = 4;
-        break;
-      case "other":
-        pointsPerKg = 1;
-        break;
+      case "plastic type 1": pointsPerKg = 2; break;
+      case "plastic type 2": pointsPerKg = 3; break;
+      case "plastic type 3": pointsPerKg = 4; break;
+      case "other": pointsPerKg = 1; break;
       default:
         pointsPerKg = 0;
     }
 
     const totalPoints = weight ? parseFloat(weight) * pointsPerKg : 0;
-    setRedeemPoints(totalPoints);
+    setFormData((prevData) => ({
+      ...prevData,
+      points: totalPoints,  // Update the points in formData
+    }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (formData.weight <= 0) {
-      alert("Weight must be a positive number.");
-      return; // Prevent form submission if weight is invalid
+  const handleUpdate = () => {
+    // Check if there are any validation errors
+    if (errors.contactNumber || errors.pickupDate) {
+      alert("Please correct the errors before updating.");
+      return;
     }
-    const formDataWithPoints = { ...formData, points: redeemPoints };
 
-    // Send the data to the backend using fetch
-    fetch('http://localhost:4000/submitForm', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formDataWithPoints),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        alert(`Form submitted successfully! You earned ${redeemPoints} points.`);
-        console.log('Server Response:', data);
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-        alert('An error occurred while submitting the form.');
-      });
-  };
-
-  const handleUpdate = (e) => {
-    e.preventDefault();
-    const formDataWithPoints = { ...formData, points: redeemPoints };
-
-    // Send a PUT request to update the existing data
-    fetch('http://localhost:4000/updateForm', {
+    fetch('http://localhost:5000/api/bottles/update', {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formDataWithPoints),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData),  // Include points in the body
     })
       .then((response) => response.json())
-      .then((data) => {
-        alert(`Form updated successfully! You earned ${redeemPoints} points.`);
-        console.log('Server Response:', data);
+      .then(() => {
+        alert("Form updated successfully!");
+        navigate('/RecyclerDashboard');  // Redirect to the Recycler Dashboard
       })
-      .catch((error) => {
-        console.error('Error:', error);
-        alert('An error occurred while updating the form.');
-      });
+      .catch((error) => alert('Error updating form.'));
   };
 
-  const handleDelete = (e) => {
-    e.preventDefault();
-
-    // Send a DELETE request to delete the existing data
-    fetch('http://localhost:4000/deleteForm', {
+  const handleDelete = () => {
+    fetch('http://localhost:5000/api/bottles/delete', {
       method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email: formData.email }), // Assuming email is the unique identifier
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: formData.email }),
     })
       .then((response) => response.json())
-      .then((data) => {
+      .then(() => {
         alert('Form deleted successfully.');
-        console.log('Server Response:', data);
-        // Optionally reset the form or do other cleanup
         setFormData({
-          name: "",
-          email: "",
-          contactNumber: "",
-          address: "",
-          bottleType: "",
-          weight: "",
-          feedback: "",
-          disposalPurpose: "",
-          pickupDate: "",
+          name: "", email: "", contactNumber: "", address: "",
+          bottleType: "", weight: "", feedback: "", disposalPurpose: "", pickupDate: "", points: 0
         });
-        setRedeemPoints(0);
       })
-      .catch((error) => {
-        console.error('Error:', error);
-        alert('An error occurred while deleting the form.');
-      });
-  };
-
-  const [bottleType, setBottleType] = useState("");
-  const [weight, setWeight] = useState("");
-  const [points, setPoints] = useState(0);
-
-  const pointRates = {
-    plastic: 10,
-    glass: 8,
-    metal: 15,
-    other: 5,
-  };
-
-  const offers = [
-    { id: 1, title: "10% Discount on Recycled Products", pointsRequired: 100 },
-    { id: 2, title: "Free Eco-Friendly Tote Bag", pointsRequired: 200 },
-    { id: 3, title: "Special Membership Badge", pointsRequired: 300 },
-  ];
-
-  const permanentCustomerDeals = [
-    { id: 1, title: "Exclusive 25% Discount on Plastic-Free Products" },
-    { id: 2, title: "VIP Access to Recycling Events" },
-    { id: 3, title: "Priority Collection Service" },
-  ];
-
-  const calcPoints = () => {
-    if (bottleType && weight) {
-      const earnedPoints = weight * (pointRates[bottleType] || 0);
-      setPoints((prevPoints) => prevPoints + earnedPoints);
-    } else {
-      alert("Please select a bottle type and enter weight!");
-    }
+      .catch((error) => alert('Error deleting form.'));
   };
 
   return (
     <div className="App">
       <header className="App-header">
         <h1 className="headingPrimary">Plastic Bottle Collection</h1>
-        <h2 className="headingSecondary">Plastic Collection Form</h2>
+        <h2 className="headingSecondary">You can Update Your Form if needed</h2>
 
-        <form onSubmit={handleSubmit}>
+        <form>
           <table className="table centeredTable">
             <tbody>
-              <tr>
+              <tr style={{ display: 'none' }}>
                 <td><label htmlFor="name">Name</label></td>
-                <td>
-                  <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required />
-                </td>
+                <td><input type="text" name="name" value={formData.name} readOnly /></td>
               </tr>
 
-              <tr>
+              {/* Email is hidden, but still part of form data */}
+              <tr style={{ display: 'none' }}>
                 <td><label htmlFor="email">Email</label></td>
-                <td>
-                  <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required />
-                </td>
+                <td><input type="email" name="email" value={formData.email} readOnly /></td>
               </tr>
 
               <tr>
                 <td><label htmlFor="contactNumber">Contact Number</label></td>
                 <td>
-                  <input type="text" id="contactNumber" name="contactNumber" value={formData.contactNumber} onChange={handleChange} required />
+                  <input
+                    type="text"
+                    name="contactNumber"
+                    value={formData.contactNumber}
+                    onChange={handleChange}
+                    maxLength="10"
+                  />
+                  {errors.contactNumber && <span className="error">{errors.contactNumber}</span>}
                 </td>
               </tr>
 
               <tr>
                 <td><label htmlFor="address">Address</label></td>
-                <td>
-                  <textarea id="address" name="address" value={formData.address} onChange={handleChange} required />
-                </td>
+                <td><textarea name="address" value={formData.address} onChange={handleChange} /></td>
               </tr>
 
               <tr>
                 <td><label htmlFor="bottleType">Bottle Type</label></td>
                 <td>
-                  <select id="bottleType" name="bottleType" value={formData.bottleType} onChange={handleChange} required>
+                  <select name="bottleType" value={formData.bottleType} onChange={handleChange}>
                     <option value="">Select Bottle Type</option>
-                    <option value="plastic">Plastic</option>
-                    <option value="glass">Glass</option>
-                    <option value="metal">Metal</option>
+                    <option value="plastic type 1">Plastic type 1(LDPE)</option>
+                    <option value="plastic type 2">plastic type 2(PVC)</option>
+                    <option value="plastic type 3">plastic type 3(HDPE)</option>
                     <option value="other">Other</option>
                   </select>
                 </td>
@@ -223,22 +199,18 @@ function PickupFormUpdate() {
 
               <tr>
                 <td><label htmlFor="weight">Weight (kg)</label></td>
-                <td>
-                  <input type="number" id="weight" name="weight" value={formData.weight} onChange={handleChange} required />
-                </td>
+                <td><input type="number" name="weight" value={formData.weight} onChange={handleChange} /></td>
               </tr>
 
               <tr>
                 <td><label htmlFor="feedback">Feedback</label></td>
-                <td>
-                  <textarea id="feedback" name="feedback" value={formData.feedback} onChange={handleChange} />
-                </td>
+                <td><textarea name="feedback" value={formData.feedback} onChange={handleChange} /></td>
               </tr>
 
               <tr>
                 <td><label htmlFor="disposalPurpose">Purpose of Disposal</label></td>
                 <td>
-                  <select id="disposalPurpose" name="disposalPurpose" value={formData.disposalPurpose} onChange={handleChange} required>
+                  <select name="disposalPurpose" value={formData.disposalPurpose} onChange={handleChange}>
                     <option value="">Select Purpose</option>
                     <option value="recycle">Recycle</option>
                     <option value="dispose">Dispose</option>
@@ -251,78 +223,27 @@ function PickupFormUpdate() {
               <tr>
                 <td><label htmlFor="pickupDate">Preferred Pickup Date</label></td>
                 <td>
-                  <input type="date" id="pickupDate" name="pickupDate" value={formData.pickupDate} onChange={handleChange} required />
+                  <input
+                    type="date"
+                    name="pickupDate"
+                    value={formData.pickupDate}
+                    onChange={handleChange}
+                    min={new Date().toISOString().split('T')[0]} // Prevent past dates
+                  />
+                  {errors.pickupDate && <span className="error">{errors.pickupDate}</span>}
                 </td>
               </tr>
 
+              {/* No points field in the UI */}
               <tr>
                 <td colSpan="2">
-                  <button className="submitButton" type="submit">Submit</button>
-                  <button className="updateButton" onClick={handleUpdate} type="button">Update</button>
-                  <button className="deleteButton" onClick={handleDelete} type="button">Delete</button>
+                  <button type="button" onClick={handleUpdate}>Update</button>
+                  <button type="button" onClick={handleDelete} style={{ marginLeft: "10px" }}>Delete</button>
                 </td>
               </tr>
             </tbody>
           </table>
         </form>
-
-        <div className="redeem-points-container">
-          <h3>Total Redeem Points: {redeemPoints}</h3>
-        </div>
-        <div className="reward-container">
-          <img src={bannerImage} alt="Reward Program Banner" className="reward-banner" />
-          <h1>🎉 Earn Reward Points & Get Exclusive Offers! 🎉</h1>
-          <div className="form-group">
-            <table className="bottle-selection-table">
-              <tbody>
-                <tr>
-                  <td><label>Select Bottle Type:</label></td>
-                  <td>
-                    <select value={bottleType} onChange={(e) => setBottleType(e.target.value)}>
-                      <option value="">Select</option>
-                      <option value="plastic">Plastic</option>
-                      <option value="glass">Glass</option>
-                      <option value="metal">Metal</option>
-                      <option value="other">Other</option>
-                    </select>
-                  </td>
-                </tr>
-                <tr>
-                  <td><label>Enter Weight (kg):</label></td>
-                  <td>
-                    <input type="number" value={weight} onChange={(e) => setWeight(e.target.value)} />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <button onClick={calcPoints}>Calculate Points</button>
-          <h2>⭐ Your Total Reward Points: {points}</h2>
-
-          <h3>🏆 Available Offers:</h3>
-          <ul>
-            {offers.map((offer) => (
-              <li key={offer.id} className={points >= offer.pointsRequired ? "available" : "unavailable"}>
-                {offer.title} - {offer.pointsRequired} Points
-              </li>
-            ))}
-          </ul>
-          {points >= 500 && (
-            <>
-              <h3>🌟 Exclusive Deals for Permanent Customers:</h3>
-              <ul className="special-deals">
-                {permanentCustomerDeals.map((deal) => (
-                  <li key={deal.id}>{deal.title}</li>
-                ))}
-              </ul>
-            </>
-          )}
-          <div className="reward-image-container">
-            <img src={sideImage} alt="Rewards Info" className="reward-side-image" />
-          </div>
-        </div>
-        <img src={headImage} alt="Logo" className="headImage" />
       </header>
     </div>
   );

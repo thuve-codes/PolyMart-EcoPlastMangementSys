@@ -1,179 +1,183 @@
 import React, { useState, useEffect } from 'react';
 import './RecyclingTrackingPage.css';
 import Tracking from "./Components/Tracking";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-
-// Recycling Centers Data
 const RecyclingCenters = [
-  { id: 1, name: "Green Earth Recycling", status: "Open", rating: 4.5, description: "A trusted center for recycling plastic, metal, and glass waste." },
-  { id: 2, name: "Eco Drop-Off", status: "Closed", rating: 4.2, description: "An easy drop-off location for e-waste and household recyclables." },
-  { id: 3, name: "Sustainable Hub", status: "Open", rating: 4.7, description: "A comprehensive recycling center promoting a zero-waste lifestyle." },
-  { id: 4, name: "GreenCycle Depot", status: "Open", rating: 4.3, description: "Specializing in paper and cardboard recycling for businesses." },
+  { id: 1, name: "Green Earth Recycling", status: "Open", rating: 4.5, description: "A trusted center for recycling plastic, metal, and glass waste.", address: "123 Green St, Eco City" },
+  { id: 2, name: "Eco Drop-Off", status: "Closed", rating: 4.2, description: "An easy drop-off location for e-waste and household recyclables.", address: "456 Eco Rd, Green Town" },
+  { id: 3, name: "Urban Recycling Hub", status: "Open", rating: 4.7, description: "Central location for recycling paper, plastic, and electronics.", address: "789 Urban Ave, Metro City" },
+  { id: 4, name: "Neighborhood Green Center", status: "Open", rating: 4.4, description: "Community recycling center for everyday waste items.", address: "321 Community Dr, Suburbia" },
+  { id: 5, name: "RecycleIt Center", status: "Closed", rating: 4.3, description: "Specializes in recycling batteries, light bulbs, and electronics.", address: "654 Recycle Blvd, Tech City" },
+  { id: 6, name: "EcoWaste Solutions", status: "Closed", rating: 4.0, description: "Offering solutions for electronic waste and appliance recycling.", address: "333 EcoWaste St, Green Plains" },
 ];
 
-// Dummy data for demonstration
-const dummyPickupRequests = [
-  { id: 1, status: 'Scheduled', time: '2025-03-25 14:00', recycler: 'John Doe' },
-  { id: 2, status: 'In Progress', time: '2025-03-25 15:00', recycler: 'Jane Smith' },
-  { id: 3, status: 'Completed', time: '2025-03-24 10:30', recycler: 'John Doe' },
-];
+const RecyclingTrackingPage = () => {
+  const [pickupRequests, setPickupRequests] = useState([]);
+  const [favorites, setFavorites] = useState([]);
+  const [search, setSearch] = useState("");
+  const [filteredCenters, setFilteredCenters] = useState(RecyclingCenters);
 
-const dummyRecyclingHistory = [
-  { id: 1, date: '2025-03-23', weight: '10kg', material: 'Plastic', user: 'John Doe' },
-  { id: 2, date: '2025-03-20', weight: '5kg', material: 'Glass', user: 'Jane Smith' },
-  { id: 3, date: '2025-03-18', weight: '15kg', material: 'Paper', user: 'John Doe' },
-];
+  const userEmail = localStorage.getItem('userEmail') || '';
 
-const RecyclingTrackingPage = ({ userName }) => {
-  const [pickupRequests, setPickupRequests] = useState(dummyPickupRequests);
-
-  // Filter pickup requests based on the user
-  const userPickupRequests = pickupRequests.filter(request => request.recycler === userName);
-
-
-   const [favorites, setFavorites] = useState([]);
-    const [search, setSearch] = useState("");
-    const [filteredCenters, setFilteredCenters] = useState(RecyclingCenters);
-  
-    // Load favorites from local storage
-    useEffect(() => {
-      const savedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
-      setFavorites(savedFavorites);
-    }, []);
-  
-    // Toggle favorite status
-    const toggleFavorite = (id) => {
-      let updatedFavorites = favorites.includes(id)
-        ? favorites.filter((fav) => fav !== id)
-        : [...favorites, id];
-  
-      setFavorites(updatedFavorites);
-      localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+  useEffect(() => {
+    const fetchPickupRequests = async () => {
+      try {
+        if (userEmail) {
+          const response = await fetch(`http://localhost:5000/api/collections/pickup-requests/${userEmail}`);
+          const data = await response.json();
+          console.log("Received pickup requests:", data);  // Add this log
+          setPickupRequests(data);
+        }
+      } catch (error) {
+        console.error('Error fetching pickup requests:', error);
+      }
     };
-  
-    // Search functionality
-    useEffect(() => {
-      setFilteredCenters(
-        RecyclingCenters.filter((center) =>
-          center.name.toLowerCase().includes(search.toLowerCase())
-        )
-      );
-    }, [search]);
-  // Filter recycling history based on the user
-  const userRecyclingHistory = dummyRecyclingHistory.filter(history => history.user === userName);
+    
 
-  // Simulating real-time tracking updates for demo purposes
+    fetchPickupRequests();
+  }, [userEmail]);
+
+  const userPickupRequests = pickupRequests.filter(request => request.email === userEmail);
+  console.log("Filtered Pickup Requests:", userPickupRequests);
+
+
+  useEffect(() => {
+    const savedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
+    setFavorites(savedFavorites);
+  }, []);
+
+  const toggleFavorite = (id) => {
+    const updatedFavorites = favorites.includes(id)
+      ? favorites.filter((fav) => fav !== id)
+      : [...favorites, id];
+
+    setFavorites(updatedFavorites);
+    localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+  };
+
+  useEffect(() => {
+    setFilteredCenters(
+      RecyclingCenters.filter((center) =>
+        center.name.toLowerCase().includes(search.toLowerCase())
+      )
+    );
+  }, [search]);
+
   useEffect(() => {
     const interval = setInterval(() => {
-      const updatedRequests = userPickupRequests.map(request => {
-        if (request.status === 'Scheduled') {
-          return { ...request, status: 'In Progress' };
-        } else if (request.status === 'In Progress') {
-          return { ...request, status: 'Completed' };
+      const updatedRequests = pickupRequests.map(request => {
+        if (request.recyclerEmail === userEmail) {
+          let newStatus = request.status;
+          if (request.status === 'Scheduled') {
+            newStatus = 'In Progress';
+            toast.info(`Pickup ID ${request.id} is now In Progress 🚚`, {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+            });
+          } else if (request.status === 'In Progress') {
+            newStatus = 'Completed';
+            toast.success(`Pickup ID ${request.id} has been Completed ✅`, {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+            });
+          }
+          return { ...request, status: newStatus };
         }
         return request;
       });
       setPickupRequests(updatedRequests);
-    }, 5000); // Update every 5 seconds for demo purposes
+    }, 5000);
 
-    return () => clearInterval(interval); // Cleanup interval on component unmount
-  }, [userPickupRequests]);
+    return () => clearInterval(interval);
+  }, [pickupRequests, userEmail]);
 
   return (
-    
     <div style={{ padding: '20px' }}>
       <h1>Recycling Pickup Tracking & History</h1>
 
-      {/* Real-Time Tracking Section */}
+      <ToastContainer />
+
       <section>
         <h2>Real-Time Pickup Tracking</h2>
         <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
           <thead>
             <tr>
-              <th>ID</th>
+              <th>Tracking ID</th>
               <th>Scheduled Time</th>
               <th>Status</th>
-              <th>Recycler</th>
             </tr>
           </thead>
           <tbody>
             {userPickupRequests.map((request) => (
-              <tr key={request.id}>
-                <td>{request.id}</td>
-                <td>{request.time}</td>
+              <tr key={request._id}>
+                <td>{request._id}</td>
+                <td>
+                  {new Date(new Date(request.createdAt).getTime() + 6 * 60 * 60 * 1000).toLocaleString()}
+                </td>
+
                 <td>{request.status}</td>
-                <td>{request.recycler}</td>
               </tr>
             ))}
           </tbody>
         </table>
+
         <p>Pickup status is updated in real-time. Please refresh the page or wait for updates.</p>
       </section>
 
-      {/* Recycling History Section */}
-      <section>
-        <h2>Your Recycling History</h2>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Date</th>
-              <th>Weight</th>
-              <th>Material</th>
-            </tr>
-          </thead>
-          <tbody>
-            {userRecyclingHistory.map((history) => (
-              <tr key={history.id}>
-                <td>{history.id}</td>
-                <td>{history.date}</td>
-                <td>{history.weight}</td>
-                <td>{history.material}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <p>Here’s a summary of all your past recycling contributions.</p>
-      </section>
       <aside className="sidebar">
         <Tracking />
       </aside>
+
       <div className="container">
-      <h1>Nearby Recycling Centers ♻️</h1>
+        <h1>Nearby Recycling Centers ♻️</h1>
 
-      {/* 🔍 Search Bar */}
-      <div className="search-container">
-        <input
-          type="text"
-          placeholder="Search for a recycling center..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-      </div>
+        <div className="search-container">
+          <input
+            type="text"
+            placeholder="Search for a recycling center..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
 
-      {/* 📋 Recycling Centers List */}
-      <div className="recycling-list">
-        {filteredCenters.map((center) => (
-          <div key={center.id} className="recycling-item">
-            <div>
-              <h3>{center.name}</h3>
-              <p className={`status ${center.status.toLowerCase()}`}>
-                {center.status === "Open" ? "✅ Open" : "❌ Closed"}
-              </p>
-              <p>{center.description}</p>
-              <p>⭐ {center.rating}</p>
+        <div className="recycling-list">
+          {filteredCenters.map((center) => (
+            <div key={center.id} className="recycling-item">
+              <div>
+                <h3>{center.name}</h3>
+                <p className={`status ${center.status.toLowerCase()}`}>
+                  {center.status === "Open" ? "✅ Open" : "❌ Closed"}
+                </p>
+                <p>{center.description}</p>
+                <p>⭐ {center.rating}</p>
+                <p><strong>Address:</strong> {center.address}</p>
+              </div>
+
+              <button
+                className={`favorite-btn ${favorites.includes(center.id) ? "active" : ""}`}
+                onClick={() => toggleFavorite(center.id)}
+              >
+                {favorites.includes(center.id) ? "❤️" : "🤍"}
+              </button>
             </div>
-
-            {/* ❤️ Favorite Button */}
-            <button className={`favorite-btn ${favorites.includes(center.id) ? "active" : ""}`} onClick={() => toggleFavorite(center.id)}>
-              {favorites.includes(center.id) ? "❤️" : "🤍"}
-            </button>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
-    </div>
-     
   );
 };
 

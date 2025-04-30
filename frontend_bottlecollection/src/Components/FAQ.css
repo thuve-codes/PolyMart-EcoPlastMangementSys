@@ -1,23 +1,26 @@
 .faq-section {
-  background-color: #f7f7f7; /* Light background for contrast */
-  padding: 20px;
-  border-radius: 8px;
-  width: 80%; /* Adjust the width as needed */
-  margin: 0 auto; /* Center the FAQ section */
-  max-width: 800px; /* Maximum width */
+  background-color: #f0f8f0; /* Softer, light green background for better contrast */
+  padding: 25px;
+  border-radius: 12px; /* Slightly more rounded corners */
+  width: 90%; /* Adjust the width for a more modern feel */
+  margin: 20px auto; /* Center the FAQ section and add spacing from other content */
+  max-width: 900px; /* Increased maximum width */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow for a clean, elevated look */
 }
 
 .faq-section h3 {
   text-align: center;
-  font-size: 1.8rem;
+  font-size: 2rem; /* Slightly larger font size for better visibility */
   color: #2d6a4f; /* Primary green color */
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+  text-transform: uppercase; /* Add uppercase to title for a structured look */
+  letter-spacing: 2px; /* Subtle spacing for modernity */
 }
 
 .faq-item {
-  margin-bottom: 15px;
+  margin-bottom: 20px; /* Added spacing between items */
   border-bottom: 1px solid #e0e0e0; /* Light grey border */
-  padding-bottom: 15px;
+  padding-bottom: 20px; /* More padding for better spacing */
 }
 
 .faq-item button {
@@ -26,21 +29,24 @@
   background-color: #2d6a4f; /* Primary green for the button */
   color: white;
   border: none;
-  padding: 12px;
-  font-size: 1.1rem;
-  font-weight: 500;
+  padding: 14px; /* Slightly larger padding for better clickability */
+  font-size: 1.2rem; /* Slightly larger font size for buttons */
+  font-weight: 600; /* Bold button text for emphasis */
   cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
+  border-radius: 8px; /* Rounded button corners for a modern touch */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
 }
 
 .faq-item button:hover {
   background-color: #1b4a31; /* Darker green for hover effect */
+  transform: translateY(-3px); /* Button lift effect on hover */
 }
 
 .faq-item p {
-  margin-top: 10px;
-  font-size: 1rem;
-  color: #333;
-  line-height: 1.5;
+  margin-top: 12px;
+  font-size: 1.1rem; /* Slightly larger font for better readability */
+  color: #333; /* Darker text for clarity */
+  line-height: 1.7; /* Increased line height for better readability */
+  padding-left: 20px; /* Added padding for better alignment */
+  font-family: 'Arial', sans-serif; /* Clear, sans-serif font for content */
 }

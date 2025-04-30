@@ -1,4 +1,3 @@
-// routes/userRoutes.js
 const express = require('express');
 const router = express.Router();
 const { getUserByEmail } = require('../controllers/dbController'); // Importing the controller function
