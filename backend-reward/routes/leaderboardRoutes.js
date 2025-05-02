@@ -23,15 +23,24 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Update a leaderboard entry
 router.put("/:id", async (req, res) => {
   try {
-    const updatedEntry = await Leaderboard.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const updatedEntry = await Leaderboard.findByIdAndUpdate(
+      req.params.id,
+      { $set: req.body },  // ✅ Use $set to update fields
+      { new: true, runValidators: true }
+    );
+    
+    if (!updatedEntry) {
+      return res.status(404).json({ error: "Entry not found" });
+    }
+
     res.json(updatedEntry);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
 });
+
 
 // Delete a leaderboard entry
 router.delete("/:id", async (req, res) => {

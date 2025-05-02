@@ -28,7 +28,7 @@ function Dashboard() {
           <img src={logo} alt="Polymart Logo" className="logo" />
         </div>
         <ul>
-          <li><a href="#">Home</a></li>
+        <li><a href="/">Home</a></li>
           <li><a href="/">Dashboard</a></li>
           <li><a href="/redeem">Redeem</a></li>
           <li><a href="/leaderboard">Leaderboard</a></li>

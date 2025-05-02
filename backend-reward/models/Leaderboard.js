@@ -4,8 +4,8 @@ const LeaderboardSchema = new mongoose.Schema({
   username: String,
   email: String,
   rank: String,
-  plasticRecycled: Number,
-  rewardPoints: Number,
+  plasticRecycled: String,
+  rewardPoints: String,
   redemptionStatus: String,
 });
 
