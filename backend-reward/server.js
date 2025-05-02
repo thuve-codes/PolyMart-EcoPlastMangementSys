@@ -7,6 +7,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 const leaderboardRoutes = require("./routes/leaderboardRoutes");
+const chatbotRoute = require('./routes/chatbot'); // ✅ move require here
 
 // Middleware
 app.use(cors());
@@ -20,5 +21,7 @@ mongoose
 
 // Use leaderboard routes
 app.use("/leaderboard", leaderboardRoutes);
+
+app.use('/api/chatbot', chatbotRoute); // ✅ now this works
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

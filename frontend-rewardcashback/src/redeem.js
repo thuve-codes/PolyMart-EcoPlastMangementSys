@@ -51,19 +51,7 @@ function Redeem() {
 
   return (
     <div>
-      {/* Navigation Bar */}
-      <nav className="navbar">
-        <div className="logo-container">
-          <img src={logo} alt="Polymart Logo" className="logo" />
-        </div>
-        <ul>
-          <li><a href="#">Home</a></li>
-          <li><a href="/">Dashboard</a></li>
-          <li><a href="/redeem">Redeem</a></li>
-          <li><a href="/leaderboard">Leaderboard</a></li>
-          <li><a href="/Notifications">Notifications</a></li>
-        </ul>
-      </nav>
+    
 
       <div className="dashboard-container">
         <div className="reward-container">
