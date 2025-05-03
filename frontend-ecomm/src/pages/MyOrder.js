@@ -7,8 +7,6 @@ import { FaBox, FaShippingFast, FaCheckCircle, FaTimesCircle, FaMoneyBillWave } 
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-
-
 const cancelOrder = async (delorderId, setOrders) => {
   if (!window.confirm('Are you sure you want to cancel this order?')) {
     return;
@@ -26,9 +24,6 @@ const cancelOrder = async (delorderId, setOrders) => {
     toast.error('Failed to cancel order. Try again.');
   }
 };
-
-
-
 
 // Styled components
 const Container = styled.div`
@@ -246,7 +241,7 @@ const StatusIcon = ({ status }) => {
 
 const CancelBtn = styled.div`
   display: flex;
-  justify-content: flex-end; // or 'center' depending on your layout
+  justify-content: flex-end; 
   margin: 10px 0;
   
   button {
@@ -261,6 +256,20 @@ const CancelBtn = styled.div`
     &:hover {
       background-color: #cc0000;
     }
+  }
+`;
+
+const DownloadInvoiceBtn = styled.button`
+  padding: 8px 16px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  
+  &:hover {
+    background-color: #218838;
   }
 `;
 
@@ -289,10 +298,6 @@ const MyOrders = () => {
         setError(err.response?.data?.error || err.message || 'Failed to load orders');
         setLoading(false);
         toast.error(err.response?.data?.error || 'Failed to load orders');
-
-        // if (err.response?.status === 401) {
-        //   navigate('/login');
-        // }
       }
     };
 
@@ -304,10 +309,24 @@ const MyOrders = () => {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  // const getImageUrl = (imagePath) => {
-  //   // Ensure the correct base URL for images
-  //   return `${API_URL}${imagePath}`;
-  // };
+  const downloadInvoice = async (orderId) => {
+    try {
+      const response = await axios.get(`${API_URL}/api/v1/order/report/${orderId}`, {
+        responseType: 'blob', // important for handling binary data (PDF)
+      });
+
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `invoice_${orderId}.pdf`;
+      a.click();
+      window.URL.revokeObjectURL(url); // Clean up the URL object
+    } catch (err) {
+      toast.error('Failed to download invoice');
+      console.error('Invoice download error:', err);
+    }
+  };
 
   if (loading) {
     return (
@@ -363,12 +382,12 @@ const MyOrders = () => {
               {order.items.map((item) => (
                 <OrderItem key={item._id}>
                   <ItemImage>
-                  <img 
-                    src={item.image} 
-                    alt={item.name || 'Item image'} 
-                    loading="lazy" 
-                  />
-                    </ItemImage>
+                    <img 
+                      src={item.image} 
+                      alt={item.name || 'Item image'} 
+                      loading="lazy" 
+                    />
+                  </ItemImage>
 
                   <ItemDetails>
                     <ItemName>{item.name}</ItemName>
@@ -381,21 +400,22 @@ const MyOrders = () => {
             
             <OrderFooter>
               <OrderTotal>Total: LKR {order.total.toFixed(2)}</OrderTotal>
-              <CancelBtn>
+              <div>
                 {order.status === 'Processing' && (
-                  <button 
-                    onClick={() => {
-                      cancelOrder(order._id,setOrders)
-                      
-                      // You can also call delete logic here if needed
-                    }}
-                  >
-                    Cancel
-                  </button>
+                  <CancelBtn>
+                    <button 
+                      onClick={() => cancelOrder(order._id, setOrders)}
+                    >
+                      Cancel
+                    </button>
+                  </CancelBtn>
                 )}
-              </CancelBtn>
-
-              
+                <DownloadInvoiceBtn
+                  onClick={() => downloadInvoice(order._id)}
+                >
+                  Download Invoice
+                </DownloadInvoiceBtn>
+              </div>
             </OrderFooter>
           </OrderCard>
         ))}
