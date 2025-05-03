@@ -96,7 +96,7 @@ function Leaderboard() {
       </section>
 
       <section>
-        <h1 className="section-heading">🏅 Leaderboard 🎯</h1>
+        <h1 className="section-heading2">🏅 Leaderboard 🎯</h1>
         <table className="leaderboard-table">
           <thead>
             <tr>
@@ -110,7 +110,7 @@ function Leaderboard() {
               <th>Pickup Date</th>
               <th>Points</th>
               <th>Status</th>
-              <th>Feedback</th>
+             
               <th>Actions</th>
             </tr>
           </thead>
@@ -127,7 +127,7 @@ function Leaderboard() {
                 <td>{entry.pickupDate.split("T")[0]}</td>
                 <td>{entry.points}</td>
                 <td>{entry.status}</td>
-                <td>{entry.feedback}</td>
+                
                 <td>
                   <button onClick={() => handleEdit(entry)} style={{ backgroundColor: 'orange' }}>Edit</button>
                   <button onClick={() => handleDelete(entry._id)}>Delete</button>
@@ -150,7 +150,7 @@ function Leaderboard() {
         value={formData[key]}
         onChange={handleChange}
         placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
-        required={key !== "feedback"}
+        
       />
     ) : (
       <select key={key} name="status" value={formData.status} onChange={handleChange}>
