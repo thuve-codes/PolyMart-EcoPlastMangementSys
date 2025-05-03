@@ -36,8 +36,8 @@ export default function Username() {
 
           <div className="title flex flex-col items-center">
             <h4 className='text-5xl font-bold'>Hello Again!</h4>
-            <span className='py-4 text-xl w-2/3 text-center text-gray-500'>
-              Explore More by connecting with us.
+            <span className='py-4 text-xl w-2/3 text-center text-black-500'>
+              Wellcome to POLYMART.
             </span>
           </div>
 
@@ -52,7 +52,11 @@ export default function Username() {
               </div>
 
               <div className="text-center py-4">
-                <span className='text-gray-500'>Not a Member <Link className='text-red-500' to="/register">Register Now</Link></span>
+                <span className='text-black-500'>Not a Member <Link className='text-red-500' to="/register">Register Now</Link></span>
+              </div>
+
+              <div className="text-center py-4">
+                <span className='text-white'>Are you admin? <Link className='text-red-500' to="/admin">Login</Link></span>
               </div>
 
           </form>

@@ -1,9 +1,9 @@
 .glass{
-    background: rgba(255, 255, 255, 0.55);
+    background: rgba(242, 240, 240, 0);
     border-radius: 16px;
-    box-shadow: 0 4px 30px #4747470b;
+    box-shadow: 0 4px 30px #edebeb0b;
     backdrop-filter: blur(7.1px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(204, 188, 188, 0.674);
     @apply border-4 border-gray-50 shrink-0 h-3/4 w-[30%] rounded-3xl py-20 px-7 min-w-max;
 }
 
@@ -22,7 +22,7 @@
 }
 
 .btn:hover{
-    background-color: #ff6a6a;
+    background-color: #b53030;
 }
 
 input[type='file']{

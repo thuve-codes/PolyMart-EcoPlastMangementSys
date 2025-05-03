@@ -10,6 +10,10 @@ import Profile from './components/Profile';
 import Recovery from './components/Recovery';
 import Reset from './components/Reset';
 import PageNotFound from './components/PageNotFound';
+import Admin from './components/Admin';
+import AdminPassword from './components/AdminPassword';
+
+
 
 
 /** auth middleware */
@@ -40,11 +44,24 @@ const router = createBrowserRouter([
     {
         path : '/reset',
         element : <Reset></Reset>
-    },
+    },   
     {
         path : '*',
         element : <PageNotFound></PageNotFound>
     },
+
+    {
+        path : '/admin',
+        element : <Admin></Admin>
+    }, 
+
+    {
+        path : '/adminP',
+        element : <AdminPassword></AdminPassword>
+    }, 
+
+
+
 ])
 
 export default function App() {
