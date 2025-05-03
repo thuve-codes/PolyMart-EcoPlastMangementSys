@@ -12,30 +12,31 @@ const PickupStatusPage = () => {
     const fetchPickupRequests = async () => {
       try {
         setIsLoading(true); // Start loading
-  
+
         // Get the logged-in user's email (assuming it's stored in localStorage)
         const userEmail = localStorage.getItem('userEmail');  // or sessionStorage, depending on your setup
-  
+
         if (!userEmail) {
           console.log('User is not logged in!');
-          return; // Handle the case where email is not found
+          window.location.href = '/login'; // Redirect to login page if email is missing
+          return;
         }
-  
+
         // Fetch pickup requests using the logged-in user's email
         const response = await axios.get('http://localhost:5000/api/status/pickup-requests', {
           params: {
             email: userEmail,  // Pass the email as a query parameter
           },
         });
-  
+
         // Sort pickup requests by pickupDate (newest first)
         const sortedPickups = response.data.sort((a, b) => new Date(b.pickupDate) - new Date(a.pickupDate));
         setPickupRequests(sortedPickups);
-  
+
         // Create notifications based on pickup data
         const notifications = sortedPickups.map((request) => ({
           id: request._id,
-          message: `Pickup request at ${request.address} for ${request.bottleType} scheduled on ${new Date(request.pickupDate).toLocaleString()}`,
+          message: `Pickup request at ${request.address} for ${request.bottleType} created on ${new Date(request.createdAt).toLocaleString()}`,
           type: request.status === 'Available' ? 'pending' : 'scheduled',
         }));
         setUserNotifications(notifications);
@@ -45,10 +46,9 @@ const PickupStatusPage = () => {
         setIsLoading(false); // Done loading
       }
     };
-  
+
     fetchPickupRequests();
   }, []);
-  
 
   // Handle notification click (remove on click)
   const handleNotificationClick = (id) => {
@@ -75,7 +75,7 @@ const PickupStatusPage = () => {
                   <th>Material</th>
                   <th>Weight</th>
                   <th>Status</th>
-                  <th>Scheduled Time</th>
+                  <th>Created Time</th> {/* Updated column name */}
                 </tr>
               </thead>
               <tbody>
@@ -86,7 +86,7 @@ const PickupStatusPage = () => {
                     <td>{request.bottleType}</td>
                     <td>{request.weight}kg</td>
                     <td>{request.status}</td>
-                    <td>{new Date(request.pickupDate).toLocaleString()}</td>
+                    <td>{new Date(request.createdAt).toLocaleString()}</td> {/* Display createdAt */}
                   </tr>
                 ))}
               </tbody>
@@ -103,7 +103,7 @@ const PickupStatusPage = () => {
                   className={`notification ${notification.type}`}
                   onClick={() => handleNotificationClick(notification.id)}
                 >
-                  <p>{notification.message}</p>
+                  <p>{notification.message}</p> {/* Updated notification message */}
                 </div>
               ))}
             </div>

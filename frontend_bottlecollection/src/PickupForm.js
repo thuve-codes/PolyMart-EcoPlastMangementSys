@@ -57,7 +57,8 @@ function PickupForm() {
   
     const namePattern = /^[A-Za-z\s]+$/;
     const contactPattern = /^\d{10}$/;
-  
+    const addressPattern = /[A-Za-z]/;
+
     localStorage.setItem('userEmail', formData.email);
     localStorage.setItem('userName', formData.name);
   
@@ -72,6 +73,11 @@ function PickupForm() {
       return;
     }
   
+      // Address validation - must contain at least one letter
+    if (!addressPattern.test(formData.address)) {
+      alert("Please provide a valid address. It should not consist of only numbers.");
+      return;
+    }
     const today = new Date().toISOString().split("T")[0];
   
     if (formData.pickupDate && formData.pickupDate < today) {
