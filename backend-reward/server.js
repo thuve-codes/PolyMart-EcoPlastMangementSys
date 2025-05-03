@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const leaderboardRoutes = require("./routes/leaderboard");
+const chatbotRoutes = require("./routes/chatbot"); // Import the chatbot routes
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ mongoose.connect(process.env.MONGO_URI, {
   });
 
 app.use("/api/leaderboard", leaderboardRoutes);
+app.use("/api/chatbot", chatbotRoutes); // Use the chatbot routes
 
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

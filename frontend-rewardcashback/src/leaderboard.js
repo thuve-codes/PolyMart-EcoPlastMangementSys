@@ -3,6 +3,10 @@ import axios from "axios";
 import "./leaderboard.css";
 import logo from "./assets/images/polymart-logo.png";
 
+// PDF libraries
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+
 const initialFormState = {
   name: "",
   email: "",
@@ -29,7 +33,8 @@ function Leaderboard() {
   const fetchEntries = async () => {
     try {
       const { data } = await axios.get("http://localhost:5000/api/leaderboard");
-      setEntries(data);
+      const sorted = data.sort((a, b) => b.points - a.points);
+      setEntries(sorted);
     } catch (error) {
       console.error("Error fetching leaderboard data:", error);
       setEntries([]);
@@ -79,6 +84,58 @@ function Leaderboard() {
 
   const topThree = entries.slice(0, 3);
 
+  const generatePDF = () => {
+    const doc = new jsPDF();
+
+    const img = new Image();
+    img.src = logo;
+    img.onload = () => {
+      doc.addImage(img, "PNG", 10, 10, 40, 15);
+      doc.setFontSize(16);
+      doc.text("Top 3 Achievers", 80, 30);
+
+      const top3 = topThree.map((entry, index) => [
+        index + 1,
+        entry.name,
+        entry.points,
+      ]);
+
+      autoTable(doc, {
+        head: [["Rank", "Name", "Points"]],
+        body: top3,
+        startY: 40,
+      });
+
+      doc.setFontSize(16);
+      doc.text("Full Leaderboard", 80, doc.lastAutoTable.finalY + 10);
+
+      const allData = entries.map((entry, index) => [
+        index + 1,
+        entry.name,
+        entry.email,
+        entry.contactNumber,
+        entry.address,
+        entry.bottleType,
+        entry.weight,
+        entry.disposalPurpose,
+        entry.pickupDate.split("T")[0],
+        entry.points,
+        entry.status,
+      ]);
+
+      autoTable(doc, {
+        head: [[
+          "No", "Name", "Email", "Contact", "Address", "Bottle Type", "Weight",
+          "Purpose", "Pickup Date", "Points", "Status"
+        ]],
+        body: allData,
+        startY: doc.lastAutoTable.finalY + 20,
+      });
+
+      doc.save("Leaderboard_Report.pdf");
+    };
+  };
+
   return (
     <div className="leaderboard-container">
       <img src={logo} alt="Polymart Logo" className="logo" />
@@ -97,6 +154,7 @@ function Leaderboard() {
 
       <section>
         <h1 className="section-heading2">🏅 Leaderboard 🎯</h1>
+        <button className="download-pdf-btn" onClick={generatePDF}>📄 Download PDF</button>
         <table className="leaderboard-table">
           <thead>
             <tr>
@@ -110,7 +168,6 @@ function Leaderboard() {
               <th>Pickup Date</th>
               <th>Points</th>
               <th>Status</th>
-             
               <th>Actions</th>
             </tr>
           </thead>
@@ -127,7 +184,6 @@ function Leaderboard() {
                 <td>{entry.pickupDate.split("T")[0]}</td>
                 <td>{entry.points}</td>
                 <td>{entry.status}</td>
-                
                 <td>
                   <button onClick={() => handleEdit(entry)} style={{ backgroundColor: 'orange' }}>Edit</button>
                   <button onClick={() => handleDelete(entry._id)}>Delete</button>
@@ -141,35 +197,33 @@ function Leaderboard() {
       <section>
         <h2>{editingId ? "Edit Entry" : "Add New Entry"}</h2>
         <form className="leaderboard-form" onSubmit={handleSubmit}>
-  {Object.keys(formData).map((key) =>
-    key !== "status" ? (
-      <input
-        key={key}
-        type={key === "pickupDate" ? "date" : key === "points" || key === "weight" ? "number" : "text"}
-        name={key}
-        value={formData[key]}
-        onChange={handleChange}
-        placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
-        
-      />
-    ) : (
-      <select key={key} name="status" value={formData.status} onChange={handleChange}>
-        <option value="Pending">Pending</option>
-        <option value="Picked Up">Picked Up</option>
-        <option value="Completed">Completed</option>
-      </select>
-    )
-  )}
+          {Object.keys(formData).map((key) =>
+            key !== "status" ? (
+              <input
+                key={key}
+                type={key === "pickupDate" ? "date" : key === "points" || key === "weight" ? "number" : "text"}
+                name={key}
+                value={formData[key]}
+                onChange={handleChange}
+                placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
+              />
+            ) : (
+              <select key={key} name="status" value={formData.status} onChange={handleChange}>
+                <option value="Pending">Pending</option>
+                <option value="Picked Up">Picked Up</option>
+                <option value="Completed">Completed</option>
+              </select>
+            )
+          )}
 
-  <div className="form-actions">
-    <button type="submit">{editingId ? "Update" : "Add"}</button>
-  </div>
+          <div className="form-actions">
+            <button type="submit">{editingId ? "Update" : "Add"}</button>
+          </div>
 
-  <div className="form-clear">
-    <button type="button" onClick={resetForm}>Clear</button>
-  </div>
-</form>
-
+          <div className="form-clear">
+            <button type="button" onClick={resetForm}>Clear</button>
+          </div>
+        </form>
       </section>
     </div>
   );
