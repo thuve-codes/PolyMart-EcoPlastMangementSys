@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './App.css';
-import logo from './assets/images/polymart-logo.png';
+
 
 // Configure axios base URL (optional, recommended for cleaner code)
 axios.defaults.baseURL = 'http://localhost:5000'; // Adjust for production
@@ -80,7 +80,7 @@ function Dashboard() {
 
   return (
     <div className="dashboard">
-\
+
 
       <div className="heading-container">
         <h1>Polymart Rewards & Cashback</h1>
@@ -101,7 +101,7 @@ function Dashboard() {
           <p>
             🔥 Earn <b>{200 - points}</b> more points for the next reward!
           </p>
-          <button className="redeem-btn" onClick={() => navigate('/redeem')}>
+          <button className="redeem-btn" onClick={() => navigate('/Claim')}>
             Redeem Rewards
           </button>
         </div>

@@ -4,9 +4,11 @@ import './App.css';
 
 import Maindash from './maindash';
 import Leaderboard from './leaderboard';
-import Redeem from './redeem';
-import Notification from './Notification';
+import Calculator from './redeem';
 import HeaderRedeem from './componets/headerRedeem'; // ✅ Use PascalCase when importing components
+import Claim from './RedeemPage';
+import RewardDashboard from './RewardDashboard'; // ✅ Use PascalCase when importing components
+
 
 // Optional: Conditional layout wrapper if you only want header on certain routes
 function Layout() {
@@ -21,8 +23,9 @@ function Layout() {
       <Routes>
         <Route path="/" element={<Maindash />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
-        <Route path="/redeem" element={<Redeem />} />
-        <Route path="/notifications" element={<Notification />} />
+        <Route path="/Calculator" element={<Calculator />} />
+        <Route path="/Claim" element={<Claim />} />
+        <Route path="/RewardDashboard" element={<RewardDashboard />} />
       </Routes>
     </>
   );

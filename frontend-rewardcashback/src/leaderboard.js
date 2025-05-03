@@ -94,44 +94,6 @@ function Leaderboard() {
       
 
       <div className="leaderboard-container">
-        <h1>Scoreboard</h1>
-
-        <form className="leaderboard-form" onSubmit={editIndex === null ? handleAdd : handleUpdate}>
-          <div>
-            <label>Username:</label>
-            <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
-          </div>
-          <div>
-            <label>Email:</label>
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-          </div>
-          <div>
-            <label>Rank:</label>
-            <select value={rank} onChange={(e) => setRank(e.target.value)} required>
-              <option value="">Select Rank</option>
-              <option value="Bronze">Bronze</option>
-              <option value="Silver">Silver</option>
-              <option value="Gold">Gold</option>
-            </select>
-          </div>
-          <div>
-            <label>Plastic Recycled (kg):</label>
-            <input type="number" min="0" value={plasticRecycled} onChange={(e) => setPlasticRecycled(e.target.value)} required />
-          </div>
-          <div>
-            <label>Reward Points:</label>
-            <input type="number" min="0" value={rewardPoints} onChange={(e) => setRewardPoints(e.target.value)} required />
-          </div>
-          <div>
-            <label>Redemption Status:</label>
-            <select value={redemptionStatus} onChange={(e) => setRedemptionStatus(e.target.value)} required>
-              <option value="">Select Status</option>
-              <option value="Pending">Pending</option>
-              <option value="Redeemed">Redeemed</option>
-            </select>
-          </div>
-          <button type="submit">{editIndex === null ? "Add Entry" : "Update Entry"}</button>
-        </form>
 
         <h2>Leaderboard:</h2>
         <table className="leaderboard-table">

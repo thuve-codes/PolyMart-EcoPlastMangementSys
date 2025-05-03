@@ -1,27 +1,31 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
-require("dotenv").config();
+// backend/server.js
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import connectDB from './config/db.js';
+import bottleRoutes from './routes/bottleRoutes.js';
+
+dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
-
-const leaderboardRoutes = require("./routes/leaderboardRoutes");
-const chatbotRoute = require('./routes/chatbot'); // ✅ move require here
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
 // Connect to MongoDB
-mongoose
-  .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("Connected to MongoDB"))
-  .catch((err) => console.error("MongoDB connection error:", err));
+connectDB();
 
-// Use leaderboard routes
-app.use("/leaderboard", leaderboardRoutes);
+// Routes
+app.use('/api/bottles', bottleRoutes);
 
-app.use('/api/chatbot', chatbotRoute); // ✅ now this works
+// Test route
+app.get('/', (req, res) => {
+  res.send('Polymart API is running...');
+});
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
