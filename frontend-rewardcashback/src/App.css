@@ -615,3 +615,48 @@ th {
   border-radius: 4px;
   margin: 20px 0;
 }
+
+/* card view */
+
+.item-card {
+  background-color: #ffffff; /* White background */
+  border-radius: 12px;       /* Optional: card corner radius */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Optional shadow */
+  padding: 16px;
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+.item-card:hover {
+  transform: scale(1.02);
+}
+
+.item-card.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.item-image img {
+  border-radius: 6px; /* Reduced image corner radius */
+  max-height: 150px;
+  object-fit: cover;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

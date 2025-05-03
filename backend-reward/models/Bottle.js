@@ -1,5 +1,4 @@
-// backend/models/Bottle.js
-import mongoose from 'mongoose';
+const mongoose = require("mongoose");
 
 const bottleSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -12,16 +11,11 @@ const bottleSchema = new mongoose.Schema({
   disposalPurpose: { type: String, required: true },
   pickupDate: { type: Date, required: true },
   points: { type: Number, required: true },
-  status: { 
-    type: String, 
-    required: true,
-    enum: ['Pending', 'Available', 'Picked Up', 'Completed'],
-    default: 'Pending'
-  },
-}, { 
-  timestamps: true 
-});
+  status: {
+    type: String,
+    enum: ['Pending', 'Picked Up', 'Completed'],
+    default: 'Pending',
+  }
+}, { timestamps: true });
 
-const Bottle = mongoose.model('Bottle', bottleSchema);
-
-export default Bottle;
+module.exports = mongoose.model("Bottle", bottleSchema);

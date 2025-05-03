@@ -83,7 +83,7 @@ function Dashboard() {
 
 
       <div className="heading-container">
-        <h1>Polymart Rewards & Cashback</h1>
+        <h1>Polymart Rewards & Gifts</h1>
       </div>
 
       <div className="dashboard-container">
