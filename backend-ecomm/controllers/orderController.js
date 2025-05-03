@@ -1,7 +1,6 @@
 const Order = require('../models/orderModel');
 const Product = require('../models/productModel');
-
-
+const PDFDocument = require('pdfkit');
 
 exports.createOrder = async (req, res) => {
   try {
@@ -214,4 +213,64 @@ exports.deleteOrder = async (req, res, next) => {
   }
 };
 
+
+
+// New controller to generate invoice
+exports.downloadInvoice = async (req, res) => {
+  try {
+    const orderId = req.params.id;
+    const order = await Order.findById(orderId).populate('items.product');
+
+    if (!order) {
+      return res.status(404).json({ success: false, message: 'Order not found' });
+    }
+
+    const doc = new PDFDocument();
+    const filename = `invoice-${order._id}.pdf`;
+
+    // Set response headers
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
+
+    // Pipe the document to response
+    doc.pipe(res);
+
+    // Header
+    doc.fontSize(20).text('INVOICE', { align: 'center' });
+    doc.moveDown();
+
+    doc.fontSize(16).text('Payment Successfully Completed', { align: 'center', color: 'green' });
+    doc.moveDown();
+
+    // Customer info
+    doc.fontSize(12).text(`Customer: ${order.customerInfo.fullName}`);
+    doc.text(`Email: ${order.customerInfo.email}`);
+    doc.text(`Phone: ${order.customerInfo.phone}`);
+    doc.text(`Address: ${order.customerInfo.address}, ${order.customerInfo.city}, ${order.customerInfo.zipCode}, ${order.customerInfo.country}`);
+    doc.moveDown();
+
+    doc.fontSize(10).text('Card Details');
+    
+    doc.text(`Credit Card Number: **** **** **** 4242`);
+
+    doc.moveDown();
+
+    // Order Items
+    doc.fontSize(14).text('Items:');
+    order.items.forEach((item, i) => {
+      doc.fontSize(12).text(`${i + 1}. ${item.name} - Qty: ${item.qty} - Price: LKR ${item.price}.00`);
+    });
+
+    doc.moveDown();
+    doc.text(`Subtotal: LKR ${order.subtotal}.00`);
+    doc.text(`Shipping: LKR ${order.shipping}.00`);
+    doc.text(`Tax: LKR ${order.tax}.00`);
+    doc.fontSize(14).text(`Total: LKR ${order.total}.00`, { align: 'right' });
+
+    doc.end();
+  } catch (err) {
+    console.error('Invoice generation error:', err);
+    res.status(500).json({ success: false, message: 'Failed to generate invoice' });
+  }
+};
 
