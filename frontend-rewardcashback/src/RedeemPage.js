@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // Import images
 import bottle from './assets/images/reusable-water-bottle.jpg';
@@ -22,7 +22,7 @@ const redeemableItems = [
   { id: 5, name: 'Organic Cotton Tote', points: 60, image: tote },
   { id: 6, name: 'Seed Paper Greeting Cards', points: 40, image: seedPaper },
   { id: 7, name: 'Compostable Phone Case', points: 80, image: phoneCase },
-  { id: 8, name: 'Solar-Powered Charger', points: 150, image: solarCharger },
+  { id: 8, name: 'Solar-Powered Charger', points: 100, image: solarCharger },
   { id: 9, name: 'Eco-Friendly Notebook', points: 20, image: notebook },
   { id: 10, name: 'Plantable Pencils', points: 15, image: plantablePencil },
   { id: 11, name: 'Biodegradable Trash Bags', points: 35, image: trashBags },
@@ -30,38 +30,69 @@ const redeemableItems = [
 ];
 
 function RedeemPage() {
-  const [balance] = useState(150);
+  const [balance, setBalance] = useState(0);
   const [selectedItem, setSelectedItem] = useState(null);
   const [redeemSuccess, setRedeemSuccess] = useState(false);
+  const [welcomeBonusMessage, setWelcomeBonusMessage] = useState('');
+
+  useEffect(() => {
+    const hasVisited = localStorage.getItem('hasVisitedRedeemPage');
+    let initialBalance = parseInt(localStorage.getItem('balance') || '0', 10);
+
+    if (!hasVisited) {
+      initialBalance += 100;
+      localStorage.setItem('hasVisitedRedeemPage', 'true');
+      localStorage.setItem('balance', initialBalance.toString());
+      setWelcomeBonusMessage('🎉 Welcome! You’ve earned a 100-point bonus!');
+      setTimeout(() => setWelcomeBonusMessage(''), 5000);
+    }
+
+    setBalance(initialBalance);
+  }, []);
 
   const handleRedeem = () => {
     if (!selectedItem) return;
     if (balance < selectedItem.points) {
-      alert('Not enough points!');
+      alert(`Not enough points! You need ${selectedItem.points - balance} more points.`);
       return;
     }
-    console.log(`Redeemed ${selectedItem.name} for ${selectedItem.points} points`);
+
+    const newBalance = balance - selectedItem.points;
+    setBalance(newBalance);
+    localStorage.setItem('balance', newBalance.toString());
+
     setRedeemSuccess(true);
     setTimeout(() => setRedeemSuccess(false), 3000);
     setSelectedItem(null);
+  };
+
+  const handleResetPoints = () => {
+    setBalance(100);
+    localStorage.setItem('balance', '100');
   };
 
   return (
     <div className="redeem-page">
       <h1>Redeem Your Points</h1>
 
-      <div className="balance-display">
+      <div className="balance-container">
         <p>Available Points: <strong>{balance}</strong></p>
       </div>
 
+      {welcomeBonusMessage && (
+        <div className="welcome-message">
+          <p>{welcomeBonusMessage}</p>
+        </div>
+      )}
+
       {redeemSuccess && (
         <div className="success-message">
-          <p>Redemption successful! Your item will be processed.</p>
+          <p>🎉 Redemption successful! Your item will be processed.</p>
         </div>
       )}
 
       <div className="items-grid">
-        {redeemableItems.map(item => (
+        {redeemableItems.map((item) => (
           <div
             key={item.id}
             className={`item-card ${balance >= item.points ? '' : 'disabled'}`}
@@ -88,7 +119,6 @@ function RedeemPage() {
             <p>You are about to redeem:</p>
             <p className="item-name">{selectedItem.name}</p>
             <p className="points-cost">{selectedItem.points} points</p>
-
             <div className="modal-actions">
               <button onClick={() => setSelectedItem(null)}>Cancel</button>
               <button className="confirm" onClick={handleRedeem}>Confirm</button>
@@ -96,6 +126,12 @@ function RedeemPage() {
           </div>
         </div>
       )}
+
+      <div className="reset-container">
+        <button className="reset-button" onClick={handleResetPoints}>
+          Reset Points
+        </button>
+      </div>
     </div>
   );
 }

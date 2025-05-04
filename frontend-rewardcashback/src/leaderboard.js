@@ -153,7 +153,7 @@ function Leaderboard() {
       </section>
 
       <section>
-        <h1 className="section-heading2">🏅 Leaderboard 🎯</h1>
+        <h1 className="section-heading2">🏅 Join the PolyMart lottery  🎯</h1>
         <button className="download-pdf-btn" onClick={generatePDF}>📄 Download PDF</button>
         <table className="leaderboard-table">
           <thead>
@@ -186,7 +186,7 @@ function Leaderboard() {
                 <td>{entry.status}</td>
                 <td>
                   <button onClick={() => handleEdit(entry)} style={{ backgroundColor: 'orange' }}>Edit</button>
-                  <button onClick={() => handleDelete(entry._id)}>Delete</button>
+                  <button className="delete-btn" onClick={() => handleDelete(entry._id)}>Delete</button>
                 </td>
               </tr>
             ))}

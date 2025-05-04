@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Bottle = require("../models/Bottle");
 
-// Get all entries
+// ✅ GET all user entries (sorted by points, descending)
 router.get("/", async (req, res) => {
   try {
     const data = await Bottle.find().sort({ points: -1 });
@@ -13,7 +13,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Add new entry
+// ✅ POST new entry (e.g. when a user disposes plastic)
 router.post("/", async (req, res) => {
   try {
     const newEntry = new Bottle(req.body);
@@ -25,7 +25,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Update entry
+// ✅ PUT update entry (can be used for redeem point deduction too)
 router.put("/:id", async (req, res) => {
   try {
     const updated = await Bottle.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -39,14 +39,14 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// Delete entry
+// ✅ DELETE user record (for admin)
 router.delete("/:id", async (req, res) => {
   try {
     const deleted = await Bottle.findByIdAndDelete(req.params.id);
     if (!deleted) {
       return res.status(404).json({ message: "Entry not found" });
     }
-    res.json({ message: "Deleted" });
+    res.json({ message: "Deleted successfully" });
   } catch (error) {
     console.error("Error deleting entry:", error);
     res.status(500).json({ message: "Server error", error: error.message });

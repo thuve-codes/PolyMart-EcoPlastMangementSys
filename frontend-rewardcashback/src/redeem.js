@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './page2.css';
-import logo from './assets/images/polymart-logo.png';
+
 
 function Redeem() {
   const [points, setPoints] = useState(120);
