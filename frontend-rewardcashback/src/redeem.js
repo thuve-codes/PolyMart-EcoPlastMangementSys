@@ -53,7 +53,7 @@ function Redeem() {
     <div>
     
 
-      <div className="dashboard-container">
+      <div className="dashboard-container2">
         <div className="reward-container">
           <h1>🎉 Earn Reward Points & Get Exclusive Offers! 🎉</h1>
           <div className="form-group">

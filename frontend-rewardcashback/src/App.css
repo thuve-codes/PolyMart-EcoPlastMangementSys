@@ -81,6 +81,16 @@ body {
   text-align: center;
 }
 
+.dashboard-container2 {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 20px;
+  background: rgb(196, 235, 196);
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
 /* User Info */
 .user-info h3 {
   color: #2c3e50;

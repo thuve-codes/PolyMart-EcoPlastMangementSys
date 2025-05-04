@@ -100,7 +100,7 @@ function HeaderRedeem() {
               ...(location.pathname === '/RewardDashboard' && navStyles.activeLink)
             }}
           >
-            RewardDashboard
+            Eco Locations
           </Link>
         </li>
       </ul>

@@ -107,7 +107,7 @@ function Leaderboard() {
       });
 
       doc.setFontSize(16);
-      doc.text("Full Leaderboard", 80, doc.lastAutoTable.finalY + 10);
+      doc.text("User Enrollment Details", 80, doc.lastAutoTable.finalY + 10);
 
       const allData = entries.map((entry, index) => [
         index + 1,

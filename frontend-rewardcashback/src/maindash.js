@@ -24,11 +24,7 @@ function Dashboard() {
     { id: 3, type: 'earn', details: '+30 Points - Plastic Waste Collection Event', date: 'Mar 10, 2025' },
   ];
 
-  const leaderboard = [
-    { id: 1, name: 'John Doe', points: 320 },
-    { id: 2, name: 'Jane Smith', points: 290 },
-    { id: 3, name: 'Alex Brown', points: 270 },
-  ];
+ 
 
   const handleSend = async () => {
     if (!chatInput.trim()) return; // Prevent sending empty messages
@@ -127,14 +123,8 @@ function Dashboard() {
         </div>
 
         <div className="leaderboard-preview">
-          <h3>🏆 Leaderboard (Top 3)</h3>
-          <ul>
-            {leaderboard.map((user) => (
-              <li key={user.id}>
-                {user.name} - <b>{user.points} Points</b>
-              </li>
-            ))}
-          </ul>
+          
+          
           <button onClick={() => navigate('/leaderboard')} >
             View Full Leaderboard →
           </button>
