@@ -23,7 +23,6 @@ function EcoLocation() {
   const fetchLocations = async () => {
     try {
       const res = await axios.get('/api/locations');
-      console.log("Fetched locations:", res.data); // Debugging
       setLocations(res.data);
     } catch (err) {
       console.error('Error fetching locations', err);
@@ -32,15 +31,13 @@ function EcoLocation() {
   };
 
   const saveLocation = async (lat, lng) => {
-    const name = prompt('Enter recycling center name:');
-    if (name) {
-      try {
-        await axios.post('/api/locations', { name, latitude: lat, longitude: lng });
-        fetchLocations(); // Refresh after saving
-      } catch (err) {
-        console.error('Error saving location', err);
-        setError("Failed to save location.");
-      }
+    const name = "New Recycling Center"; // Default name
+    try {
+      await axios.post('/api/locations', { name, latitude: lat, longitude: lng });
+      fetchLocations(); // Refresh after saving
+    } catch (err) {
+      console.error('Error saving location', err);
+      setError("Failed to save location.");
     }
   };
 
@@ -63,16 +60,12 @@ function EcoLocation() {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution="© OpenStreetMap contributors"
         />
-        
+
         {locations.map(loc => {
-          // Ensure coordinates are valid
           const lat = parseFloat(loc.latitude);
           const lng = parseFloat(loc.longitude);
 
-          if (!lat || !lng) {
-            console.warn(`Invalid location data: ${loc.name}`);
-            return null; // Skip invalid locations
-          }
+          if (!lat || !lng) return null;
 
           return (
             <Marker key={loc._id} position={[lat, lng]}>

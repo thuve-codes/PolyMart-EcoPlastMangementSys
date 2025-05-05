@@ -129,7 +129,7 @@ function RedeemPage() {
 
       <div className="reset-container">
         <button className="reset-button" onClick={handleResetPoints}>
-          Reset Points
+          R
         </button>
       </div>
     </div>
