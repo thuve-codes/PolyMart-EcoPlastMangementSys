@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { text } = require('pdfkit');
 
 const orderSchema = new mongoose.Schema({
   items: [{
@@ -8,6 +9,7 @@ const orderSchema = new mongoose.Schema({
     price: { type: Number, required: true },
     image: { type: String }
   }],
+  buyer: { type: String, required: true },
   customerInfo: {
     fullName: { type: String, required: true },
     email: { type: String, required: true },

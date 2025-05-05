@@ -25,7 +25,7 @@ const RecyclingTrackingPage = () => {
     const fetchPickupRequests = async () => {
       try {
         if (userEmail) {
-          const response = await fetch(`http://localhost:5000/api/collections/pickup-requests/${userEmail}`);
+          const response = await fetch(`http://localhost:5002/api/collections/pickup-requests/${userEmail}`);
           const data = await response.json();
           console.log("Received pickup requests:", data);  // Add this log
           setPickupRequests(data);

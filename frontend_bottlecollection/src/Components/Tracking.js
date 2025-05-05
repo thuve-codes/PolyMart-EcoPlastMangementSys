@@ -14,7 +14,7 @@ function Tracking() {
 
     const fetchBottleData = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/pickups/${bottleId}`);
+        const response = await fetch(`http://localhost:5002/api/pickups/${bottleId}`);
         if (response.ok) {
           const data = await response.json();
           setBottleData(data);
@@ -37,7 +37,7 @@ function Tracking() {
     const newStatus = statuses[statusIndex + 1] || "Completed"; // Get the next status
 
     try {
-      const response = await fetch(`http://localhost:5000/api/pickups/${bottleId}/status`, {
+      const response = await fetch(`http://localhost:5002/api/pickups/${bottleId}/status`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

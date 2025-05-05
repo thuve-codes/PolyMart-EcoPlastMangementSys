@@ -88,7 +88,7 @@ function PickupForm() {
     const formDataWithPoints = { ...formData, points: redeemPoints };
   
     // Submit form data to the backend (for database storage)
-    fetch('http://localhost:5000/api/bottles', {
+    fetch('http://localhost:5002/api/bottles', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formDataWithPoints),
@@ -99,7 +99,7 @@ function PickupForm() {
         console.log('Server Response:', data);
   
         // Now send the email after form data submission
-        return fetch('http://localhost:5000/api/send-email', {
+        return fetch('http://localhost:5002/api/send-email', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

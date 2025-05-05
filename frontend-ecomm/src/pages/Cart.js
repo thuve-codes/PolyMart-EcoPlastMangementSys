@@ -10,7 +10,7 @@ export default function Cart({ cartItems, setCartItems }) {
   const [activeStep, setActiveStep] = useState("cart"); // 'cart', 'checkout', 'complete'
   
   const API_URL = process.env.REACT_APP_API_URL;
-
+  const username = localStorage.getItem('username');
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -106,6 +106,7 @@ export default function Cart({ cartItems, setCartItems }) {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             cartItems,
+            buyer: username,
             formData,
             subtotal,
             shipping,

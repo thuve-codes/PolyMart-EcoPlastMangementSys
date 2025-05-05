@@ -3,7 +3,6 @@ import Home from './Homepage';
 import PickupForm from './PickupForm'
 import CollectionTracking from './CollectionTracking';
 import RecyclingCentersPage from './RecyclingCentersPage';
-import RecyclingCenterFinder from './RecyclingCenterFinder';
 import RecyclingTrackingPage from './RecyclingTrackingPage';
 import RewardPoints from './rewardPoints';
 import Notifications from './Notifications';
@@ -25,7 +24,6 @@ function App() {
         <Route path="/Home" element={<Home/>} />
         <Route path="/PickupForm" element={<PickupForm/>} />
         <Route path="/RecyclingCentersPage" element={<RecyclingCentersPage/>} />
-        <Route path="/RecyclingCenterFinder" element={<RecyclingCenterFinder/>} />
         <Route path="/CollectionTracking" element={<CollectionTracking/>} />
         <Route path="/RewardPoints" element={<RewardPoints/>} />
         <Route path="/Notifications" element={<Notifications/>} />

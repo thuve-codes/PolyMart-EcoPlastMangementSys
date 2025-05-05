@@ -10,6 +10,9 @@ export default function ProductDetail({ cartItems, setCartItems }) {
     const [qty, setQty] = useState(1);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
 
+    
+    let storedUsername = localStorage.getItem('username');
+
     const { id } = useParams();
 
     useEffect(() => {
@@ -22,11 +25,19 @@ export default function ProductDetail({ cartItems, setCartItems }) {
                 setProduct(productData);
             })
             .catch(error => console.error("Error fetching product:", error));
-    }, [id]);
+    }, [id, API_URL]);  // Add API_URL here
+    
 
     function addToCart() {
-        if (!product) return;
         
+
+        if (!product) return;
+
+        if (storedUsername === null) {
+            toast.warning('You need to Login first');
+            return;
+        }
+
         if (product.stock === 0) {
             toast.error('This item is out of stock and cannot be added to cart');
             return;
@@ -60,8 +71,13 @@ export default function ProductDetail({ cartItems, setCartItems }) {
     }
 
     const togglePopup = () => {
+        const storedUsername = localStorage.getItem("username");
+        if (!storedUsername) {
+          toast.warning("You need to log in to chat with the seller.");
+          return;
+        }
         setIsPopupOpen(!isPopupOpen);
-    };
+      };
 
     return (
         product &&

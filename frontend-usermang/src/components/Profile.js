@@ -99,8 +99,15 @@ export default function Profile() {
                   
               </div>
 
-              <div className="text-center py-4">
+              <div className="text-center py-4 flex justify-between">
                 <span className='text-gray-500'>come back later? <button onClick={userLogout} className='text-red-500' to="/">Logout</button></span>
+                <button 
+                  onClick={() => window.location.href = `http://localhost:3000`
+                  } 
+                  className="text-blue-500 hover:text-blue-700"
+                >
+                  Back to Home
+                </button>
               </div>
 
           </form>
@@ -110,4 +117,3 @@ export default function Profile() {
     </div>
   )
 }
-

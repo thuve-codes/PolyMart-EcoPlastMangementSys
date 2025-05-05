@@ -8,7 +8,6 @@ const nodemailer = require("nodemailer");
 const statusRoutes = require('./routes/StatusRoutes');
 
 const pickupRoutes = require('./routes/pickups');
-const locationsRouter = require('./routes/locations');
 const reportRoutes = require('./routes/reportRoutes');  
 
 
@@ -29,7 +28,6 @@ app.use("/api/recycler", recyclerRoutes);
 app.use('/api/collections', collectionRoutes);
 app.use('/api/status', statusRoutes);
 app.use('/api/pickups', pickupRoutes);
-app.use('/api', locationsRouter);
 // Use the report routes
 app.use('/api/reports', reportRoutes);
 

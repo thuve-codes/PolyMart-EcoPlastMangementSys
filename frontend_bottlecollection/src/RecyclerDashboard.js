@@ -21,11 +21,13 @@ const RecyclerDashboard = () => {
   const [editingActivity, setEditingActivity] = useState(null); // Track the activity being edited
   const [updatedData, setUpdatedData] = useState({}); // Store the updated values
   const [monthlyReport, setMonthlyReport] = useState(null);
+  const [yearlyReport, setYearlyReport] = useState(null);
+
 
   // Fetch Available Pickup Requests
   const fetchPickupRequests = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/recycler/pickup-requests?email=${storedEmail}`);
+      const response = await fetch(`http://localhost:5002/api/recycler/pickup-requests?email=${storedEmail}`);
       const data = await response.json();
       const today = new Date().toISOString().split('T')[0];
       const filteredData = data.filter((item) => {
@@ -43,7 +45,7 @@ const RecyclerDashboard = () => {
   // Fetch Recycling History
   const fetchRecyclingHistory = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/recycler/recycling-history?email=${storedEmail}`);
+      const response = await fetch(`http://localhost:5002/api/recycler/recycling-history?email=${storedEmail}`);
       const data = await response.json();
       setRecyclingHistory(data);
     } catch (error) {
@@ -56,7 +58,7 @@ const RecyclerDashboard = () => {
   // Fetch Recent Activities (Today)
   const fetchRecentActivities = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/recycler/recent-activities?email=${storedEmail}`);
+      const response = await fetch(`http://localhost:5002/api/recycler/recent-activities?email=${storedEmail}`);
       const data = await response.json();
       setRecentActivities(data);
     } catch (error) {
@@ -113,7 +115,7 @@ const RecyclerDashboard = () => {
       // Add the calculated points to the updatedData object (omit points field from form)
       const updatedActivity = { ...updatedData, points: totalPoints };
   
-      const response = await fetch(`http://localhost:5000/api/recycler/update-recent-activity/${activityId}`, {
+      const response = await fetch(`http://localhost:5002/api/recycler/update-recent-activity/${activityId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -160,7 +162,7 @@ const RecyclerDashboard = () => {
 
   const handleDeleteActivity = async (activityId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/recycler/delete-recent-activity/${activityId}`, {
+      const response = await fetch(`http://localhost:5002/api/recycler/delete-recent-activity/${activityId}`, {
         method: 'DELETE',
       });
 
@@ -289,6 +291,147 @@ const RecyclerDashboard = () => {
       };
     });
   };
+
+  const handleGenerateYearlyReport = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+  
+    const yearlyPickups = recyclingHistory.filter((pickup) => {
+      const date = new Date(pickup.pickupDate);
+      return date.getFullYear() === year;
+    });
+  
+    const yearlyPoints = yearlyPickups.reduce((total, pickup) => total + (pickup.points || 0), 0);
+  
+    setYearlyReport({
+      year: year,
+      pickups: yearlyPickups.length,
+      points: yearlyPoints
+    });
+  
+    const qrData = `https://polymart.eco/user-report/${year}`;
+    QRCode.toDataURL(qrData).then((qrUrl) => {
+      const doc = new jsPDF();
+      const img = new Image();
+      img.src = logo;
+  
+      img.onload = () => {
+        // Header
+        doc.addImage(img, 'PNG', 20, 10, 40, 20);
+        doc.setFontSize(20);
+        doc.setFont("helvetica", "bold");
+        doc.text("Recycling Receipt", 105, 20, { align: "center" });
+  
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "normal");
+        doc.text(`Generated on: ${now.toLocaleString()}`, 105, 28, { align: "center" });
+  
+        doc.setLineWidth(0.5);
+        doc.line(20, 32, 190, 32);
+  
+        // Yearly Summary
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.text("Yearly Summary", 20, 42);
+  
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "normal");
+        doc.text(`Year: ${year}`, 20, 52);
+        doc.text(`Total Pickups: ${yearlyPickups.length}`, 20, 60);
+        doc.text(`Total Points Earned: ${yearlyPoints}`, 20, 68);
+  
+        doc.line(20, 75, 190, 75);
+  
+        // Monthly Breakdown
+        let y = 85;
+        doc.setFontSize(13);
+        doc.setFont("helvetica", "bold");
+        doc.text("Monthly Breakdown", 20, y);
+        y += 8;
+  
+        doc.setFontSize(11);
+        doc.text("Month", 20, y);
+        doc.text("Pickups", 80, y);
+        doc.text("Points", 130, y);
+        y += 4;
+        doc.line(20, y, 190, y);
+        y += 6;
+  
+        const monthlySummary = Array.from({ length: 12 }, (_, monthIndex) => {
+          const monthPickups = yearlyPickups.filter(p => new Date(p.pickupDate).getMonth() === monthIndex);
+          const monthPoints = monthPickups.reduce((total, p) => total + (p.points || 0), 0);
+          return {
+            name: new Date(year, monthIndex).toLocaleString('default', { month: 'long' }),
+            pickups: monthPickups.length,
+            points: monthPoints
+          };
+        });
+  
+        monthlySummary.forEach((month) => {
+          doc.text(month.name, 20, y);
+          doc.text(month.pickups.toString(), 80, y);
+          doc.text(month.points.toString(), 130, y);
+          y += 6;
+  
+          if (y > 260) {
+            doc.addPage();
+            y = 20;
+          }
+        });
+  
+        doc.line(20, y, 190, y);
+        y += 10;
+  
+        // Detailed History Header
+        doc.setFontSize(13);
+        doc.setFont("helvetica", "bold");
+        doc.text("Detailed Pickup History", 20, y);
+        y += 8;
+  
+        doc.setFontSize(11);
+        doc.text("Date", 20, y);
+        doc.text("Bottle Type", 60, y);
+        doc.text("Weight (kg)", 110, y);
+        doc.text("Points", 160, y);
+        y += 4;
+        doc.line(20, y, 190, y);
+        y += 6;
+  
+        doc.setFont("helvetica", "normal");
+  
+        yearlyPickups.forEach((item) => {
+          const date = new Date(item.pickupDate).toLocaleDateString();
+          doc.text(date, 20, y);
+          doc.text(item.bottleType || "-", 60, y);
+          doc.text((item.weight || 0).toFixed(2), 110, y);
+          doc.text((item.points || 0).toString(), 160, y);
+          y += 6;
+  
+          if (y > 280) {
+            doc.addPage();
+            y = 20;
+          }
+        });
+  
+        // Footer
+        if (y > 260) {
+          doc.addPage();
+          y = 20;
+        }
+  
+        doc.setFontSize(10);
+        doc.text("Thank you for being an active recycler!", 20, y + 10);
+        doc.text("PolyMart | polymart.eco", 20, y + 16);
+  
+        // QR Code (bottom right corner)
+        doc.addImage(qrUrl, 'PNG', 150, y + 5, 40, 40);
+  
+        doc.save(`Recycling_Receipt_${year}.pdf`);
+      };
+    });
+  };
+  
+  
   
   
   
@@ -381,7 +524,25 @@ const RecyclerDashboard = () => {
         >
           Download Monthly Report (PDF)
         </button>
-
+        <button
+    onClick={handleGenerateYearlyReport}
+    style={{
+      padding: '12px 25px',
+      backgroundColor: '#2196F3',
+      color: 'white',
+      border: 'none',
+      borderRadius: '5px',
+      cursor: 'pointer',
+      fontWeight: 'bold',
+      fontSize: '16px',
+      marginBottom: '20px',
+      display: 'block',
+      width: '100%',
+      textAlign: 'center'
+    }}
+  >
+    Download Yearly Report (PDF)
+  </button>
         {monthlyReport && (
           <div
             style={{
@@ -398,6 +559,22 @@ const RecyclerDashboard = () => {
            <p>Your monthy report has been sent to downloads</p>
           </div>
         )}
+        {yearlyReport && (
+    <div
+      style={{
+        marginTop: '20px',
+        padding: '20px',
+        backgroundColor: '#ffffff',
+        border: '1px solid #e0e0e0',
+        borderRadius: '8px',
+        fontSize: '16px',
+        lineHeight: '1.6',
+        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+      }}
+    >
+      <p>Your yearly report has been sent to downloads</p>
+    </div>
+  )}
       </section>
 
 

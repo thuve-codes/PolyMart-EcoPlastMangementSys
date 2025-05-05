@@ -34,7 +34,7 @@ function PickupFormUpdate() {
       }));
 
       // Fetch the pickup data for the last submitted email
-      fetch(`http://localhost:5000/api/bottles/${storedEmail}`)
+      fetch(`http://localhost:5002/api/bottles/${storedEmail}`)
         .then((response) => response.json())
         .then((data) => {
           if (data) {
@@ -140,7 +140,7 @@ function PickupFormUpdate() {
       return;
     }
   
-    fetch('http://localhost:5000/api/bottles/update', {
+    fetch('http://localhost:5002/api/bottles/update', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData),  // Include points in the body
@@ -158,7 +158,7 @@ function PickupFormUpdate() {
   
 
   const handleDelete = () => {
-    fetch('http://localhost:5000/api/bottles/delete', {
+    fetch('http://localhost:5002/api/bottles/delete', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: formData.email }),

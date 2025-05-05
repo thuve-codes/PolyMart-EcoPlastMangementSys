@@ -4,7 +4,14 @@ const PDFDocument = require('pdfkit');
 
 exports.createOrder = async (req, res) => {
   try {
-    const { cartItems, formData, subtotal, shipping, tax, total } = req.body;
+    const { cartItems, formData, subtotal, shipping, tax, total, buyer } = req.body;
+
+    if (!buyer) {
+      return res.status(400).json({
+        success: false,
+        error: 'Buyer username is required',
+      });
+    }
 
     // Validate input data
     if (!cartItems || !Array.isArray(cartItems)) {
@@ -77,6 +84,7 @@ exports.createOrder = async (req, res) => {
     // Create the order
     const order = await Order.create({
       items: validItems,
+      buyer, // Store the buyer username
       customerInfo: {
         fullName: formData.fullName,
         email: formData.email,
@@ -139,28 +147,32 @@ exports.getAllOrders = async (req, res) => {
       endDate
     } = req.query;
 
+    const buyer = req.params.uname; // ✅ Get buyer from route params
+
     // Build query
     const query = {};
     
     if (status) {
       query.status = status;
     }
-    
+
     if (customerEmail) {
       query['customerInfo.email'] = customerEmail;
     }
-    
+
+    if (buyer) {
+      query.buyer = buyer; // ✅ Use buyer from route
+    }
+
     if (startDate || endDate) {
       query.createdAt = {};
       if (startDate) query.createdAt.$gte = new Date(startDate);
       if (endDate) query.createdAt.$lte = new Date(endDate);
     }
 
-    // Validate numerical parameters
     const parsedPage = Math.max(1, parseInt(page));
     const parsedLimit = Math.max(1, Math.min(100, parseInt(limit)));
 
-    // Build sort object
     const sort = {};
     sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
 
@@ -192,6 +204,7 @@ exports.getAllOrders = async (req, res) => {
     });
   }
 };
+
 
 exports.deleteOrder = async (req, res, next) => {
   try {

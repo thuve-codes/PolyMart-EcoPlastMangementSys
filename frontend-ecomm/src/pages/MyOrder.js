@@ -2,276 +2,37 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import styled from 'styled-components';
 import { FaBox, FaShippingFast, FaCheckCircle, FaTimesCircle, FaMoneyBillWave } from 'react-icons/fa';
+import { FaDownload } from 'react-icons/fa';
+
 
 const API_URL = process.env.REACT_APP_API_URL;
 
 const cancelOrder = async (delorderId, setOrders) => {
-  if (!window.confirm('Are you sure you want to cancel this order?')) {
-    return;
-  }
+  if (!window.confirm('Are you sure you want to cancel this order?')) return;
   try {
     const response = await axios.delete(`${API_URL}/api/v1/order/${delorderId}`);
     if (response.status === 204 || response.status === 200) {
       toast.success('Order is Cancelled Successfully');
-      setOrders((prevOrders) => prevOrders.filter(order => order._id !== delorderId));
+      setOrders(prev => prev.filter(order => order._id !== delorderId));
     } else {
       toast.error('Failed to cancel order. Try again.');
     }
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
     toast.error('Failed to cancel order. Try again.');
   }
 };
 
-// Styled components
-const Container = styled.div`
-  max-width: 1200px;
-  margin: 2rem auto;
-  padding: 0 1rem;
-`;
-
-const Header = styled.h1`
-  font-size: 2.5rem;
-  color: #2c3e50;
-  margin-bottom: 2rem;
-  text-align: center;
-`;
-
-const OrderList = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 1.5rem;
-`;
-
-const OrderCard = styled.div`
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-  }
-`;
-
-const OrderHeader = styled.div`
-  padding: 1rem;
-  background: #f8f9fa;
-  border-bottom: 1px solid #eee;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const OrderId = styled.div`
-  font-weight: bold;
-  color: #3498db;
-`;
-
-const OrderDate = styled.div`
-  font-size: 0.9rem;
-  color: #7f8c8d;
-`;
-
-const OrderStatus = styled.div`
-  padding: 0.5rem;
-  border-radius: 5px;
-  font-size: 0.8rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  
-  ${props => props.status === 'Processing' && `
-    background: #fff3cd;
-    color: #856404;
-  `}
-  
-  ${props => props.status === 'Shipped' && `
-    background: #cce5ff;
-    color: #004085;
-  `}
-  
-  ${props => props.status === 'Delivered' && `
-    background: #d4edda;
-    color: #155724;
-  `}
-  
-  ${props => props.status === 'Cancelled' && `
-    background: #f8d7da;
-    color: #721c24;
-  `}
-`;
-
-const OrderBody = styled.div`
-  padding: 1rem;
-`;
-
-const OrderItem = styled.div`
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #eee;
-  
-  &:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
-    padding-bottom: 0;
-  }
-`;
-
-const ItemImage = styled.div`
-  width: 80px;
-  height: 80px;
-  border-radius: 5px;
-  overflow: hidden;
-  
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-`;
-
-const ItemDetails = styled.div`
-  flex: 1;
-`;
-
-const ItemName = styled.div`
-  font-weight: bold;
-  margin-bottom: 0.3rem;
-`;
-
-const ItemPrice = styled.div`
-  color: #7f8c8d;
-  font-size: 0.9rem;
-  margin-bottom: 0.3rem;
-`;
-
-const ItemQty = styled.div`
-  font-size: 0.9rem;
-`;
-
-const OrderFooter = styled.div`
-  padding: 1rem;
-  background: #f8f9fa;
-  border-top: 1px solid #eee;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const OrderTotal = styled.div`
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: #2c3e50;
-`;
-
-const EmptyState = styled.div`
-  text-align: center;
-  padding: 3rem;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-`;
-
-const EmptyIcon = styled.div`
-  font-size: 3rem;
-  color: #bdc3c7;
-  margin-bottom: 1rem;
-`;
-
-const EmptyText = styled.p`
-  font-size: 1.2rem;
-  color: #7f8c8d;
-  margin-bottom: 1.5rem;
-`;
-
-const BackToHome = styled(Link)`
-  padding: 0.8rem 1.5rem;
-  background: #3498db;
-  color: white;
-  border-radius: 5px;
-  text-decoration: none;
-  font-weight: bold;
-  transition: background 0.3s ease;
-  
-  &:hover {
-    background: #2980b9;
-  }
-`;
-
-const Loading = styled.div`
-  text-align: center;
-  padding: 3rem;
-  font-size: 1.2rem;
-  color: #7f8c8d;
-`;
-
-const ErrorMessage = styled.div`
-  text-align: center;
-  padding: 3rem;
-  background: #f8d7da;
-  border-radius: 10px;
-  color: #721c24;
-  margin: 2rem 0;
-`;
-
-// Status icon component
 const StatusIcon = ({ status }) => {
   switch (status) {
-    case 'Processing':
-      return <FaBox />;
-    case 'Shipped':
-      return <FaShippingFast />;
-    case 'Delivered':
-      return <FaCheckCircle />;
-    case 'Cancelled':
-      return <FaTimesCircle />;
-    default:
-      return <FaMoneyBillWave />;
+    case 'Processing': return <FaBox />;
+    case 'Shipped': return <FaShippingFast />;
+    case 'Delivered': return <FaCheckCircle />;
+    case 'Cancelled': return <FaTimesCircle />;
+    default: return <FaMoneyBillWave />;
   }
 };
-
-const CancelBtn = styled.div`
-  display: flex;
-  justify-content: flex-end; 
-  margin: 10px 0;
-  
-  button {
-    padding: 8px 16px;
-    background-color: #ff4444;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    
-    &:hover {
-      background-color: #cc0000;
-    }
-  }
-`;
-
-const DownloadInvoiceBtn = styled.button`
-  padding: 8px 16px;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  
-  &:hover {
-    background-color: #218838;
-  }
-`;
 
 const MyOrders = () => {
   const navigate = useNavigate();
@@ -283,144 +44,128 @@ const MyOrders = () => {
     const fetchOrders = async () => {
       try {
         const token = localStorage.getItem('token');
+        
+        let storedUsername = localStorage.getItem('username');
         const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-
-        const response = await axios.get(`${API_URL}/api/v1/order`, config);
-
-        if (!response.data.success) {
-          throw new Error(response.data.error || 'Failed to fetch orders');
-        }
-
-        setOrders(response.data.data); // Array of orders
+        const res = await axios.get(`${API_URL}/api/v1/order/${storedUsername}`, config);
+        if (!res.data.success) throw new Error(res.data.error || 'Fetch failed');
+        setOrders(res.data.data);
         setLoading(false);
       } catch (err) {
-        console.error('Fetch orders error:', err);
-        setError(err.response?.data?.error || err.message || 'Failed to load orders');
+        console.error('Error:', err);
+        setError(err.response?.data?.error || err.message || 'Error loading orders');
         setLoading(false);
-        toast.error(err.response?.data?.error || 'Failed to load orders');
+        toast.error(err.response?.data?.error || 'Error loading orders');
       }
     };
 
     fetchOrders();
   }, [navigate]);
 
-  const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString(undefined, options);
-  };
+  const formatDate = (dateString) =>
+    new Date(dateString).toLocaleDateString(undefined, {
+      year: 'numeric', month: 'long', day: 'numeric'
+    });
 
   const downloadInvoice = async (orderId) => {
     try {
       const response = await axios.get(`${API_URL}/api/v1/order/report/${orderId}`, {
-        responseType: 'blob', // important for handling binary data (PDF)
+        responseType: 'blob',
       });
-
       const blob = new Blob([response.data], { type: 'application/pdf' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
       a.download = `invoice_${orderId}.pdf`;
       a.click();
-      window.URL.revokeObjectURL(url); // Clean up the URL object
+      window.URL.revokeObjectURL(url);
     } catch (err) {
       toast.error('Failed to download invoice');
-      console.error('Invoice download error:', err);
+      console.error(err);
     }
   };
 
-  if (loading) {
-    return (
-      <Container>
-        <Loading>Loading your orders...</Loading>
-      </Container>
-    );
-  }
+  if (loading) return <div className="container"><div className="loading">Loading your orders...</div></div>;
 
-  if (error) {
-    return (
-      <Container>
-        <ErrorMessage>
-          <p>Error: {error}</p>
-          <BackToHome to="/">Back to Home</BackToHome>
-        </ErrorMessage>
-      </Container>
-    );
-  }
+  if (error) return (
+    <div className="container">
+      <div className="error-message">
+        <p>Error: {error}</p>
+        <Link className="back-to-home" to="/">Back to Home</Link>
+      </div>
+    </div>
+  );
 
-  if (orders.length === 0) {
-    return (
-      <Container>
-        <EmptyState>
-          <EmptyIcon>
-            <FaBox size={48} />
-          </EmptyIcon>
-          <EmptyText>No orders found.</EmptyText>
-          <BackToHome to="/">Back to Home</BackToHome>
-        </EmptyState>
-      </Container>
-    );
-  }
+  if (orders.length === 0) return (
+    <div className="container">
+      <div className="empty-state">
+        <div className="empty-icon"><FaBox size={48} /></div>
+        <p className="empty-text">No orders found.</p>
+        <Link className="back-to-home" to="/">Back to Home</Link>
+      </div>
+    </div>
+  );
 
   return (
-    <Container>
-      <Header>My Orders</Header>
-      <OrderList>
+    <div className="container">
+
+    <div className="order-policy">
+      <h3>Order Processing & Cancellation Policy</h3>
+      <p>
+        Once you place an order, it will be marked as <strong>Processing</strong>. During this stage, you're able to cancel your order. However, after the order has been marked as <strong>Shipped</strong>, cancellations are no longer possible through our system. If you need to cancel a <strong>Shipped</strong> order, you can contact our delivery partner directly.
+      </p>
+      <p>
+        In case of cancellation, the amount will be credited back to your account within <strong>14 days</strong> from the cancellation date. Please ensure you follow up with the delivery partner to proceed with the cancellation request.
+      </p>
+      <p>We appreciate your understanding and are here to assist you in any way we can!</p>
+    </div>
+
+
+      <div className="order-list">
         {orders.map((order) => (
-          <OrderCard key={order._id}>
-            <OrderHeader>
+          <div key={order._id} className="order-card">
+            <div className="order-header">
               <div>
-                <OrderId>Order #{order._id.substring(18)}</OrderId>
-                <OrderDate>{formatDate(order.createdAt)}</OrderDate>
+                <div className="order-id">Order #{order._id.substring(18)}</div>
+                <div className="order-date">{formatDate(order.createdAt)}</div>
               </div>
-              <OrderStatus status={order.status}>
+              <div className={`order-status ${order.status.toLowerCase()}`}>
                 <StatusIcon status={order.status} />
                 {order.status}
-              </OrderStatus>
-            </OrderHeader>
-            
-            <OrderBody>
-              {order.items.map((item) => (
-                <OrderItem key={item._id}>
-                  <ItemImage>
-                    <img 
-                      src={item.image} 
-                      alt={item.name || 'Item image'} 
-                      loading="lazy" 
-                    />
-                  </ItemImage>
-
-                  <ItemDetails>
-                    <ItemName>{item.name}</ItemName>
-                    <ItemPrice>LKR {item.price.toFixed(2)}</ItemPrice>
-                    <ItemQty>Qty: {item.qty}</ItemQty>
-                  </ItemDetails>
-                </OrderItem>
-              ))}
-            </OrderBody>
-            
-            <OrderFooter>
-              <OrderTotal>Total: LKR {order.total.toFixed(2)}</OrderTotal>
-              <div>
-                {order.status === 'Processing' && (
-                  <CancelBtn>
-                    <button 
-                      onClick={() => cancelOrder(order._id, setOrders)}
-                    >
-                      Cancel
-                    </button>
-                  </CancelBtn>
-                )}
-                <DownloadInvoiceBtn
-                  onClick={() => downloadInvoice(order._id)}
-                >
-                  Download Invoice
-                </DownloadInvoiceBtn>
               </div>
-            </OrderFooter>
-          </OrderCard>
+            </div>
+
+            <div className="order-body">
+              {order.items.map((item) => (
+                <div key={item._id} className="order-item">
+                  <div className="item-image">
+                    <img src={item.image} alt={item.name} loading="lazy" />
+                  </div>
+                  <div className="item-details">
+                    <div className="item-name">{item.name}</div>
+                    <div className="item-price">LKR {item.price.toFixed(2)}</div>
+                    <div className="item-qty">Qty: {item.qty}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="order-footer">
+              <div className="order-total">Total: LKR {order.total.toFixed(2)}</div>
+              <div className="order-actions">
+                {order.status === 'Processing' && (
+                  <button className="cancel-btn" onClick={() => cancelOrder(order._id, setOrders)}>Cancel</button>
+                )}
+               <p className="dwnldin" onClick={() => downloadInvoice(order._id)}>
+                <FaDownload /> Download Invoice
+              </p>
+
+              </div>
+            </div>
+          </div>
         ))}
-      </OrderList>
-    </Container>
+      </div>
+    </div>
   );
 };
 

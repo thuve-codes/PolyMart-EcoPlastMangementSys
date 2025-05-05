@@ -34,8 +34,17 @@ export default function Password() {
       loginPromise.then(res => {
         let { token } = res.data;
         localStorage.setItem('token', token);
-        navigate('/profile')
-      })
+        localStorage.setItem('username', res.data.username);
+        localStorage.setItem('profile', res.data.profile);
+      
+        console.log("Saved username:", localStorage.getItem('username'));
+      
+        // Wait briefly before redirecting to ensure storage is saved
+        setTimeout(() => {
+          window.location.href = `http://localhost:3000?username=${res.data.username}`;
+        }, 200); // 200ms delay is enough
+      });
+      
     }
   })
 

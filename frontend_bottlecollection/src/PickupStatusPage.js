@@ -23,7 +23,7 @@ const PickupStatusPage = () => {
         }
 
         // Fetch pickup requests using the logged-in user's email
-        const response = await axios.get('http://localhost:5000/api/status/pickup-requests', {
+        const response = await axios.get('http://localhost:5002/api/status/pickup-requests', {
           params: {
             email: userEmail,  // Pass the email as a query parameter
           },

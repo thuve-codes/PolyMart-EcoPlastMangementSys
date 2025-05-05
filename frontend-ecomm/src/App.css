@@ -1894,3 +1894,426 @@ input:focus {
 .nav-brand-link:hover .brand-text {
   color: #db981c; /* Hover color (no underline) */
 }
+
+
+
+
+/* General Container */
+.container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+/* Order List Layout */
+.order-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+/* Order Card */
+.order-card {
+  background: #f8f9fa;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: 0.3s ease;
+}
+
+.order-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Header and Footer for each order */
+.order-header, .order-footer {
+  padding: 1rem;
+  background: #f8f9fa; /* Light grey background */
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.order-footer {
+  border-top: 1px solid #eee; /* Keeps the same background style with a border */
+}
+
+/* Order ID and Date */
+.order-id {
+  font-weight: bold;
+  color: #3498db;
+}
+
+.order-date {
+  font-size: 0.9rem;
+  color: #7f8c8d;
+}
+
+/* Status Box */
+.order-status {
+  padding: 0.5rem;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  text-transform: uppercase;
+}
+
+/* Different statuses with colors */
+.order-status.processing {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.order-status.shipped {
+  background: #cce5ff;
+  color: #004085;
+}
+
+.order-status.delivered {
+  background: #d4edda;
+  color: #155724;
+}
+
+.order-status.cancelled {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* Order Body */
+.order-body {
+  padding: 1rem;
+  background: #fafafa; /* Light grey background for items */
+}
+
+/* Item in the Order */
+.order-item {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+  align-items: center; /* Align items vertically */
+}
+
+/* Image of the Item */
+.item-image img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+/* Item Details */
+.item-details {
+  flex: 1;
+}
+
+.item-name {
+  font-weight: bold;
+  margin-bottom: 0.3rem;
+}
+
+.item-price {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+}
+
+.item-qty {
+  font-size: 0.9rem;
+}
+
+/* Order Total */
+.order-total {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #2c3e50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Cancel Button & Download Button */
+.cancel-btn, .download-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: background 0.3s ease;
+}
+
+.cancel-btn {
+  background-color: #ff4444;
+}
+
+.cancel-btn:hover {
+  background-color: #cc0000;
+}
+
+.dwnldin {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: transparent; /* No background color */
+  color: #3498db; /* Blue text color */
+  padding: 8px 16px;
+  margin-top: 10px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 10px;
+  font-size: 0.9rem; /* Smaller text */
+  border: 1px solid #3498db; /* Blue border */
+}
+
+.dwnldin:hover {
+  background-color: #ecf4ff; /* Light blue background on hover */
+  color: #2980b9; /* Darker blue text on hover */
+  border-color: #2980b9; /* Darker blue border on hover */
+}
+
+/* Empty State / Error State */
+.empty-state, .error-message {
+  text-align: center;
+  padding: 3rem;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.empty-icon {
+  font-size: 3rem;
+  color: #bdc3c7;
+  margin-bottom: 1rem;
+}
+
+.empty-text {
+  font-size: 1.2rem;
+  color: #7f8c8d;
+  margin-bottom: 1.5rem;
+}
+
+.back-to-home {
+  padding: 0.8rem 1.5rem;
+  background: #3498db;
+  color: white;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.back-to-home:hover {
+  background: #2980b9;
+}
+
+/* Loading Spinner */
+.loading {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.2rem;
+  color: #7f8c8d;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .order-list {
+    grid-template-columns: 1fr;
+  }
+  .order-item {
+    flex-direction: column; /* Stack items vertically */
+  }
+}
+
+
+
+.order-policy {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  font-family: 'Arial', sans-serif; /* Changed font family */
+}
+
+.order-policy h3 {
+  font-size: 1.25rem;
+  margin-bottom: 10px;
+  color: #333;
+  font-family: 'Roboto', sans-serif; /* Different font for the title */
+}
+
+.order-policy p {
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 1.6;
+  font-family: 'Arial', sans-serif; /* Changed font family */
+}
+
+.order-policy strong {
+  font-weight: bold;
+}
+
+
+/* Ensure the dropdown is initially hidden */
+.nav-item .dropdown-menu {
+  display: none;
+}
+
+/* Show the dropdown when hovering over the nav item */
+.nav-item:hover .dropdown-menu {
+  display: block;
+}
+
+
+/* Chatpopup css */
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-container {
+  width: 400px;
+  height: 500px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chat-header {
+  background: #4a6fa5;
+  color: white;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 5px;
+}
+.close-button:hover {
+  opacity: 0.8;
+}
+
+.chat-box {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.message-bubble {
+  max-width: 70%;
+  padding: 10px 15px;
+  border-radius: 18px;
+  font-size: 14px;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+.message-bubble.user {
+  background: #4a6fa5;
+  color: white;
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+
+.message-bubble.seller {
+  background: white;
+  color: #333;
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.sender-name {
+  font-weight: bold;
+  font-size: 12px;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.sender-name.user {
+  color: #e0e0e0;
+}
+
+.sender-name.seller {
+  color: #666;
+}
+
+.chat-input-container {
+  display: flex;
+  padding: 15px;
+  background: white;
+  border-top: 1px solid #eee;
+}
+
+.message-input {
+  flex: 1;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 24px;
+  outline: none;
+  font-size: 14px;
+}
+
+.message-input:focus {
+  border-color: #4a6fa5;
+}
+
+.send-button {
+  background: #4a6fa5;
+  color: white;
+  border: none;
+  border-radius: 24px;
+  padding: 0 20px;
+  margin-left: 10px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.send-button:hover {
+  background: #3a5a8f;
+}
+
+.send-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.loading-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: #666;
+}

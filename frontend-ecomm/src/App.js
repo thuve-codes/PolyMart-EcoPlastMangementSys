@@ -4,7 +4,7 @@ import Footer from './components/Footer';
 import Header from './components/Header';
 import AboutUs from './pages/AboutUs'; // Changed import to match the file name
 import Home from './pages/Home';
-import Chatpage from './pages/chatpage';
+//import Chatpage from './pages/chatpage';
 import { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import ProductDetail from './pages/ProductDetail';
@@ -46,7 +46,7 @@ function App() {
                 path="/product/:id" 
                 element={<ProductDetail cartItems={cartItems} setCartItems={setCartItems} />} 
               />
-              <Route path="/chat" element={<Chatpage />} /> {/* Fixed path and element */}
+              {/* <Route path="/chat" element={<Chatpage />} /> Fixed path and element */}
               <Route path="/orders" element={<MyOrders />} /> {/* Fixed variable name and path */}
               <Route path="/cart" element={<Cart cartItems={cartItems} setCartItems={setCartItems} />} />
               <Route path="/aboutus" element={<AboutUs />} />

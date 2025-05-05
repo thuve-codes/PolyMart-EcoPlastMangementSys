@@ -2,7 +2,7 @@ import React from "react";
 import logo from './Assests/images/polymart-logo.png';
 import './Header.css';
 import { Link } from "react-router-dom";
-import { FaHome, FaClipboardList, FaMapMarkerAlt, FaTruck, FaTachometerAlt, FaBell } from "react-icons/fa"; // Import icons from React Icons
+import { FaHome, FaClipboardList, FaTruck, FaTachometerAlt, FaBell } from "react-icons/fa"; // Import icons from React Icons
 
 export default function Header(){
     return(
@@ -17,11 +17,6 @@ export default function Header(){
                 <li>
                     <Link to={"./PickupForm"}>
                         <FaClipboardList style={{ marginRight: '8px' }} /> Pickup Request
-                    </Link>
-                </li>
-                <li>
-                    <Link to={"./RecyclingCenterFinder"}>
-                        <FaMapMarkerAlt style={{ marginRight: '8px' }} /> Nearby Locations
                     </Link>
                 </li>
                 <li>
