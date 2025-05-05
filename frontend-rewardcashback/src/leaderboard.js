@@ -32,7 +32,7 @@ function Leaderboard() {
 
   const fetchEntries = async () => {
     try {
-      const { data } = await axios.get("http://localhost:5000/api/leaderboard");
+      const { data } = await axios.get("http://localhost:5004/api/leaderboard");
       const sorted = data.sort((a, b) => b.points - a.points);
       setEntries(sorted);
     } catch (error) {
@@ -50,9 +50,9 @@ function Leaderboard() {
     e.preventDefault();
     try {
       if (editingId) {
-        await axios.put(`http://localhost:5000/api/leaderboard/${editingId}`, formData);
+        await axios.put(`http://localhost:5004/api/leaderboard/${editingId}`, formData);
       } else {
-        await axios.post("http://localhost:5000/api/leaderboard", formData);
+        await axios.post("http://localhost:5004/api/leaderboard", formData);
       }
       fetchEntries();
       resetForm();
@@ -69,7 +69,7 @@ function Leaderboard() {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/leaderboard/${id}`);
+      await axios.delete(`http://localhost:5004/api/leaderboard/${id}`);
       fetchEntries();
     } catch (error) {
       console.error("Error deleting entry:", error);

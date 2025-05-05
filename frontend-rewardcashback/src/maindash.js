@@ -5,7 +5,7 @@ import './App.css';
 
 
 // Configure axios base URL (optional, recommended for cleaner code)
-axios.defaults.baseURL = 'http://localhost:5000'; // Adjust for production
+axios.defaults.baseURL = 'http://localhost:5004'; // Adjust for production
 
 function Dashboard() {
   const navigate = useNavigate();

@@ -31,5 +31,5 @@ app.use("/api/leaderboard", leaderboardRoutes);
 app.use("/api/chatbot", chatbotRoutes); // Use the chatbot routes
 app.use("/api/welcome-bonus", welcomeBonusRoutes); // Use the welcome bonus routes
 
-const PORT = 5000;
+const PORT = 5004;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
