@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
 import logo from './Assests/images/polymart-logo.png';
 import './Header.css';
@@ -10,10 +10,12 @@ export default function Header() {
   const [username, setUsername] = useState(null);
 
   useEffect(() => {
+    // Check localStorage for username
     const storedUsername = localStorage.getItem('username');
     if (storedUsername) {
       setUsername(storedUsername);
     } else {
+      // Check URL params for username
       const params = new URLSearchParams(window.location.search);
       const userFromURL = params.get('username');
       const profileFromURL = params.get('profile');
@@ -27,6 +29,8 @@ export default function Header() {
         const url = new URL(window.location);
         url.search = '';
         window.history.replaceState({}, document.title, url);
+      } else {
+        setUsername(null); // Ensure logged-out state
       }
     }
   }, []);
@@ -35,24 +39,33 @@ export default function Header() {
     localStorage.removeItem('username');
     localStorage.removeItem('profile');
     setUsername(null);
-    window.location.href = "http://localhost:3002/Home"; // Redirect to login
+    window.location.href = "http://localhost:3000";
   };
 
   return (
     <nav className="navbar">
       <div className="navbar-left">
         <img src={logo} alt="Logo" className="logo" />
-        <strong style={{ color: 'white', fontSize: '24px' }}> Polymart</strong>
+        <strong style={{ color: 'white', fontSize: '24px' }}>Polymart</strong>
       </div>
 
       <ul className="nav-links">
         <li><Link to="http://localhost:3000">Home</Link></li>
         <li><Link to="http://localhost:3000/orders">My Orders</Link></li>
 
-        <li className="dropdown"
-            onMouseEnter={() => setEcoDropdown(true)}
-            onMouseLeave={() => setEcoDropdown(false)}>
-          <span>EcoUser</span>
+        <li
+          className="dropdown"
+          onMouseEnter={() => setEcoDropdown(true)}
+          onMouseLeave={() => setEcoDropdown(false)}
+        >
+          <span>
+            <Link
+              to={username ? `http://localhost:3002/?username=${username}` : "http://localhost:3002"}
+              onClick={() => setEcoDropdown(!ecoDropdown)}
+            >
+              EcoUser
+            </Link>
+          </span>
           {ecoDropdown && (
             <ul className="dropdown-menu">
               <li><Link to="http://localhost:3002/PickupForm">Pickup Request</Link></li>
@@ -63,10 +76,19 @@ export default function Header() {
           )}
         </li>
 
-        <li className="dropdown"
-            onMouseEnter={() => setRewardDropdown(true)}
-            onMouseLeave={() => setRewardDropdown(false)}>
-          <span>Reward & CashBack</span>
+        <li
+          className="dropdown"
+          onMouseEnter={() => setRewardDropdown(true)}
+          onMouseLeave={() => setRewardDropdown(false)}
+        >
+          <span>
+            <Link
+              to={username ? `http://localhost:3004/?username=${username}` : "http://localhost:3004"}
+              onClick={() => setRewardDropdown(!rewardDropdown)}
+            >
+              Reward & CashBack
+            </Link>
+          </span>
           {rewardDropdown && (
             <ul className="dropdown-menu">
               <li><Link to="http://localhost:3004/calculator">Calculator</Link></li>
@@ -80,7 +102,6 @@ export default function Header() {
         <li><Link to="http://localhost:3000/aboutus">About Us</Link></li>
       </ul>
 
-      {/* Right Nav */}
       <div className="navbar-right">
         {username ? (
           <div className="user-info">
@@ -95,14 +116,12 @@ export default function Header() {
                 {username.charAt(0).toUpperCase()}
               </div>
             )}
-
             <span
               className="username"
               onClick={() => window.location.href = "http://localhost:3001/profile"}
             >
               {username}
             </span>
-
             <button className="logout-btn" onClick={handleLogout}>Logout</button>
           </div>
         ) : (
@@ -113,7 +132,6 @@ export default function Header() {
             Login
           </button>
         )}
-
         <Link to="http://localhost:3000/cart" className="cart-icon">
           <FaShoppingCart size={20} />
         </Link>

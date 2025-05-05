@@ -20,7 +20,14 @@ export const UserSchema = new mongoose.Schema({
     lastName: { type: String},
     mobile : { type : Number},
     address: { type: String},
-    profile: { type: String}
+    
+    profile: { type: String},
+
+    type: {
+        type: String,
+        enum: ['user', 'admin'],
+        default: 'user'
+    }
 });
 
-export default mongoose.model.Users || mongoose.model('User', UserSchema);
+export default mongoose.model('User', UserSchema);

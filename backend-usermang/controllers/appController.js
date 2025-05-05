@@ -36,7 +36,7 @@ export async function verifyUser(req, res, next){
 export async function register(req,res){
 
     try {
-        const { username, password, profile, email } = req.body;        
+        const { username, password, profile, email , type} = req.body;        
 
         // check the existing user
         const existUsername = new Promise((resolve, reject) => {
@@ -120,11 +120,12 @@ export async function login(req,res){
                                         username : user.username
                                     }, ENV.JWT_SECRET , { expiresIn : "24h"});
 
-                        return res.status(200).send({
-                            msg: "Login Successful...!",
-                            username: user.username,
-                            token
-                        });                                    
+                                    return res.status(200).send({
+                                        msg: "Login Successful...!",
+                                        username: user.username,
+                                        token,
+                                        type: user.type // include user type in response
+                                      });                                  
 
                     })
                     .catch(error =>{

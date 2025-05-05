@@ -63,7 +63,7 @@ const Footer = () => {
       <div className="footer-bottom">
         <span>© 2025 Polymart. All rights reserved.</span>
         {/* You might need to adjust the heart symbol/styling */}
-        <span>Developed with <span style={{color: 'red'}}>❤</span> by WD 3.2 - G115</span>
+        <span>Developed with <span style={{color: 'red'}}>❤</span> by WD 5.2 - G115</span>
       </div>
     </footer>
   );

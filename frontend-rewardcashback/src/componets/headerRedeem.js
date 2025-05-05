@@ -33,9 +33,10 @@ function HeaderRedeem() {
 
    // Function to handle logout
    const handleLogout = () => {
-    localStorage.removeItem('username'); // Remove username from localStorage
-    setUsername(null); // Update state
-    window.location.href = "http://localhost:3004"; // Redirect to login page
+    localStorage.removeItem('username');
+    localStorage.removeItem('profile');
+    setUsername(null);
+    window.location.href = "http://localhost:3000";
   };
 
   const navStyles = {
