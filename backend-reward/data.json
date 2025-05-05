@@ -1,0 +1,35 @@
+[
+    {
+      "username": "john_doe",
+      "email": "john.doe@example.com",
+      "rank": "Gold",
+      "plasticRecycled": 150,
+      "rewardPoints": 3000,
+      "redemptionStatus": "Redeemed"
+    },
+    {
+      "username": "jane_smith",
+      "email": "jane.smith@example.com",
+      "rank": "Silver",
+      "plasticRecycled": 100,
+      "rewardPoints": 2000,
+      "redemptionStatus": "Pending"
+    },
+    {
+      "username": "alex_jones",
+      "email": "alex.jones@example.com",
+      "rank": "Bronze",
+      "plasticRecycled": 75,
+      "rewardPoints": 1500,
+      "redemptionStatus": "Not Redeemed"
+    },
+    {
+      "username": "sara_lee",
+      "email": "sara.lee@example.com",
+      "rank": "Gold",
+      "plasticRecycled": 180,
+      "rewardPoints": 3600,
+      "redemptionStatus": "Redeemed"
+    }
+  ]
+  
