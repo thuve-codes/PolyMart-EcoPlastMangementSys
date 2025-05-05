@@ -94,10 +94,10 @@ function HeaderRedeem() {
         </li>
         <li style={navStyles.li}>
           <Link 
-            to="/RewardDashboard" 
+            to="/Ecolocation" 
             style={{
               ...navStyles.link,
-              ...(location.pathname === '/RewardDashboard' && navStyles.activeLink)
+              ...(location.pathname === '/Ecolocation' && navStyles.activeLink)
             }}
           >
             Eco Locations

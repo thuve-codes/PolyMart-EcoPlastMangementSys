@@ -2,10 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import Redeem from './redeem';
-import leaderboard from './leaderboard';
 import reportWebVitals from './reportWebVitals';
-import Leaderboard from './leaderboard';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

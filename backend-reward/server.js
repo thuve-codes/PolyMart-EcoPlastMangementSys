@@ -6,6 +6,7 @@ const leaderboardRoutes = require("./routes/leaderboard");
 const chatbotRoutes = require("./routes/chatbot"); // Import the chatbot routes
 const welcomeBonusRoutes = require("./routes/welcomeBonus");
 
+const locationsRouter = require('./routes/locations');
 
 dotenv.config();
 
@@ -22,6 +23,9 @@ mongoose.connect(process.env.MONGO_URI, {
     // Continue running the server even if MongoDB connection fails
     console.log("Server will continue running without database connection");
   });
+
+  
+app.use('/api', locationsRouter);
 
 app.use("/api/leaderboard", leaderboardRoutes);
 app.use("/api/chatbot", chatbotRoutes); // Use the chatbot routes

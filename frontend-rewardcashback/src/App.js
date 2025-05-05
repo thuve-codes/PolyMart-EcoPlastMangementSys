@@ -7,7 +7,7 @@ import Leaderboard from './leaderboard';
 import Calculator from './redeem';
 import HeaderRedeem from './componets/headerRedeem'; // ✅ Use PascalCase when importing components
 import Claim from './RedeemPage';
-import RewardDashboard from './RewardDashboard'; // ✅ Use PascalCase when importing components
+import Ecolocation from './ecolocation'; // ✅ Use PascalCase when importing components
 
 
 // Optional: Conditional layout wrapper if you only want header on certain routes
@@ -25,7 +25,7 @@ function Layout() {
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/Calculator" element={<Calculator />} />
         <Route path="/Claim" element={<Claim />} />
-        <Route path="/RewardDashboard" element={<RewardDashboard />} />
+        <Route path="/Ecolocation" element={<Ecolocation />} />
       </Routes>
     </>
   );
