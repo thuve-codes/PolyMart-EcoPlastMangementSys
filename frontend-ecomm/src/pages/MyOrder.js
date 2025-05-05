@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { FaBox, FaShippingFast, FaCheckCircle, FaTimesCircle, FaMoneyBillWave } from 'react-icons/fa';
 import { FaDownload } from 'react-icons/fa';
 
+import '../App.css';
 
 const API_URL = process.env.REACT_APP_API_URL;
 

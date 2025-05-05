@@ -1,0 +1,176 @@
+/* Ensure your main App container allows the footer to be at the bottom */
+/* Example if using Flexbox for overall layout in App.js's parent div */
+/*
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main { // Assuming your Routes render inside a <main> tag or similar
+  flex: 1;
+}
+*/
+
+.footer {
+    background-color: #343a40; /* Dark background color - adjust as needed */
+    color: #adb5bd; /* Light grey text color */
+    padding: 50px 0 20px 0; /* Padding top/bottom */
+    font-size: 0.9rem; /* Base font size for the footer */
+  }
+  
+  .footer-content {
+    display: flex;
+    justify-content: space-around; /* Distribute sections evenly */
+    flex-wrap: wrap; /* Allow sections to wrap on smaller screens */
+    max-width: 1200px; /* Max width for content */
+    margin: 0 auto; /* Center content horizontally */
+    padding: 0 20px; /* Padding on the sides */
+    gap: 20px; /* Adds space between flex items when they wrap */
+  }
+  
+  .footer-section {
+    flex: 1; /* Allow sections to grow */
+    min-width: 250px; /* Minimum width before wrapping */
+    margin-bottom: 30px; /* Space below each section */
+  }
+  
+  .footer-title {
+    color: #ffffff; /* White color for titles */
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    text-transform: uppercase; /* Make titles uppercase like in the image */
+    font-weight: 600; /* Slightly bolder title */
+  }
+  
+  .footer-section.about p {
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+  
+  /* Social Icons */
+  .social-icons a {
+    color: #adb5bd; /* Icon color */
+    margin-right: 15px;
+    font-size: 1.2rem; /* Icon size */
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .social-icons a:hover {
+    color: #ffffff; /* White color on hover */
+  }
+  
+  /* Quick Links */
+  .footer-section.links ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .footer-section.links li {
+    margin-bottom: 10px;
+  }
+  
+  .footer-section.links a {
+    color: #adb5bd; /* Link color */
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .footer-section.links a:hover {
+    color: #ffffff; /* White color on hover */
+    text-decoration: underline; /* Underline on hover */
+  }
+  
+  /* Contact Info */
+  .footer-section.contact .contact-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .footer-section.contact .contact-item i {
+    margin-right: 10px;
+    width: 15px; /* Ensure icons align well */
+    text-align: center;
+  }
+  
+  /* Footer Divider Line */
+  .footer-divider {
+    border: 0;
+    border-top: 1px solid #495057; /* Slightly lighter divider color */
+    margin: 20px auto; /* Space above/below and centered */
+    width: 90%; /* Width of the divider */
+    max-width: 1200px;
+  }
+  
+  /* Footer Bottom Text */
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap; /* Allow text to wrap on small screens */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 10px 20px 0 20px; /* Padding top/sides */
+    font-size: 0.8rem; /* Smaller font size for bottom text */
+    color: #6c757d; /* Dimmed color for bottom text */
+    text-align: center; /* Center text by default */
+  }
+  
+  .footer-bottom span {
+     margin-bottom: 5px; /* Space below each span when wrapped */
+  }
+  
+  
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .footer-content {
+      flex-direction: column; /* Stack sections vertically */
+      align-items: center; /* Center sections */
+      text-align: center; /* Center text within sections */
+    }
+  
+    .footer-section {
+      min-width: 100%; /* Make sections full width */
+      margin-bottom: 40px; /* Increase space between stacked sections */
+    }
+  
+    .footer-section.contact .contact-item {
+       justify-content: center; /* Center contact items */
+    }
+  
+     .social-icons {
+       text-align: center; /* Center social icons */
+     }
+  
+    .footer-bottom {
+      flex-direction: column; /* Stack bottom text vertically */
+      align-items: center; /* Center bottom text */
+    }
+  
+     .footer-bottom span {
+       margin-bottom: 10px; /* Add more space between stacked bottom text */
+     }
+  }
+  
+  @media (max-width: 480px) {
+     .footer {
+         padding: 30px 0 15px 0; /* Reduce padding on very small screens */
+     }
+     .footer-title {
+         font-size: 1rem; /* Slightly smaller titles */
+     }
+     .footer-content {
+         padding: 0 15px; /* Reduce side padding */
+     }
+     .footer-bottom {
+         padding: 10px 15px 0 15px;
+     }
+  }
+  
+  
+  /* --- Font Awesome Setup (If you choose to use it) --- */
+  /* Make sure to install: npm install @fortawesome/fontawesome-free */
+  /* And import it in your main JS file (e.g., index.js or App.js) or directly in Footer.js */
+  /* import '@fortawesome/fontawesome-free/css/all.min.css'; */

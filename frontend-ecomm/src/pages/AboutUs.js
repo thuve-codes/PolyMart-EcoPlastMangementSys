@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { FaRecycle, FaShoppingCart, FaCreditCard, FaLeaf, FaChartLine, FaTruck, FaCoins, FaLaptopCode } from 'react-icons/fa';
 import image from '../components/images/aboutus.jpg'; // Adjust the path as necessary
 
+import '../App.css'; // Import your CSS file here
 const AboutUs = () => {
   return (
     <div className="about-us container py-5">

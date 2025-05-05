@@ -1,5 +1,4 @@
 import React from 'react';
-import './App.css';
 import Footer from './components/Footer';
 import Header from './components/Header';
 import AboutUs from './pages/AboutUs'; // Changed import to match the file name
@@ -14,6 +13,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Cart from './pages/Cart';
 
 
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 // Stripe imports
 import { Elements } from '@stripe/react-stripe-js';

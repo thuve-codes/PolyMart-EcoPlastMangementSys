@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { FaPlus, FaMinus, FaTrash, FaArrowLeft, FaCreditCard, FaMapMarkerAlt, FaUser } from "react-icons/fa";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 
+import '../App.css';
 export default function Cart({ cartItems, setCartItems }) {
   const stripe = useStripe();
   const elements = useElements();

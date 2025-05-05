@@ -10,6 +10,7 @@ import RecyclerDashboard from './RecyclerDashboard';
 import Header from './Header';
 import PickupStatusPage from './PickupStatusPage';
 import PickupFormUpdate from './PickupFormUpdate';
+import Footer from '../src/Components/Footer';
 
 
 function App() {
@@ -34,7 +35,7 @@ function App() {
         <Route path="/PickupFormUpdate" element={<PickupFormUpdate/>} />
       </Routes>
      </div>
-  
+  <Footer/>
   </BrowserRouter>
   );
 }

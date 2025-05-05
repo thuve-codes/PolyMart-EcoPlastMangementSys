@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import ChatPopup from "../components/Chatpopup";
 
+import '../App.css';
 export default function ProductDetail({ cartItems, setCartItems }) {
     const API_URL = process.env.REACT_APP_API_URL;
 

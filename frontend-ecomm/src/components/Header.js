@@ -3,6 +3,8 @@ import { Link, useLocation } from "react-router-dom";
 import polymartLogo from "./images/polymart-logo.png";
 import { FaShoppingCart } from "react-icons/fa";  // Importing a cart icon
 
+import '../App.css';
+
 export default function Header({ cartItems }) {
   const location = useLocation();  // Get the current route
 
@@ -123,6 +125,35 @@ export default function Header({ cartItems }) {
                 </li>
               </ul>
             </li>
+
+            <li className="nav-item dropdown">
+            <Link
+              className="nav-link navname"
+              to={username ? `http://localhost:3004/?username=${username}` : "http://localhost:3004"}
+              id="rewardDropdown"
+              role="button"
+              aria-expanded="false"
+            >
+              Reward & CashBack
+            </Link>
+
+            <ul className="dropdown-menu" aria-labelledby="rewardDropdown">
+              <li>
+                <a href={`http://localhost:3004/Calculator?username=${username}`} className="dropdown-item">Calculator</a>
+              </li>
+              <li>
+                <a href={`http://localhost:3004/leaderboard?username=${username}`} className="dropdown-item">Leaderboard</a>
+              </li>
+              <li>
+                <a href={`http://localhost:3004/Claim?username=${username}`} className="dropdown-item">Claim Redeem</a>
+              </li>
+              <li>
+                <a href={`http://localhost:3004/Ecolocation?username=${username}`} className="dropdown-item">Eco Locations</a>
+              </li>
+            </ul>
+
+            </li>
+
 
             <li className="nav-item">
               <Link 

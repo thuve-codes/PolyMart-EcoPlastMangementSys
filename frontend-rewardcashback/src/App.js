@@ -2,13 +2,15 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import './App.css';
 
+import '@fortawesome/fontawesome-free/css/all.min.css';
+
 import Maindash from './maindash';
 import Leaderboard from './leaderboard';
 import Calculator from './redeem';
 import HeaderRedeem from './componets/headerRedeem'; // ✅ Use PascalCase when importing components
 import Claim from './RedeemPage';
 import Ecolocation from './ecolocation'; // ✅ Use PascalCase when importing components
-
+import Footer from './componets/Footer'; // ✅ Use PascalCase when importing components
 
 // Optional: Conditional layout wrapper if you only want header on certain routes
 function Layout() {
@@ -27,6 +29,7 @@ function Layout() {
         <Route path="/Claim" element={<Claim />} />
         <Route path="/Ecolocation" element={<Ecolocation />} />
       </Routes>
+     <Footer />
     </>
   );
 }
