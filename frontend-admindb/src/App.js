@@ -118,12 +118,12 @@ function PolymartAdminDashboard() {
 
   // Form states
   const [editedUserData, setEditedUserData] = useState({
-    name: "",
+    username: "",
     email: "",
     isAccountVerified: false,
   });
   const [newUserData, setNewUserData] = useState({
-    name: "",
+    username: "",
     email: "",
     password: "",
     isAccountVerified: false,
@@ -131,7 +131,7 @@ function PolymartAdminDashboard() {
   const [editedOrderData, setEditedOrderData] = useState({
     customer: "",
     date: "",
-    amount: "",
+    total: "",
     status: "Processing",
   });
 
@@ -270,7 +270,7 @@ function PolymartAdminDashboard() {
 
   const filteredUsers = users.filter(
     (user) =>
-      user.name?.toLowerCase().includes(userSearchQuery.toLowerCase()) ||
+      user.username?.toLowerCase().includes(userSearchQuery.toLowerCase()) ||
       user.email?.toLowerCase().includes(userSearchQuery.toLowerCase()),
   );
 
@@ -328,7 +328,7 @@ function PolymartAdminDashboard() {
   const handleEditUser = (user) => {
     setEditingUser(user);
     setEditedUserData({
-      name: user.name || "",
+      username: user.username || "",
       email: user.email || "",
       isAccountVerified: user.isAccountVerified || false,
     });
@@ -366,21 +366,33 @@ function PolymartAdminDashboard() {
     }
   };
 
-  const handleAddUser = async () => {
-    try {
+  // filepath: c:\Users\thuve\Desktop\dev - polymart\PolyMart-EcoPlastMangementSys\frontend-admindb\src\App.js
+const handleAddUser = async () => {
+  try {
       const response = await fetch(`${API_BASE_URL}/users`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newUserData),
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newUserData),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to add user");
+          // Check if the response is JSON
+          const contentType = response.headers.get("content-type");
+          if (contentType && contentType.includes("application/json")) {
+              const errorData = await response.json();
+              throw new Error(errorData.message || "Failed to add user");
+          } else {
+              throw new Error("Unexpected response from server");
+          }
       }
 
       const newUser = await response.json();
+
+      if (!newUser || !newUser.data) {
+          throw new Error("Invalid response from server");
+      }
 
       // Add to users array
       setUsers([...users, newUser.data]);
@@ -388,25 +400,24 @@ function PolymartAdminDashboard() {
       // Close modal and reset form
       setShowAddUserModal(false);
       setNewUserData({
-        name: "",
-        email: "",
-        password: "",
-        isAccountVerified: false,
+          username: "",
+          email: "",
+          password: "",
+          isAccountVerified: false,
       });
 
       showAlert("User added successfully!");
-    } catch (error) {
+  } catch (error) {
       console.error("Error adding user:", error);
-      showAlert("Failed to add user");
-    }
-  };
-
+      showAlert(error.message || "Failed to add user");
+  }
+};
   const handleEditOrder = (order) => {
     setSelectedOrder(order);
     setEditedOrderData({
       user: order?.user || {},
       date: order?.createdAt || "",
-      amount: order?.amount || "",
+      total: order?.total || "",
       status: order?.status || "Unavailable",
     });
   };
@@ -648,7 +659,7 @@ function PolymartAdminDashboard() {
                 type="text"
                 disabled={true}
                 className="form-control"
-                value={editedOrderData?.user?.name}
+                value={editedOrderData?.buyer || selectedOrder?.buyer|| ""}
               />
             </div>
             <div className="mb-3">
@@ -673,7 +684,7 @@ function PolymartAdminDashboard() {
                 type="text"
                 disabled={true}
                 className="form-control"
-                value={`$ ${editedOrderData.amount}`}
+                value={`LKR ${editedOrderData.total}.00`}
               />
             </div>
             <div className="mb-3">
@@ -873,16 +884,16 @@ function PolymartAdminDashboard() {
             acc[monthYear] = 0;
           }
 
-          acc[monthYear] += order.amount;
+          acc[monthYear] += order.total;
           return acc;
         }, {});
 
         for (const key in salesData) {
-          monthlySales.push({ month: key, amount: salesData[key] });
+          monthlySales.push({ month: key, total: salesData[key] });
         }
 
         const totalRevenue = orders.reduce((total, order) => {
-          return total + (order.amount || 0); // protect if some order.amount is undefined
+          return total + (order.total || 0); // protect if some order.amount is undefined
         }, 0);
 
         // Prepare pie data
@@ -961,7 +972,7 @@ function PolymartAdminDashboard() {
                   <div className="card-header">
                     <p className="card-text">Total Sales</p>
                     <h3 className="card-title fs-1">
-                      ${totalRevenue.toLocaleString()}
+                      LKR {totalRevenue.toLocaleString()}
                     </h3>
                   </div>
                   <div className="card-body">
@@ -994,7 +1005,7 @@ function PolymartAdminDashboard() {
                           <Legend />
                           <Line
                             type="monotone"
-                            dataKey="amount"
+                            dataKey="total"
                             stroke="#8884d8"
                             activeDot={{ r: 8 }}
                           />
@@ -1089,7 +1100,7 @@ function PolymartAdminDashboard() {
                         .map((order) => (
                           <tr key={order?._id}>
                             <td>{order?._id}</td>
-                            <td>{order?.user?.name}</td>
+                            <td>{order?.buyer}</td>
                             <td>
                               {new Date(order?.createdAt).toLocaleDateString(
                                 "en-GB",
@@ -1100,7 +1111,7 @@ function PolymartAdminDashboard() {
                                 },
                               )}
                             </td>
-                            <td>${order?.amount?.toLocaleString()}</td>
+                            <td>LKR {order?.total?.toLocaleString()}.00</td>
                             <td>
                               <span
                                 className={`badge ${
@@ -1159,7 +1170,7 @@ function PolymartAdminDashboard() {
                       {users.slice(0, 4).map((user) => (
                         <tr key={user._id}>
                           <td>{user._id}</td>
-                          <td>{user.name}</td>
+                          <td>{user.username}</td>
                           <td>{user.email}</td>
                           <td>
                             <span
@@ -1183,7 +1194,7 @@ function PolymartAdminDashboard() {
         style={buttonStyle}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        navigate="http://localhost:3001/"
+        onClick={() => (window.location.href = "http://localhost:3001/")}
       >
         Sign Out
       </button>
@@ -1239,7 +1250,7 @@ function PolymartAdminDashboard() {
                         {filteredUsers.map((user) => (
                           <tr key={user._id}>
                             <td>{user._id}</td>
-                            <td>{user.name}</td>
+                            <td>{user.username}</td>
                             <td>{user.email}</td>
                             <td>
                               <span
@@ -1364,7 +1375,7 @@ function PolymartAdminDashboard() {
                         {orders.map((order) => (
                           <tr key={order?._id}>
                             <td>{order?._id}</td>
-                            <td>{order?.user?.name}</td>
+                            <td>{order?.buyer}</td>
                             <td>
                               {new Date(order?.createdAt).toLocaleDateString(
                                 "en-GB",
@@ -1375,7 +1386,7 @@ function PolymartAdminDashboard() {
                                 },
                               )}
                             </td>
-                            <td>${order?.amount?.toLocaleString()}</td>
+                            <td>LKR {order?.total?.toLocaleString()}.00</td>
                             <td>
                               <span
                                 className={`badge ${
@@ -1729,7 +1740,7 @@ function PolymartAdminDashboard() {
                   <input
                     type="text"
                     className="form-control"
-                    value={editedUserData.name}
+                    value={editedUserData.username}
                     onChange={(e) =>
                       setEditedUserData({
                         ...editedUserData,
@@ -1809,9 +1820,9 @@ function PolymartAdminDashboard() {
                   <input
                     type="text"
                     className="form-control"
-                    value={newUserData.name}
+                    value={newUserData.username}
                     onChange={(e) =>
-                      setNewUserData({ ...newUserData, name: e.target.value })
+                      setNewUserData({ ...newUserData, username: e.target.value })
                     }
                     placeholder="Enter user name"
                   />
@@ -1876,7 +1887,7 @@ function PolymartAdminDashboard() {
                   type="button"
                   className="btn btn-primary"
                   onClick={handleAddUser}
-                  disabled={!newUserData.name || !newUserData.email}
+                  disabled={!newUserData.username || !newUserData.email}
                 >
                   Add User
                 </button>
