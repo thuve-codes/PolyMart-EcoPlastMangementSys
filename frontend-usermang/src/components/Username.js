@@ -17,7 +17,7 @@ export default function Username() {
 
   const formik = useFormik({
     initialValues : {
-      username : 'example123'
+      username : ''
     },
     validate : usernameValidate,
     validateOnBlur: false,
@@ -30,7 +30,7 @@ export default function Username() {
       const data = await res.json();
     
       if (data.type === 'admin') {
-        toast.error('You are an admin, please log in from the admin login page');
+        toast.error('You are an admin, please log in from the admin login');
         return;
       }
     

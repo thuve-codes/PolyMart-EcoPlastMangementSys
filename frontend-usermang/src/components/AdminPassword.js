@@ -17,7 +17,7 @@ export default function Password() {
 
   const formik = useFormik({
     initialValues : {
-      password : 'admin@123'
+      password : ''
     },
     validate : passwordValidate,
     validateOnBlur: false,
@@ -34,7 +34,7 @@ export default function Password() {
       loginPromise.then(res => {
         let { token } = res.data;
         localStorage.setItem('token', token);
-        navigate('*')
+        window.location.href = 'http://localhost:3005'; // redirect to admin panel
       })
     }
   })

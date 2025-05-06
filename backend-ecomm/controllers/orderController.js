@@ -278,7 +278,7 @@ exports.downloadInvoice = async (req, res) => {
     doc.text(`Subtotal: LKR ${order.subtotal}.00`);
     doc.text(`Shipping: LKR ${order.shipping}.00`);
     doc.text(`Tax: LKR ${order.tax}.00`);
-    doc.fontSize(14).text(`Total: LKR ${order.total}.00`, { align: 'right' });
+    doc.fontSize(14).text(`Total: LKR ${order.total}`, { align: 'right' });
 
     doc.end();
   } catch (err) {

@@ -332,8 +332,29 @@ export default function Cart({ cartItems, setCartItems }) {
                       },
                     }} />
                   </div>
+                                   
                   <div className="order-summary-checkout">
                     <h3>Order Summary</h3>
+                    {cartItems.map((item) => (
+                      <div key={item.product._id} className="checkout-item">
+                        <span>
+                          {item.product.name} × {item.qty}
+                        </span>
+                        <span>Rs {(item.product.price * item.qty).toLocaleString()}</span>
+                      </div>
+                    ))}
+                    <div className="summary-row">
+                      <span>Subtotal</span>
+                      <span>Rs {subtotal.toLocaleString()}</span>
+                    </div>
+                    <div className="summary-row">
+                      <span>Shipping</span>
+                      <span>{shipping === 0 ? "FREE" : `Rs ${shipping}`}</span>
+                    </div>
+                    <div className="summary-row">
+                      <span>Tax (5%)</span>
+                      <span>Rs {tax.toFixed(2)}</span>
+                    </div>
                     <div className="summary-row total">
                       <span>Total</span>
                       <span>Rs {total.toFixed(2)}</span>
@@ -367,13 +388,14 @@ export default function Cart({ cartItems, setCartItems }) {
 // import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 
 
-// const stripe = useStripe();
-// const elements = useElements();
+
 
 
 // export default function Cart({ cartItems, setCartItems }) {
 //   const [activeStep, setActiveStep] = useState("cart"); // 'cart', 'checkout', 'complete'
 //   const API_URL = "http://localhost:5001";
+//   const stripe = useStripe();
+// const elements = useElements();
 
 //   // Example for your Product component
 //   async function placeOrderHandler(e) {
@@ -873,36 +895,36 @@ export default function Cart({ cartItems, setCartItems }) {
                   
                
                   
-//                   <div className="order-summary-checkout">
-//                     <h3>Order Summary</h3>
-//                     {cartItems.map((item) => (
-//                       <div key={item.product._id} className="checkout-item">
-//                         <span>
-//                           {item.product.name} × {item.qty}
-//                         </span>
-//                         <span>Rs {(item.product.price * item.qty).toLocaleString()}</span>
-//                       </div>
-//                     ))}
-//                     <div className="summary-row">
-//                       <span>Subtotal</span>
-//                       <span>Rs {subtotal.toLocaleString()}</span>
-//                     </div>
-//                     <div className="summary-row">
-//                       <span>Shipping</span>
-//                       <span>{shipping === 0 ? "FREE" : `Rs ${shipping}`}</span>
-//                     </div>
-//                     <div className="summary-row">
-//                       <span>Tax (5%)</span>
-//                       <span>Rs {tax.toFixed(2)}</span>
-//                     </div>
-//                     <div className="summary-row total">
-//                       <span>Total</span>
-//                       <span>Rs {total.toFixed(2)}</span>
-//                     </div>
-//                     <button type="submit" className="place-order-btn">
-//                       Place Order
-//                     </button>
-//                   </div>
+                  // <div className="order-summary-checkout">
+                  //   <h3>Order Summary</h3>
+                  //   {cartItems.map((item) => (
+                  //     <div key={item.product._id} className="checkout-item">
+                  //       <span>
+                  //         {item.product.name} × {item.qty}
+                  //       </span>
+                  //       <span>Rs {(item.product.price * item.qty).toLocaleString()}</span>
+                  //     </div>
+                  //   ))}
+                  //   <div className="summary-row">
+                  //     <span>Subtotal</span>
+                  //     <span>Rs {subtotal.toLocaleString()}</span>
+                  //   </div>
+                  //   <div className="summary-row">
+                  //     <span>Shipping</span>
+                  //     <span>{shipping === 0 ? "FREE" : `Rs ${shipping}`}</span>
+                  //   </div>
+                  //   <div className="summary-row">
+                  //     <span>Tax (5%)</span>
+                  //     <span>Rs {tax.toFixed(2)}</span>
+                  //   </div>
+                  //   <div className="summary-row total">
+                  //     <span>Total</span>
+                  //     <span>Rs {total.toFixed(2)}</span>
+                  //   </div>
+                  //   <button type="submit" className="place-order-btn">
+                  //     Place Order
+                  //   </button>
+                  // </div>
 //                 </form>
 //               </div>
 //             </div>
