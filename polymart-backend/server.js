@@ -1,10 +1,8 @@
 require('dotenv').config();
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
-const path = require('path');
 const cookieParser = require('cookie-parser');
 
 const app = express();
@@ -26,6 +24,7 @@ const userRoutes = require('./routes/userRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const requestRoutes = require('./routes/requestRoutes');
 const chatRoutes = require('./routes/chatRoutes');
+const productRoutes = require('./routes/productRoutes');
 
 // Mount routers
 app.use('/api/auth', authRoutes);
@@ -33,12 +32,13 @@ app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/requests', requestRoutes);
 app.use('/api/chats', chatRoutes);
+app.use('/api/products', productRoutes);
 
 // Error Handling Middleware
-const errorHandler = require('./middleware/errorHandler');
-app.use(errorHandler);
+// const errorHandler = require('./middleware/errorHandler');
+// app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3001;
 
 const server = app.listen(PORT, () => 
   console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`)

@@ -1,7 +1,7 @@
-const User = require('../models/User');
-const jwt = require('jsonwebtoken');
-const ErrorResponse = require('../utils/errorResponse');
-const sendEmail = require('../utils/email');
+const User = require("../models/User");
+const jwt = require("jsonwebtoken");
+const ErrorResponse = require("../utils/errorResponse");
+const sendEmail = require("../utils/email");
 // @desc    Register user
 // @route   POST /api/auth/register
 // @access  Public
@@ -24,23 +24,23 @@ exports.register = async (req, res, next) => {
 
     // Send verification email
     const message = `Your verification OTP is ${otp}. It will expire in 10 minutes.`;
-    
+
     try {
       await sendEmail({
         email: user.email,
-        subject: 'Account Verification OTP',
+        subject: "Account Verification OTP",
         message,
       });
 
       res.status(200).json({
         success: true,
-        data: 'OTP sent to email',
+        data: "OTP sent to email",
       });
     } catch (err) {
       user.verifyOtp = undefined;
       user.verifyOtpExpireAt = undefined;
       await user.save();
-      return next(new ErrorResponse('Email could not be sent', 500));
+      return next(new ErrorResponse("Email could not be sent", 500));
     }
   } catch (err) {
     next(err);
@@ -57,11 +57,11 @@ exports.verifyOtp = async (req, res, next) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return next(new ErrorResponse('User not found', 404));
+      return next(new ErrorResponse("User not found", 404));
     }
 
     if (user.verifyOtp !== otp || user.verifyOtpExpireAt < Date.now()) {
-      return next(new ErrorResponse('Invalid or expired OTP', 400));
+      return next(new ErrorResponse("Invalid or expired OTP", 400));
     }
 
     user.isAccountVerified = true;
@@ -82,24 +82,24 @@ exports.login = async (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return next(new ErrorResponse('Please provide email and password', 400));
+    return next(new ErrorResponse("Please provide email and password", 400));
   }
 
   try {
-    const user = await User.findOne({ email }).select('+password');
+    const user = await User.findOne({ email }).select("+password");
 
     if (!user) {
-      return next(new ErrorResponse('Invalid credentials', 401));
+      return next(new ErrorResponse("Invalid credentials", 401));
     }
 
     const isMatch = await user.matchPassword(password);
 
     if (!isMatch) {
-      return next(new ErrorResponse('Invalid credentials', 401));
+      return next(new ErrorResponse("Invalid credentials", 401));
     }
 
     if (!user.isAccountVerified) {
-      return next(new ErrorResponse('Please verify your account first', 401));
+      return next(new ErrorResponse("Please verify your account first", 401));
     }
 
     sendTokenResponse(user, 200, res);
@@ -118,7 +118,7 @@ exports.forgotPassword = async (req, res, next) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return next(new ErrorResponse('No user with that email', 404));
+      return next(new ErrorResponse("No user with that email", 404));
     }
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -132,19 +132,19 @@ exports.forgotPassword = async (req, res, next) => {
     try {
       await sendEmail({
         email: user.email,
-        subject: 'Password Reset OTP',
+        subject: "Password Reset OTP",
         message,
       });
 
       res.status(200).json({
         success: true,
-        data: 'OTP sent to email',
+        data: "OTP sent to email",
       });
     } catch (err) {
       user.resetOtp = undefined;
       user.resetOtpExpireAt = undefined;
       await user.save();
-      return next(new ErrorResponse('Email could not be sent', 500));
+      return next(new ErrorResponse("Email could not be sent", 500));
     }
   } catch (err) {
     next(err);
@@ -158,14 +158,14 @@ exports.resetPassword = async (req, res, next) => {
   const { email, otp, newPassword } = req.body;
 
   try {
-    const user = await User.findOne({ email }).select('+password');
+    const user = await User.findOne({ email }).select("+password");
 
     if (!user) {
-      return next(new ErrorResponse('User not found', 404));
+      return next(new ErrorResponse("User not found", 404));
     }
 
     if (user.resetOtp !== otp || user.resetOtpExpireAt < Date.now()) {
-      return next(new ErrorResponse('Invalid or expired OTP', 400));
+      return next(new ErrorResponse("Invalid or expired OTP", 400));
     }
 
     user.password = newPassword;
@@ -175,7 +175,7 @@ exports.resetPassword = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      data: 'Password updated successfully',
+      data: "Password updated successfully",
     });
   } catch (err) {
     next(err);
@@ -188,18 +188,18 @@ const sendTokenResponse = (user, statusCode, res) => {
 
   const options = {
     expires: new Date(
-      Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+      Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
     ),
     httpOnly: true,
   };
 
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV === "production") {
     options.secure = true;
   }
 
   res
     .status(statusCode)
-    .cookie('token', token, options)
+    .cookie("token", token, options)
     .json({
       success: true,
       token,

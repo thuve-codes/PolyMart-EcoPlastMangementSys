@@ -1,7 +1,24 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Home, Users, ShoppingCart, Mail, ArrowRight, ChevronRight, ChevronLeft, Paperclip, Send, Edit, Trash, Plus, Check, X, Recycle } from 'lucide-react'
+import { useState, useEffect } from "react";
+import Switch from "react-switch";
+import {
+  Home,
+  Users,
+  ShoppingCart,
+  Mail,
+  ArrowRight,
+  ChevronRight,
+  ChevronLeft,
+  Paperclip,
+  Send,
+  Edit,
+  Trash,
+  Plus,
+  Check,
+  X,
+  Recycle,
+} from "lucide-react";
 import {
   LineChart,
   PieChart,
@@ -14,64 +31,65 @@ import {
   Legend,
   ResponsiveContainer,
   Cell,
-} from "recharts"
-import "bootstrap/dist/css/bootstrap.min.css"
-import "./Dashboard.css"
+} from "recharts";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./Dashboard.css";
 
-const API_BASE_URL = "http://localhost:5000/api"; // Update with your backend URL
+const API_BASE_URL = "http://localhost:5005/api"; // Update with your backend URL
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"]
+const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 function PolymartAdminDashboard() {
-  const [activeTab, setActiveTab] = useState("dashboard")
-  const [searchQuery, setSearchQuery] = useState("")
-  const [selectedMessage, setSelectedMessage] = useState(null)
-  const [replyContent, setReplyContent] = useState("")
-  const [isReplying, setIsReplying] = useState(false)
-  const [attachments, setAttachments] = useState([])
-  const [isSending, setIsSending] = useState(false)
-  const [showUserEditModal, setShowUserEditModal] = useState(false)
-  const [showAddUserModal, setShowAddUserModal] = useState(false)
-  const [editingUser, setEditingUser] = useState(null)
-  const [orders, setOrders] = useState([])
-  const [users, setUsers] = useState([])
-  const [requests, setRequests] = useState([])
-  const [messages, setMessages] = useState([]) // Added messages state
-  const [selectedOrder, setSelectedOrder] = useState(null)
-  const [selectedRequest, setSelectedRequest] = useState(null)
-  const [userSearchQuery, setUserSearchQuery] = useState("")
-  const [requestSearchQuery, setRequestSearchQuery] = useState("")
+  const [activeTab, setActiveTab] = useState("dashboard");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedMessage, setSelectedMessage] = useState(null);
+  const [replyContent, setReplyContent] = useState("");
+  const [isReplying, setIsReplying] = useState(false);
+  const [attachments, setAttachments] = useState([]);
+  const [isSending, setIsSending] = useState(false);
+  const [showUserEditModal, setShowUserEditModal] = useState(false);
+  const [showAddUserModal, setShowAddUserModal] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
+  const [orders, setOrders] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [requests, setRequests] = useState([]);
+  const [messages, setMessages] = useState([]); // Added messages state
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [userSearchQuery, setUserSearchQuery] = useState("");
+  const [requestSearchQuery, setRequestSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState({
     users: false,
     orders: false,
     requests: false,
     messages: false,
-    stats: false
-  })
+    stats: false,
+  });
   const [stats, setStats] = useState({
     totalProducts: 0,
     activeSellers: 0,
     totalOrders: 0,
-    revenue: 0
-  })
-  
+    revenue: 0,
+  });
+
   // Form states
   const [editedUserData, setEditedUserData] = useState({
     name: "",
     email: "",
-    status: "Active",
-  })
+    isAccountVerified: false,
+  });
   const [newUserData, setNewUserData] = useState({
     name: "",
     email: "",
-    status: "Active",
-  })
+    password: "",
+    isAccountVerified: false,
+  });
   const [editedOrderData, setEditedOrderData] = useState({
     customer: "",
     date: "",
     amount: "",
     status: "Processing",
-  })
+  });
 
   // Fetch data from backend
   useEffect(() => {
@@ -80,11 +98,29 @@ function PolymartAdminDashboard() {
     fetchOrders();
     fetchRequests();
     fetchMessages(); // Added messages fetch
-  }, [])
+    fetchProductCount();
+  }, []);
+
+  const fetchProductCount = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/products/count`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch stats");
+      }
+      const data = await response.json();
+      setStats({
+        ...stats,
+        totalProducts: data.total || 0,
+      });
+    } catch (error) {
+      console.error("Error fetching product count:", error);
+      showAlert("Failed to load products count");
+    }
+  };
 
   const fetchDashboardStats = async () => {
     try {
-      setIsLoading(prev => ({...prev, stats: true}));
+      setIsLoading((prev) => ({ ...prev, stats: true }));
       const response = await fetch(`${API_BASE_URL}/stats`);
       if (!response.ok) {
         throw new Error("Failed to fetch stats");
@@ -94,19 +130,19 @@ function PolymartAdminDashboard() {
         totalProducts: data.totalProducts || 0,
         activeSellers: data.activeSellers || 0,
         totalOrders: data.totalOrders || 0,
-        revenue: data.revenue || 0
+        revenue: data.revenue || 0,
       });
     } catch (error) {
       console.error("Error fetching stats:", error);
       showAlert("Failed to load dashboard statistics");
     } finally {
-      setIsLoading(prev => ({...prev, stats: false}));
+      setIsLoading((prev) => ({ ...prev, stats: false }));
     }
-  }
+  };
 
   const fetchUsers = async () => {
     try {
-      setIsLoading(prev => ({...prev, users: true}));
+      setIsLoading((prev) => ({ ...prev, users: true }));
       const response = await fetch(`${API_BASE_URL}/users`);
       if (!response.ok) {
         throw new Error("Failed to fetch users");
@@ -117,13 +153,13 @@ function PolymartAdminDashboard() {
       console.error("Error fetching users:", error);
       showAlert("Failed to load users");
     } finally {
-      setIsLoading(prev => ({...prev, users: false}));
+      setIsLoading((prev) => ({ ...prev, users: false }));
     }
-  }
+  };
 
   const fetchOrders = async () => {
     try {
-      setIsLoading(prev => ({...prev, orders: true}));
+      setIsLoading((prev) => ({ ...prev, orders: true }));
       const response = await fetch(`${API_BASE_URL}/orders`);
       if (!response.ok) {
         throw new Error("Failed to fetch orders");
@@ -134,30 +170,30 @@ function PolymartAdminDashboard() {
       console.error("Error fetching orders:", error);
       showAlert("Failed to load orders");
     } finally {
-      setIsLoading(prev => ({...prev, orders: false}));
+      setIsLoading((prev) => ({ ...prev, orders: false }));
     }
-  }
+  };
 
   const fetchRequests = async () => {
     try {
-      setIsLoading(prev => ({...prev, requests: true}));
+      setIsLoading((prev) => ({ ...prev, requests: true }));
       const response = await fetch(`${API_BASE_URL}/requests`);
       if (!response.ok) {
         throw new Error("Failed to fetch requests");
       }
       const data = await response.json();
-      setRequests(data);
+      setRequests(data.data);
     } catch (error) {
       console.error("Error fetching requests:", error);
       showAlert("Failed to load plastic collection requests");
     } finally {
-      setIsLoading(prev => ({...prev, requests: false}));
+      setIsLoading((prev) => ({ ...prev, requests: false }));
     }
-  }
+  };
 
   const fetchMessages = async () => {
     try {
-      setIsLoading(prev => ({...prev, messages: true}));
+      setIsLoading((prev) => ({ ...prev, messages: true }));
       const response = await fetch(`${API_BASE_URL}/messages`);
       if (!response.ok) {
         throw new Error("Failed to fetch messages");
@@ -168,33 +204,33 @@ function PolymartAdminDashboard() {
       console.error("Error fetching messages:", error);
       showAlert("Failed to load messages");
     } finally {
-      setIsLoading(prev => ({...prev, messages: false}));
+      setIsLoading((prev) => ({ ...prev, messages: false }));
     }
-  }
+  };
 
   const filteredMessages = messages.filter(
     (message) =>
       message.from?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       message.subject?.toLowerCase().includes(searchQuery.toLowerCase()),
-  )
+  );
 
   const filteredUsers = users.filter(
     (user) =>
       user.name?.toLowerCase().includes(userSearchQuery.toLowerCase()) ||
       user.email?.toLowerCase().includes(userSearchQuery.toLowerCase()),
-  )
+  );
 
-  const filteredRequests = requests.filter(
+  const filteredRequests = requests?.filter(
     (request) =>
-      request.userName?.toLowerCase().includes(requestSearchQuery.toLowerCase()) ||
-      request.id?.toLowerCase().includes(requestSearchQuery.toLowerCase()) ||
+      request.name?.toLowerCase().includes(requestSearchQuery.toLowerCase()) ||
+      request._id?.toLowerCase().includes(requestSearchQuery.toLowerCase()) ||
       request.status?.toLowerCase().includes(requestSearchQuery.toLowerCase()),
-  )
+  );
 
   const handleReply = async () => {
     if (!selectedMessage) return;
-    
-    setIsSending(true)
+
+    setIsSending(true);
     try {
       const response = await fetch(`${API_BASE_URL}/messages/reply`, {
         method: "POST",
@@ -224,33 +260,33 @@ function PolymartAdminDashboard() {
     } finally {
       setIsSending(false);
     }
-  }
+  };
 
   const handleAttachmentChange = (e) => {
     if (!e.target.files) return;
-    const files = Array.from(e.target.files)
-    setAttachments(files)
-  }
+    const files = Array.from(e.target.files);
+    setAttachments(files);
+  };
 
   const removeAttachment = (index) => {
-    setAttachments(attachments.filter((_, i) => i !== index))
-  }
+    setAttachments(attachments.filter((_, i) => i !== index));
+  };
 
   const handleEditUser = (user) => {
-    setEditingUser(user)
+    setEditingUser(user);
     setEditedUserData({
       name: user.name || "",
       email: user.email || "",
-      status: user.status || "Active",
-    })
-    setShowUserEditModal(true)
-  }
+      isAccountVerified: user.isAccountVerified || false,
+    });
+    setShowUserEditModal(true);
+  };
 
   const handleSaveUserEdit = async () => {
     if (!editingUser) return;
-    
+
     try {
-      const response = await fetch(`${API_BASE_URL}/users/${editingUser.id}`, {
+      const response = await fetch(`${API_BASE_URL}/users/${editingUser._id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -263,19 +299,19 @@ function PolymartAdminDashboard() {
       }
 
       // Update user in the state
-      const updatedUsers = users.map(user => 
-        user.id === editingUser.id ? { ...user, ...editedUserData } : user
-      )
-      setUsers(updatedUsers)
-      
+      const updatedUsers = users.map((user) =>
+        user._id === editingUser._id ? { ...user, ...editedUserData } : user,
+      );
+      setUsers(updatedUsers);
+
       // Close modal
-      setShowUserEditModal(false)
+      setShowUserEditModal(false);
       showAlert("User updated successfully!");
     } catch (error) {
       console.error("Error updating user:", error);
       showAlert("Failed to update user");
     }
-  }
+  };
 
   const handleAddUser = async () => {
     try {
@@ -292,69 +328,79 @@ function PolymartAdminDashboard() {
       }
 
       const newUser = await response.json();
-      
+
       // Add to users array
-      setUsers([...users, newUser])
-      
+      setUsers([...users, newUser.data]);
+
       // Close modal and reset form
-      setShowAddUserModal(false)
+      setShowAddUserModal(false);
       setNewUserData({
         name: "",
         email: "",
-        status: "Active",
-      })
+        password: "",
+        isAccountVerified: false,
+      });
 
       showAlert("User added successfully!");
     } catch (error) {
       console.error("Error adding user:", error);
       showAlert("Failed to add user");
     }
-  }
+  };
 
   const handleEditOrder = (order) => {
-    setSelectedOrder(order)
+    setSelectedOrder(order);
     setEditedOrderData({
-      customer: order.customer || "",
-      date: order.date || "",
-      amount: order.amount || "",
-      status: order.status || "Processing",
-    })
-  }
+      user: order?.user || {},
+      date: order?.createdAt || "",
+      amount: order?.amount || "",
+      status: order?.status || "Unavailable",
+    });
+  };
 
   const handleSaveOrderEdit = async () => {
     if (!selectedOrder) return;
-    
+
     try {
-      const response = await fetch(`${API_BASE_URL}/orders/${selectedOrder.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `${API_BASE_URL}/orders/${selectedOrder._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            status: editedOrderData.status,
+          }),
         },
-        body: JSON.stringify(editedOrderData),
-      });
+      );
 
       if (!response.ok) {
         throw new Error("Failed to update order");
       }
 
+      const updatedOrder = await response.json();
+
       // Update order in the state
-      const updatedOrders = orders.map(order => 
-        order.id === selectedOrder.id ? { ...order, ...editedOrderData } : order
-      )
-      setOrders(updatedOrders)
-      
+      const updatedOrders = orders.map((order) =>
+        order._id === selectedOrder._id
+          ? { ...order, status: updatedOrder.status }
+          : order,
+      );
+      setOrders(updatedOrders);
+
       // Close the order view
-      setSelectedOrder(null)
+      setSelectedOrder(null);
       showAlert("Order updated successfully!");
     } catch (error) {
       console.error("Error updating order:", error);
       showAlert("Failed to update order");
     }
-  }
+  };
 
   const handleRequestAction = async (requestId, action) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/requests/${requestId}/status`, {
+      const response = await fetch(`${API_BASE_URL}/requests/${requestId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -366,39 +412,94 @@ function PolymartAdminDashboard() {
         throw new Error(`Failed to ${action.toLowerCase()} request`);
       }
 
-      const updatedRequests = requests.map(request => {
-        if (request.id === requestId) {
-          return { ...request, status: action }
+      const updatedRequests = requests.map((request) => {
+        if (request._id === requestId) {
+          return { ...request, status: action };
         }
-        return request
-      })
-      setRequests(updatedRequests)
-      showAlert(`Request ${action.toLowerCase()} successfully!`)
-      setSelectedRequest(null)
+        return request;
+      });
+      setRequests(updatedRequests);
+      showAlert(`Request ${action.toLowerCase()} successfully!`);
+      setSelectedRequest(null);
     } catch (error) {
       console.error(`Error ${action.toLowerCase()}ing request:`, error);
       showAlert(`Failed to ${action.toLowerCase()} request`);
     }
-  }
+  };
+
+  const handleDeleteOrder = async (order) => {
+    if (!order) {
+      return;
+    }
+    try {
+      const response = await fetch(`${API_BASE_URL}/orders/${order._id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.ok) {
+        const updatedOrders = orders.filter(
+          (existingOrder) => existingOrder._id !== order._id,
+        );
+        setOrders(updatedOrders); // Update the orders state with the new list
+        showAlert("Order deleted successfully!"); // Show success message
+      } else {
+        throw new Error("Failed to delete order");
+      }
+    } catch (error) {
+      console.error("Error Deleting order:", error);
+      showAlert("Failed to delete order");
+    }
+  };
+  const handleDeleteRequest = async (request) => {
+    if (!request) {
+      return;
+    }
+    try {
+      const response = await fetch(`${API_BASE_URL}/requests/${request._id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.ok) {
+        const updatedReq = requests.filter(
+          (existingRequests) => existingRequests._id !== request._id,
+        );
+        setRequests(updatedReq); // Update the orders state with the new list
+        showAlert("Request deleted successfully!"); // Show success message
+        setSelectedRequest(null);
+      } else {
+        throw new Error("Failed to delete request");
+      }
+    } catch (error) {
+      console.error("Error Deleting request:", error);
+      showAlert("Failed to delete request");
+    }
+  };
 
   const showAlert = (message) => {
-    const successAlert = document.getElementById("success-alert")
+    const successAlert = document.getElementById("success-alert");
     if (successAlert) {
-      successAlert.textContent = message
-      successAlert.classList.remove("d-none")
+      successAlert.textContent = message;
+      successAlert.classList.remove("d-none");
       setTimeout(() => {
-        successAlert.classList.add("d-none")
-      }, 3000)
+        successAlert.classList.add("d-none");
+      }, 3000);
     }
-  }
+  };
 
   const renderOrderDetail = () => {
     if (!selectedOrder) return null;
-    
+
     return (
       <div className="mb-4">
         <div className="d-flex justify-content-between align-items-center mb-3">
-          <button className="btn btn-outline-secondary" onClick={() => setSelectedOrder(null)}>
+          <button
+            className="btn btn-outline-secondary"
+            onClick={() => setSelectedOrder(null)}
+          >
             <ChevronLeft className="me-2" />
             Back to orders
           </button>
@@ -407,36 +508,41 @@ function PolymartAdminDashboard() {
         <div className="card">
           <div className="card-header">
             <h3 className="card-title">Order Details</h3>
-            <p className="card-text">
-              Order ID: {selectedOrder.id}
-            </p>
+            <p className="card-text">Order ID: {selectedOrder._id}</p>
           </div>
           <div className="card-body">
             <div className="mb-3">
               <label className="form-label">Customer</label>
               <input
                 type="text"
+                disabled={true}
                 className="form-control"
-                value={editedOrderData.customer}
-                onChange={(e) => setEditedOrderData({...editedOrderData, customer: e.target.value})}
+                value={editedOrderData?.user?.name}
               />
             </div>
             <div className="mb-3">
               <label className="form-label">Date</label>
               <input
                 type="text"
+                disabled={true}
                 className="form-control"
-                value={editedOrderData.date}
-                onChange={(e) => setEditedOrderData({...editedOrderData, date: e.target.value})}
+                value={new Date(editedOrderData?.date).toLocaleDateString(
+                  "en-GB",
+                  {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  },
+                )}
               />
             </div>
             <div className="mb-3">
-              <label className="form-label">Amount</label>
+              <label className="form-label">Total amount:</label>
               <input
                 type="text"
+                disabled={true}
                 className="form-control"
-                value={editedOrderData.amount}
-                onChange={(e) => setEditedOrderData({...editedOrderData, amount: e.target.value})}
+                value={`$ ${editedOrderData.amount}`}
               />
             </div>
             <div className="mb-3">
@@ -444,11 +550,17 @@ function PolymartAdminDashboard() {
               <select
                 className="form-select"
                 value={editedOrderData.status}
-                onChange={(e) => setEditedOrderData({...editedOrderData, status: e.target.value})}
+                onChange={(e) =>
+                  setEditedOrderData({
+                    ...editedOrderData,
+                    status: e.target.value,
+                  })
+                }
               >
+                <option value="Delivered">Delivered</option>
                 <option value="Processing">Processing</option>
                 <option value="Shipped">Shipped</option>
-                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
               </select>
             </div>
           </div>
@@ -459,25 +571,25 @@ function PolymartAdminDashboard() {
             >
               Cancel
             </button>
-            <button 
-              className="btn btn-primary"
-              onClick={handleSaveOrderEdit}
-            >
+            <button className="btn btn-primary" onClick={handleSaveOrderEdit}>
               Save Changes
             </button>
           </div>
         </div>
       </div>
     );
-  }
+  };
 
   const renderRequestDetail = () => {
     if (!selectedRequest) return null;
-    
+
     return (
       <div className="mb-4">
         <div className="d-flex justify-content-between align-items-center mb-3">
-          <button className="btn btn-outline-secondary" onClick={() => setSelectedRequest(null)}>
+          <button
+            className="btn btn-outline-secondary"
+            onClick={() => setSelectedRequest(null)}
+          >
             <ChevronLeft className="me-2" />
             Back to requests
           </button>
@@ -486,9 +598,7 @@ function PolymartAdminDashboard() {
         <div className="card">
           <div className="card-header">
             <h3 className="card-title">Plastic Collection Request</h3>
-            <p className="card-text">
-              Request ID: {selectedRequest.id}
-            </p>
+            <p className="card-text">Request ID: {selectedRequest?._id}</p>
           </div>
           <div className="card-body">
             <div className="mb-3">
@@ -496,37 +606,44 @@ function PolymartAdminDashboard() {
               <input
                 type="text"
                 className="form-control"
-                value={selectedRequest.userName}
+                value={selectedRequest?.name}
                 readOnly
               />
             </div>
             <div className="mb-3">
-              <label className="form-label">Date</label>
+              <label className="form-label">Pickup date</label>
               <input
                 type="text"
                 className="form-control"
-                value={selectedRequest.date}
+                value={new Date(selectedRequest?.pickupDate).toLocaleDateString(
+                  "en-GB",
+                  {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  },
+                )}
                 readOnly
               />
             </div>
             <div className="mb-3">
-              <label className="form-label">Location</label>
+              <label className="form-label">Address</label>
               <input
                 type="text"
                 className="form-control"
-                value={selectedRequest.location}
+                value={selectedRequest?.address}
                 readOnly
               />
             </div>
             <div className="mb-3">
-              <label className="form-label">Notes</label>
+              <label className="form-label">Feedback</label>
               <textarea
                 className="form-control"
-                value={selectedRequest.notes}
+                value={selectedRequest?.feedback}
                 readOnly
               />
             </div>
-            
+
             <div className="mb-3">
               <label className="form-label">Plastics Collected</label>
               <table className="table">
@@ -537,178 +654,136 @@ function PolymartAdminDashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {selectedRequest.plastics && selectedRequest.plastics.map((plastic, index) => (
-                    <tr key={index}>
-                      <td>{plastic.type}</td>
-                      <td>{plastic.kgs}</td>
-                    </tr>
-                  ))}
-                  <tr className="fw-bold">
-                    <td>Total</td>
-                    <td>
-                      {selectedRequest.plastics ? 
-                        selectedRequest.plastics.reduce((total, plastic) => total + (plastic.kgs || 0), 0) : 0} kgs
-                    </td>
+                  <tr>
+                    <td>{selectedRequest?.bottleType}</td>
+                    <td>{selectedRequest?.weight}</td>
                   </tr>
+                  {/*<tr className="fw-bold">*/}
+                  {/*  <td>Total</td>*/}
+                  {/*  <td>*/}
+                  {/*    {selectedRequest.plastics*/}
+                  {/*      ? selectedRequest.plastics.reduce(*/}
+                  {/*          (total, plastic) => total + (plastic.kgs || 0),*/}
+                  {/*          0,*/}
+                  {/*        )*/}
+                  {/*      : 0}{" "}*/}
+                  {/*    kgs*/}
+                  {/*  </td>*/}
+                  {/*</tr>*/}
                 </tbody>
               </table>
             </div>
-            
+
             <div className="mb-3">
               <label className="form-label">Status</label>
               <div className="d-flex align-items-center">
-                <span className={`badge ${
-                  selectedRequest.status === "Approved" ? "bg-success" :
-                  selectedRequest.status === "Rejected" ? "bg-danger" : "bg-warning"
-                } me-3`}>
-                  {selectedRequest.status}
+                <span
+                  className={`badge ${
+                    selectedRequest?.status === "Completed"
+                      ? "bg-success"
+                      : selectedRequest?.status === "Pending"
+                        ? "bg-danger"
+                        : "bg-warning"
+                  } me-3`}
+                >
+                  {selectedRequest?.status}
                 </span>
               </div>
             </div>
           </div>
           <div className="card-footer d-flex justify-content-end">
-            {selectedRequest.status === "Pending" && (
+            {selectedRequest?.status === "Pending" ||
+            selectedRequest?.status === "Picked Up" ? (
               <>
                 <button
                   className="btn btn-success me-2"
-                  onClick={() => handleRequestAction(selectedRequest.id, "Approved")}
+                  onClick={() =>
+                    handleRequestAction(selectedRequest._id, "Completed")
+                  }
                 >
                   <Check className="me-1" />
-                  Approve
+                  Complete
                 </button>
                 <button
                   className="btn btn-danger"
-                  onClick={() => handleRequestAction(selectedRequest.id, "Rejected")}
+                  onClick={() => handleDeleteRequest(selectedRequest)}
                 >
-                  <X className="me-1" />
-                  Reject
+                  <Trash size={18} className="mb-1" />
+                  Delete
                 </button>
               </>
+            ) : (
+              <button
+                className="btn btn-danger"
+                onClick={() => handleDeleteRequest(selectedRequest)}
+              >
+                <Trash size={18} className="mb-1" />
+                Delete
+              </button>
             )}
           </div>
         </div>
       </div>
     );
-  }
-
-  const renderMessageDetail = () => {
-    if (!selectedMessage) return null;
-    
-    return (
-      <div className="mb-4">
-        <div className="d-flex justify-content-between align-items-center mb-3">
-          <button className="btn btn-outline-secondary" onClick={() => setSelectedMessage(null)}>
-            <ChevronLeft className="me-2" />
-            Back to messages
-          </button>
-        </div>
-
-        <div className="card">
-          <div className="card-header">
-            <h3 className="card-title">{selectedMessage.subject}</h3>
-            <p className="card-text">
-              From: {selectedMessage.from} | Date: {selectedMessage.date}
-            </p>
-          </div>
-          <div className="card-body">
-            <div className="border rounded p-3 bg-light">
-              <p>{selectedMessage.content}</p>
-            </div>
-          </div>
-          <div className="card-footer d-flex justify-content-end">
-            <button
-              className={`btn ${isReplying ? "btn-secondary" : "btn-outline-secondary"} me-2`}
-              onClick={() => setIsReplying(!isReplying)}
-            >
-              {isReplying ? "Cancel Reply" : "Reply"}
-            </button>
-            <button className="btn btn-outline-secondary me-2">Forward</button>
-            <button className="btn btn-danger">Delete</button>
-          </div>
-        </div>
-
-        {isReplying && (
-          <div className="card mt-3">
-            <div className="card-header">
-              <h3 className="card-title">Reply to Message</h3>
-              <p className="card-text">Replying to: {selectedMessage.from}</p>
-            </div>
-            <div className="card-body">
-              <div className="mb-3">
-                <label className="form-label">Subject</label>
-                <input type="text" className="form-control bg-light" value={`Re: ${selectedMessage.subject}`} readOnly />
-              </div>
-
-              <div className="mb-3">
-                <label className="form-label">Your Reply</label>
-                <textarea
-                  className="form-control min-h-200"
-                  value={replyContent}
-                  onChange={(e) => setReplyContent(e.target.value)}
-                  placeholder="Type your reply here..."
-                  style={{ minHeight: "200px" }}
-                ></textarea>
-              </div>
-
-              <div className="mb-3">
-                <label className="form-label">Attachments</label>
-                <div className="mb-2">
-                  <div className="d-flex align-items-center">
-                    <label className="cursor-pointer">
-                      <input type="file" className="d-none" multiple onChange={handleAttachmentChange} />
-                      <button className="btn btn-outline-secondary" type="button">
-                        <Paperclip className="me-2" />
-                        Add Attachment
-                      </button>
-                    </label>
-                  </div>
-                </div>
-
-                {attachments.length > 0 && (
-                  <div className="border rounded p-2">
-                    {attachments.map((file, index) => (
-                      <div
-                        key={index}
-                        className="d-flex justify-content-between align-items-center p-2 bg-light rounded mb-1"
-                      >
-                        <div className="d-flex align-items-center">
-                          <Paperclip className="text-muted me-2" />
-                          <span>{file.name}</span>
-                          <span className="text-muted ms-2">({(file.size / 1024).toFixed(1)} KB)</span>
-                        </div>
-                        <button className="btn btn-link btn-sm" onClick={() => removeAttachment(index)}>
-                          Remove
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-            <div className="card-footer d-flex justify-content-end">
-              <button className="btn btn-primary" onClick={handleReply} disabled={isSending || !replyContent.trim()}>
-                {isSending ? (
-                  <>
-                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                    Sending...
-                  </>
-                ) : (
-                  <>
-                    <Send className="me-2" />
-                    Send Reply
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  }
+  };
 
   const renderTabContent = () => {
     switch (activeTab) {
       case "dashboard":
+        const monthlySales = [];
+
+        const salesData = orders.reduce((acc, order) => {
+          const date = new Date(order.createdAt);
+          const month = date.toLocaleString("default", { month: "short" });
+          const year = date.getFullYear();
+          const monthYear = `${month} ${year}`;
+
+          if (!acc[monthYear]) {
+            acc[monthYear] = 0;
+          }
+
+          acc[monthYear] += order.amount;
+          return acc;
+        }, {});
+
+        for (const key in salesData) {
+          monthlySales.push({ month: key, amount: salesData[key] });
+        }
+
+        const totalRevenue = orders.reduce((total, order) => {
+          return total + (order.amount || 0); // protect if some order.amount is undefined
+        }, 0);
+
+        // Prepare pie data
+        const statusCounts = orders.reduce((acc, order) => {
+          const status = order.status || "Unknown";
+          acc[status] = (acc[status] || 0) + 1;
+          return acc;
+        }, {});
+
+        const getStatusColor = (status) => {
+          switch (status) {
+            case "Delivered":
+              return "#28a745"; // green (bootstrap success)
+            case "Shipped":
+              return "#17a2b8"; // info blue
+            case "Cancelled":
+              return "#dc3545"; // danger red
+            case "Processing":
+              return "#ffc107"; // warning yellow
+            default:
+              return "#dc3545"; // default red for unknown statuses
+          }
+        };
+
+        const pieData = Object.entries(statusCounts).map(
+          ([status, count, colour]) => ({
+            status,
+            count,
+            colour: getStatusColor(status),
+          }),
+        );
+
         return (
           <div className="mb-4">
             <div className="row mb-4">
@@ -726,8 +801,10 @@ function PolymartAdminDashboard() {
               <div className="col-md-3">
                 <div className="card">
                   <div className="card-header">
-                    <p className="card-text">Active Sellers</p>
-                    <h3 className="card-title fs-1">{stats.activeSellers}</h3>
+                    <p className="card-text">Active Customers</p>
+                    <h3 className="card-title fs-1">
+                      {users?.filter((u) => u.role === "user").length}
+                    </h3>
                   </div>
                   <div className="card-body">
                     <div className="text-muted">+5% from last month</div>
@@ -738,7 +815,7 @@ function PolymartAdminDashboard() {
                 <div className="card">
                   <div className="card-header">
                     <p className="card-text">Total Orders</p>
-                    <h3 className="card-title fs-1">{stats.totalOrders}</h3>
+                    <h3 className="card-title fs-1">{orders?.length}</h3>
                   </div>
                   <div className="card-body">
                     <div className="text-muted">+18% from last month</div>
@@ -748,8 +825,10 @@ function PolymartAdminDashboard() {
               <div className="col-md-3">
                 <div className="card">
                   <div className="card-header">
-                    <p className="card-text">Revenue</p>
-                    <h3 className="card-title fs-1">${stats.revenue.toLocaleString()}</h3>
+                    <p className="card-text">Total Sales</p>
+                    <h3 className="card-title fs-1">
+                      ${totalRevenue.toLocaleString()}
+                    </h3>
                   </div>
                   <div className="card-body">
                     <div className="text-muted">+22% from last month</div>
@@ -773,13 +852,18 @@ function PolymartAdminDashboard() {
                       </div>
                     ) : (
                       <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={orders}>
+                        <LineChart data={monthlySales}>
                           <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis dataKey="date" />
+                          <XAxis dataKey="month" />
                           <YAxis />
                           <Tooltip />
                           <Legend />
-                          <Line type="monotone" dataKey="amount" stroke="#8884d8" activeDot={{ r: 8 }} />
+                          <Line
+                            type="monotone"
+                            dataKey="amount"
+                            stroke="#8884d8"
+                            activeDot={{ r: 8 }}
+                          />
                         </LineChart>
                       </ResponsiveContainer>
                     )}
@@ -789,7 +873,7 @@ function PolymartAdminDashboard() {
               <div className="col-md-6">
                 <div className="card">
                   <div className="card-header">
-                    <h3 className="card-title">Sales Distribution</h3>
+                    <h3 className="card-title">Order Status Track</h3>
                   </div>
                   <div className="card-body" style={{ height: "300px" }}>
                     {isLoading.stats ? (
@@ -802,20 +886,27 @@ function PolymartAdminDashboard() {
                       <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
                           <Pie
-                            data={requests}
+                            data={pieData}
                             cx="50%"
                             cy="50%"
                             labelLine={false}
                             outerRadius={80}
                             fill="#8884d8"
-                            dataKey="totalKgs"
-                            label={({ userName, percent }) => `${userName}: ${(percent * 100).toFixed(0)}%`}
+                            dataKey="count"
+                            label={({ status, percent }) =>
+                              `${status}: ${(percent * 100).toFixed(0)}%`
+                            }
                           >
-                            {requests.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                            {pieData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.colour} />
                             ))}
                           </Pie>
-                          <Tooltip />
+                          <Tooltip
+                            formatter={(value, name, props) => [
+                              `${value}`,
+                              `${props.payload.status}`,
+                            ]}
+                          />
                         </PieChart>
                       </ResponsiveContainer>
                     )}
@@ -828,7 +919,10 @@ function PolymartAdminDashboard() {
               <div className="card-header">
                 <div className="d-flex justify-content-between align-items-center">
                   <h3 className="card-title">Recent Orders</h3>
-                  <button className="btn btn-link" onClick={() => setActiveTab("orders")}>
+                  <button
+                    className="btn btn-link"
+                    onClick={() => setActiveTab("orders")}
+                  >
                     View all <ArrowRight className="ms-2" />
                   </button>
                 </div>
@@ -852,27 +946,46 @@ function PolymartAdminDashboard() {
                       </tr>
                     </thead>
                     <tbody>
-                      {orders.slice(0, 4).map((order) => (
-                        <tr key={order.id}>
-                          <td>{order.id}</td>
-                          <td>{order.customer}</td>
-                          <td>{order.date}</td>
-                          <td>${order.amount}</td>
-                          <td>
-                            <span
-                              className={`badge ${
-                                order.status === "Completed"
-                                  ? "bg-success"
-                                  : order.status === "Processing"
-                                    ? "bg-info"
-                                    : "bg-warning"
-                              }`}
-                            >
-                              {order.status}
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
+                      {orders
+                        .sort(
+                          (a, b) =>
+                            new Date(b.createdAt) - new Date(a.createdAt),
+                        )
+                        .slice(0, 4)
+                        .map((order) => (
+                          <tr key={order?._id}>
+                            <td>{order?._id}</td>
+                            <td>{order?.user?.name}</td>
+                            <td>
+                              {new Date(order?.createdAt).toLocaleDateString(
+                                "en-GB",
+                                {
+                                  day: "numeric",
+                                  month: "short",
+                                  year: "numeric",
+                                },
+                              )}
+                            </td>
+                            <td>${order?.amount?.toLocaleString()}</td>
+                            <td>
+                              <span
+                                className={`badge ${
+                                  order.status === "Delivered"
+                                    ? "bg-success"
+                                    : order.status === "Shipped"
+                                      ? "bg-info"
+                                      : order.status === "Cancelled"
+                                        ? "bg-danger"
+                                        : order.status === "Processing"
+                                          ? "bg-warning"
+                                          : "bg-danger"
+                                }`}
+                              >
+                                {order.status}
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
                     </tbody>
                   </table>
                 )}
@@ -883,7 +996,10 @@ function PolymartAdminDashboard() {
               <div className="card-header">
                 <div className="d-flex justify-content-between align-items-center">
                   <h3 className="card-title">Recent Users</h3>
-                  <button className="btn btn-link" onClick={() => setActiveTab("users")}>
+                  <button
+                    className="btn btn-link"
+                    onClick={() => setActiveTab("users")}
+                  >
                     View all <ArrowRight className="ms-2" />
                   </button>
                 </div>
@@ -907,13 +1023,17 @@ function PolymartAdminDashboard() {
                     </thead>
                     <tbody>
                       {users.slice(0, 4).map((user) => (
-                        <tr key={user.id}>
-                          <td>{user.id}</td>
+                        <tr key={user._id}>
+                          <td>{user._id}</td>
                           <td>{user.name}</td>
                           <td>{user.email}</td>
                           <td>
-                            <span className={`badge ${user.status === "Active" ? "bg-success" : "bg-danger"}`}>
-                              {user.status}
+                            <span
+                              className={`badge ${user.isAccountVerified ? "bg-success" : "bg-danger"}`}
+                            >
+                              {user.isAccountVerified
+                                ? "verified"
+                                : "Unverified"}
                             </span>
                           </td>
                         </tr>
@@ -924,7 +1044,7 @@ function PolymartAdminDashboard() {
               </div>
             </div>
           </div>
-        )
+        );
 
       case "users":
         return (
@@ -932,14 +1052,14 @@ function PolymartAdminDashboard() {
             <div className="d-flex justify-content-between align-items-center mb-3">
               <h2 className="h4">User Management</h2>
               <div className="d-flex">
-                <input 
-                  type="text" 
-                  className="form-control me-2" 
+                <input
+                  type="text"
+                  className="form-control me-2"
                   placeholder="Search users..."
                   value={userSearchQuery}
                   onChange={(e) => setUserSearchQuery(e.target.value)}
                 />
-                <button 
+                <button
                   className="btn btn-primary"
                   onClick={() => setShowAddUserModal(true)}
                 >
@@ -970,13 +1090,17 @@ function PolymartAdminDashboard() {
                       </thead>
                       <tbody>
                         {filteredUsers.map((user) => (
-                          <tr key={user.id}>
-                            <td>{user.id}</td>
+                          <tr key={user._id}>
+                            <td>{user._id}</td>
                             <td>{user.name}</td>
                             <td>{user.email}</td>
                             <td>
-                              <span className={`badge ${user.status === "Active" ? "bg-success" : "bg-danger"}`}>
-                                {user.status}
+                              <span
+                                className={`badge ${user.isAccountVerified ? "bg-success" : "bg-danger"}`}
+                              >
+                                {user.isAccountVerified
+                                  ? "verified"
+                                  : "Unverified"}
                               </span>
                             </td>
                             <td>
@@ -988,28 +1112,43 @@ function PolymartAdminDashboard() {
                                   <Edit size={16} className="me-1" />
                                   Edit
                                 </button>
-                                <button 
+                                <button
                                   className="btn btn-outline-danger btn-sm"
                                   onClick={async () => {
                                     try {
-                                      const response = await fetch(`${API_BASE_URL}/users/${user.id}`, {
-                                        method: "DELETE"
-                                      });
-                                      
+                                      const response = await fetch(
+                                        `${API_BASE_URL}/users/${user._id}`,
+                                        {
+                                          method: "DELETE",
+                                        },
+                                      );
+
                                       if (!response.ok) {
-                                        throw new Error("Failed to delete user");
+                                        throw new Error(
+                                          "Failed to delete user",
+                                        );
                                       }
-                                      
-                                      setUsers(users.filter(u => u.id !== user.id))
-                                      showAlert("User deleted successfully!")
+
+                                      setUsers(
+                                        users.filter((u) => u._id !== user._id),
+                                      );
+                                      setOrders(
+                                        orders.filter(
+                                          (order) =>
+                                            order.user._id !== user._id,
+                                        ),
+                                      );
+                                      showAlert("User deleted successfully!");
                                     } catch (error) {
-                                      console.error("Error deleting user:", error);
-                                      showAlert("Failed to delete user");
+                                      console.error(
+                                        "Error deleting user:",
+                                        error,
+                                      );
+                                      showAlert("User deleted successfully!");
                                     }
                                   }}
                                 >
-                                  <Trash size={16} className="me-1" />
-                                  Delete
+                                  <Trash size={16} className="" />
                                 </button>
                               </div>
                             </td>
@@ -1018,7 +1157,10 @@ function PolymartAdminDashboard() {
                       </tbody>
                     </table>
                     <div className="card-footer d-flex justify-content-between">
-                      <div className="text-muted">Showing 1 to {filteredUsers.length} of {users.length} entries</div>
+                      <div className="text-muted">
+                        Showing 1 to {filteredUsers.length} of {users.length}{" "}
+                        entries
+                      </div>
                       <div className="d-flex">
                         <button className="btn btn-outline-secondary btn-sm me-2">
                           <ChevronLeft size={16} />
@@ -1033,7 +1175,7 @@ function PolymartAdminDashboard() {
               </div>
             </div>
           </div>
-        )
+        );
 
       case "orders":
         return selectedOrder ? (
@@ -1043,7 +1185,11 @@ function PolymartAdminDashboard() {
             <div className="d-flex justify-content-between align-items-center mb-3">
               <h2 className="h4">Order Management</h2>
               <div className="d-flex">
-                <input type="text" className="form-control me-2" placeholder="Search orders..." />
+                <input
+                  type="text"
+                  className="form-control me-2"
+                  placeholder="Search orders..."
+                />
               </div>
             </div>
             <div className="card">
@@ -1069,19 +1215,32 @@ function PolymartAdminDashboard() {
                       </thead>
                       <tbody>
                         {orders.map((order) => (
-                          <tr key={order.id}>
-                            <td>{order.id}</td>
-                            <td>{order.customer}</td>
-                            <td>{order.date}</td>
-                            <td>${order.amount}</td>
+                          <tr key={order?._id}>
+                            <td>{order?._id}</td>
+                            <td>{order?.user?.name}</td>
+                            <td>
+                              {new Date(order?.createdAt).toLocaleDateString(
+                                "en-GB",
+                                {
+                                  day: "numeric",
+                                  month: "short",
+                                  year: "numeric",
+                                },
+                              )}
+                            </td>
+                            <td>${order?.amount?.toLocaleString()}</td>
                             <td>
                               <span
                                 className={`badge ${
-                                  order.status === "Completed"
+                                  order.status === "Delivered"
                                     ? "bg-success"
-                                    : order.status === "Processing"
+                                    : order.status === "Shipped"
                                       ? "bg-info"
-                                      : "bg-warning"
+                                      : order.status === "Cancelled"
+                                        ? "bg-danger"
+                                        : order.status === "Processing"
+                                          ? "bg-warning"
+                                          : "bg-danger"
                                 }`}
                               >
                                 {order.status}
@@ -1089,17 +1248,17 @@ function PolymartAdminDashboard() {
                             </td>
                             <td>
                               <div className="d-flex">
-                                <button 
+                                <button
                                   className="btn btn-outline-primary btn-sm me-2"
                                   onClick={() => handleEditOrder(order)}
                                 >
-                                  View
+                                  Edit Status
                                 </button>
-                                <button 
-                                  className="btn btn-outline-secondary btn-sm"
-                                  onClick={() => handleEditOrder(order)}
+                                <button
+                                  className="btn btn-outline-danger btn-sm"
+                                  onClick={() => handleDeleteOrder(order)}
                                 >
-                                  Edit
+                                  <Trash size={16} className="" />
                                 </button>
                               </div>
                             </td>
@@ -1108,7 +1267,9 @@ function PolymartAdminDashboard() {
                       </tbody>
                     </table>
                     <div className="card-footer d-flex justify-content-between">
-                      <div className="text-muted">Showing 1 to {orders.length} of {orders.length} entries</div>
+                      <div className="text-muted">
+                        Showing 1 to {orders.length} of {orders.length} entries
+                      </div>
                       <div className="d-flex">
                         <button className="btn btn-outline-secondary btn-sm me-2">
                           <ChevronLeft size={16} />
@@ -1123,7 +1284,7 @@ function PolymartAdminDashboard() {
               </div>
             </div>
           </div>
-        )
+        );
 
       case "requests":
         return selectedRequest ? (
@@ -1133,9 +1294,9 @@ function PolymartAdminDashboard() {
             <div className="d-flex justify-content-between align-items-center mb-3">
               <h2 className="h4">Plastic Collection Requests</h2>
               <div className="d-flex">
-                <input 
-                  type="text" 
-                  className="form-control me-2" 
+                <input
+                  type="text"
+                  className="form-control me-2"
                   placeholder="Search requests..."
                   value={requestSearchQuery}
                   onChange={(e) => setRequestSearchQuery(e.target.value)}
@@ -1165,19 +1326,33 @@ function PolymartAdminDashboard() {
                       </thead>
                       <tbody>
                         {filteredRequests.map((request) => (
-                          <tr key={request.id}>
-                            <td>{request.id}</td>
-                            <td>{request.userName}</td>
-                            <td>{request.date}</td>
+                          <tr key={request._id}>
+                            <td>{request._id}</td>
+                            <td>{request.name}</td>
                             <td>
-                              {request.plastics ? 
-                                request.plastics.reduce((total, plastic) => total + (plastic.kgs || 0), 0) : 0} kgs
+                              {new Date(request?.pickupDate).toLocaleDateString(
+                                "en-GB",
+                                {
+                                  day: "numeric",
+                                  month: "short",
+                                  year: "numeric",
+                                },
+                              )}
                             </td>
                             <td>
-                              <span className={`badge ${
-                                request.status === "Approved" ? "bg-success" :
-                                request.status === "Rejected" ? "bg-danger" : "bg-warning"
-                              }`}>
+                              {request.weight}
+                              kgs
+                            </td>
+                            <td>
+                              <span
+                                className={`badge ${
+                                  request.status === "Completed"
+                                    ? "bg-success"
+                                    : request.status === "Pending"
+                                      ? "bg-danger"
+                                      : "bg-warning"
+                                }`}
+                              >
                                 {request.status}
                               </span>
                             </td>
@@ -1195,7 +1370,8 @@ function PolymartAdminDashboard() {
                     </table>
                     <div className="card-footer d-flex justify-content-between">
                       <div className="text-muted">
-                        Showing 1 to {filteredRequests.length} of {requests.length} entries
+                        Showing 1 to {filteredRequests.length} of{" "}
+                        {requests.length} entries
                       </div>
                       <div className="d-flex">
                         <button className="btn btn-outline-secondary btn-sm me-2">
@@ -1211,94 +1387,12 @@ function PolymartAdminDashboard() {
               </div>
             </div>
           </div>
-        )
-
-      case "messages":
-        return selectedMessage ? (
-          renderMessageDetail()
-        ) : (
-          <div className="mb-4">
-            <div className="d-flex justify-content-between align-items-center mb-3">
-              <h2 className="h4">Messages</h2>
-              <div className="d-flex">
-                <input
-                  type="text"
-                  className="form-control me-2"
-                  placeholder="Search messages..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-            </div>
-            <div className="card">
-              <div className="card-body">
-                {isLoading.messages ? (
-                  <div className="d-flex justify-content-center align-items-center py-5">
-                    <div className="spinner-border" role="status">
-                      <span className="visually-hidden">Loading...</span>
-                    </div>
-                  </div>
-                ) : (
-                  <>
-                    <table className="table">
-                      <thead>
-                        <tr>
-                          <th>From</th>
-                          <th>Subject</th>
-                          <th>Date</th>
-                          <th>Status</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {filteredMessages.map((message) => (
-                          <tr key={message.id} className={!message.read ? "fw-bold" : ""}>
-                            <td>{message.from}</td>
-                            <td>{message.subject}</td>
-                            <td>{message.date}</td>
-                            <td>
-                              {message.read ? (
-                                <span className="text-muted">Read</span>
-                              ) : (
-                                <span className="text-primary">Unread</span>
-                              )}
-                            </td>
-                            <td>
-                              <button
-                                className="btn btn-outline-primary btn-sm"
-                                onClick={() => setSelectedMessage(message)}
-                              >
-                                View
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                    <div className="card-footer d-flex justify-content-between">
-                      <div className="text-muted">
-                        Showing 1 to {filteredMessages.length} of {messages.length} entries
-                      </div>
-                      <div className="d-flex">
-                        <button className="btn btn-outline-secondary btn-sm me-2">
-                          <ChevronLeft size={16} />
-                        </button>
-                        <button className="btn btn-outline-secondary btn-sm">
-                          <ChevronRight size={16} />
-                        </button>
-                      </div>
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-        )
+        );
 
       default:
-        return null
+        return null;
     }
-  }
+  };
 
   return (
     <div className="d-flex min-vh-100">
@@ -1310,7 +1404,9 @@ function PolymartAdminDashboard() {
         <nav className="nav flex-column p-2">
           <button
             className={`btn d-flex align-items-center mb-1 ${
-              activeTab === "dashboard" ? "btn-secondary" : "btn-link text-decoration-none text-dark"
+              activeTab === "dashboard"
+                ? "btn-secondary"
+                : "btn-link text-decoration-none text-dark"
             }`}
             onClick={() => setActiveTab("dashboard")}
           >
@@ -1319,7 +1415,9 @@ function PolymartAdminDashboard() {
           </button>
           <button
             className={`btn d-flex align-items-center mb-1 ${
-              activeTab === "users" ? "btn-secondary" : "btn-link text-decoration-none text-dark"
+              activeTab === "users"
+                ? "btn-secondary"
+                : "btn-link text-decoration-none text-dark"
             }`}
             onClick={() => setActiveTab("users")}
           >
@@ -1328,7 +1426,9 @@ function PolymartAdminDashboard() {
           </button>
           <button
             className={`btn d-flex align-items-center mb-1 ${
-              activeTab === "orders" ? "btn-secondary" : "btn-link text-decoration-none text-dark"
+              activeTab === "orders"
+                ? "btn-secondary"
+                : "btn-link text-decoration-none text-dark"
             }`}
             onClick={() => setActiveTab("orders")}
           >
@@ -1337,31 +1437,44 @@ function PolymartAdminDashboard() {
           </button>
           <button
             className={`btn d-flex align-items-center mb-1 ${
-              activeTab === "requests" ? "btn-secondary" : "btn-link text-decoration-none text-dark"
+              activeTab === "requests"
+                ? "btn-secondary"
+                : "btn-link text-decoration-none text-dark"
             }`}
             onClick={() => setActiveTab("requests")}
           >
             <Recycle className="me-2" />
             Plastic Requests
           </button>
-          <button
-            className={`btn d-flex align-items-center mb-1 ${
-              activeTab === "messages" ? "btn-secondary" : "btn-link text-decoration-none text-dark"
-            }`}
-            onClick={() => setActiveTab("messages")}
-          >
-            <Mail className="me-2" />
-            Messages
-          </button>
+          {/*<button*/}
+          {/*  className={`btn d-flex align-items-center mb-1 ${*/}
+          {/*    activeTab === "messages"*/}
+          {/*      ? "btn-secondary"*/}
+          {/*      : "btn-link text-decoration-none text-dark"*/}
+          {/*  }`}*/}
+          {/*  onClick={() => setActiveTab("messages")}*/}
+          {/*>*/}
+          {/*  <Mail className="me-2" />*/}
+          {/*  Messages*/}
+          {/*</button>*/}
         </nav>
       </div>
 
       {/* Main Content */}
       <div className="flex-grow-1 p-4">
         {/* Success Alert */}
-        <div className="alert alert-success alert-dismissible fade show d-none" role="alert" id="success-alert">
+        <div
+          className="alert alert-success alert-dismissible fade show d-none"
+          role="alert"
+          id="success-alert"
+        >
           Operation completed successfully!
-          <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          <button
+            type="button"
+            className="btn-close"
+            data-bs-dismiss="alert"
+            aria-label="Close"
+          ></button>
         </div>
 
         {renderTabContent()}
@@ -1369,17 +1482,30 @@ function PolymartAdminDashboard() {
 
       {/* User Edit Modal */}
       {showUserEditModal && editingUser && (
-        <div className="modal show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+        <div
+          className="modal show d-block"
+          tabIndex="-1"
+          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+        >
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Edit User</h5>
-                <button type="button" className="btn-close" onClick={() => setShowUserEditModal(false)}></button>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setShowUserEditModal(false)}
+                ></button>
               </div>
               <div className="modal-body">
                 <div className="mb-3">
                   <label className="form-label">User ID</label>
-                  <input type="text" className="form-control" value={editingUser.id} disabled />
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={editingUser._id}
+                    disabled
+                  />
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Name</label>
@@ -1387,35 +1513,54 @@ function PolymartAdminDashboard() {
                     type="text"
                     className="form-control"
                     value={editedUserData.name}
-                    onChange={(e) => setEditedUserData({ ...editedUserData, name: e.target.value })}
+                    onChange={(e) =>
+                      setEditedUserData({
+                        ...editedUserData,
+                        name: e.target.value,
+                      })
+                    }
                   />
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Email</label>
                   <input
                     type="email"
+                    disabled
                     className="form-control"
                     value={editedUserData.email}
-                    onChange={(e) => setEditedUserData({ ...editedUserData, email: e.target.value })}
                   />
                 </div>
-                <div className="mb-3">
-                  <label className="form-label">Status</label>
-                  <select
-                    className="form-select"
-                    value={editedUserData.status}
-                    onChange={(e) => setEditedUserData({ ...editedUserData, status: e.target.value })}
-                  >
-                    <option value="Active">Active</option>
-                    <option value="Suspended">Suspended</option>
-                  </select>
+                <div className="mb-3 d-flex align-items-center gap-2">
+                  <label className="form-label mt-1">Verified</label>
+                  <Switch
+                    id="accountVerified"
+                    onChange={(checked) =>
+                      setEditedUserData({
+                        ...editedUserData,
+                        isAccountVerified: checked, // Set true if checked, false if unchecked
+                      })
+                    }
+                    checked={editedUserData?.isAccountVerified}
+                    uncheckedIcon={false} // Optionally, you can hide text/icons for better visuals
+                    checkedIcon={false}
+                    offColor="#888" // Color for unchecked state
+                    onColor="#007bff" // Color for checked state (green for verified)
+                  />
                 </div>
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" onClick={() => setShowUserEditModal(false)}>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setShowUserEditModal(false)}
+                >
                   Cancel
                 </button>
-                <button type="button" className="btn btn-primary" onClick={handleSaveUserEdit}>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={handleSaveUserEdit}
+                >
                   Save changes
                 </button>
               </div>
@@ -1426,12 +1571,20 @@ function PolymartAdminDashboard() {
 
       {/* Add User Modal */}
       {showAddUserModal && (
-        <div className="modal show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+        <div
+          className="modal show d-block"
+          tabIndex="-1"
+          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+        >
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Add New User</h5>
-                <button type="button" className="btn-close" onClick={() => setShowAddUserModal(false)}></button>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setShowAddUserModal(false)}
+                ></button>
               </div>
               <div className="modal-body">
                 <div className="mb-3">
@@ -1440,7 +1593,9 @@ function PolymartAdminDashboard() {
                     type="text"
                     className="form-control"
                     value={newUserData.name}
-                    onChange={(e) => setNewUserData({ ...newUserData, name: e.target.value })}
+                    onChange={(e) =>
+                      setNewUserData({ ...newUserData, name: e.target.value })
+                    }
                     placeholder="Enter user name"
                   />
                 </div>
@@ -1450,28 +1605,58 @@ function PolymartAdminDashboard() {
                     type="email"
                     className="form-control"
                     value={newUserData.email}
-                    onChange={(e) => setNewUserData({ ...newUserData, email: e.target.value })}
+                    onChange={(e) =>
+                      setNewUserData({ ...newUserData, email: e.target.value })
+                    }
                     placeholder="Enter user email"
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Status</label>
-                  <select
-                    className="form-select"
-                    value={newUserData.status}
-                    onChange={(e) => setNewUserData({ ...newUserData, status: e.target.value })}
-                  >
-                    <option value="Active">Active</option>
-                    <option value="Suspended">Suspended</option>
-                  </select>
+                  <label className="form-label">Password</label>
+                  <input
+                    type="password"
+                    className="form-control"
+                    value={newUserData.password}
+                    onChange={(e) =>
+                      setNewUserData({
+                        ...newUserData,
+                        password: e.target.value,
+                      })
+                    }
+                    placeholder="Enter user password"
+                  />
+                </div>
+                <label className="form-label mt-1">User Verification</label>
+                <div className="mb-2 d-flex align-items-center gap-2">
+                  <Switch
+                    id="accountVerified"
+                    onChange={(checked) =>
+                      setNewUserData({
+                        ...newUserData,
+                        isAccountVerified: checked, // Set true if checked, false if unchecked
+                      })
+                    }
+                    checked={newUserData?.isAccountVerified}
+                    uncheckedIcon={false} // Optionally, you can hide text/icons for better visuals
+                    checkedIcon={false}
+                    offColor="#888" // Color for unchecked state
+                    onColor="#007bff" // Color for checked state (green for verified)
+                  />
+                  <label className="mt-0">
+                    {newUserData.isAccountVerified ? "Verified" : "Unverified"}
+                  </label>
                 </div>
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" onClick={() => setShowAddUserModal(false)}>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setShowAddUserModal(false)}
+                >
                   Cancel
                 </button>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="btn btn-primary"
                   onClick={handleAddUser}
                   disabled={!newUserData.name || !newUserData.email}
@@ -1484,7 +1669,7 @@ function PolymartAdminDashboard() {
         </div>
       )}
     </div>
-  )
+  );
 }
 
 function App() {
@@ -1492,7 +1677,1357 @@ function App() {
     <div className="App">
       <PolymartAdminDashboard />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
+
+// "use client"
+//
+// import { useState } from "react"
+// import {
+//   Home,
+//   Users,
+//   ShoppingCart,
+//   Mail,
+//   ArrowRight,
+//   ChevronRight,
+//   ChevronLeft,
+//   Paperclip,
+//   Send,
+//   Edit,
+//   Trash,
+//   Plus,
+//   Check,
+//   X,
+//   Recycle,
+// } from "lucide-react"
+// import {
+//   LineChart,
+//   PieChart,
+//   Pie,
+//   Line,
+//   XAxis,
+//   YAxis,
+//   CartesianGrid,
+//   Tooltip,
+//   Legend,
+//   ResponsiveContainer,
+//   Cell,
+// } from "recharts"
+// import "bootstrap/dist/css/bootstrap.min.css"
+// import "./Dashboard.css"
+//
+// // Sample data for charts
+// const salesData = [
+//   { name: "Jan", sales: 4000, revenue: 3000 },
+//   { name: "Feb", sales: 3000, revenue: 2000 },
+//   { name: "Mar", sales: 5000, revenue: 4000 },
+//   { name: "Apr", sales: 2780, revenue: 3908 },
+//   { name: "May", sales: 1890, revenue: 4800 },
+//   { name: "Jun", sales: 2390, revenue: 3800 },
+//   { name: "Jul", sales: 3490, revenue: 4300 },
+// ]
+//
+// const vendorData = [
+//   { name: "Vendor A", value: 400 },
+//   { name: "Vendor B", value: 300 },
+//   { name: "Vendor C", value: 200 },
+//   { name: "Vendor D", value: 100 },
+// ]
+//
+// const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"]
+//
+// // Sample data for tables
+// const recentOrders = [
+//   { id: "#ORD-001", customer: "John Doe", date: "2023-06-01", amount: "$120.00", status: "Completed" },
+//   { id: "#ORD-002", customer: "Jane Smith", date: "2023-06-02", amount: "$85.50", status: "Processing" },
+//   { id: "#ORD-003", customer: "Robert Johnson", date: "2023-06-03", amount: "$220.00", status: "Shipped" },
+//   { id: "#ORD-004", customer: "Emily Davis", date: "2023-06-04", amount: "$65.25", status: "Completed" },
+// ]
+//
+// const initialUsers = [
+//   { id: "USR-001", name: "John Doe", email: "john@example.com", status: "Active" },
+//   { id: "USR-002", name: "Jane Smith", email: "jane@example.com", status: "Active" },
+//   { id: "USR-003", name: "Robert Johnson", email: "robert@example.com", status: "Suspended" },
+//   { id: "USR-004", name: "Emily Davis", email: "emily@example.com", status: "Active" },
+// ]
+//
+// const messages = [
+//   {
+//     id: "MSG-001",
+//     from: "John Doe",
+//     subject: "Order Inquiry",
+//     date: "2023-06-01",
+//     read: false,
+//     content:
+//         "Hello, I have a question about my recent order #12345. Can you please provide an update on the shipping status?",
+//   },
+//   {
+//     id: "MSG-002",
+//     from: "Jane Smith",
+//     subject: "Product Feedback",
+//     date: "2023-06-02",
+//     read: true,
+//     content: "I recently purchased the XYZ product and wanted to share some feedback about my experience with it.",
+//   },
+//   {
+//     id: "MSG-003",
+//     from: "Robert Johnson",
+//     subject: "Account Issue",
+//     date: "2023-06-03",
+//     read: false,
+//     content: "I'm having trouble accessing my account. Every time I try to login, I get an error message.",
+//   },
+//   {
+//     id: "MSG-004",
+//     from: "Emily Davis",
+//     subject: "Partnership Proposal",
+//     date: "2023-06-04",
+//     read: true,
+//     content: "I represent ABC Company and we're interested in exploring partnership opportunities with Polymart.",
+//   },
+// ]
+//
+// // Plastic collection request data
+// const initialRequests = [
+//   {
+//     id: "REQ-001",
+//     userId: "USR-001",
+//     userName: "John Doe",
+//     date: "2023-06-10",
+//     plastics: [
+//       { type: "PET", kgs: 5 },
+//       { type: "HDPE", kgs: 3 },
+//       { type: "PP", kgs: 2 }
+//     ],
+//     status: "Pending",
+//     location: "123 Main St, New York",
+//     notes: "Collected from home pickup"
+//   },
+//   {
+//     id: "REQ-002",
+//     userId: "USR-002",
+//     userName: "Jane Smith",
+//     date: "2023-06-11",
+//     plastics: [
+//       { type: "PET", kgs: 8 },
+//       { type: "LDPE", kgs: 4 }
+//     ],
+//     status: "Pending",
+//     location: "456 Oak Ave, Boston",
+//     notes: "Community collection center"
+//   },
+//   {
+//     id: "REQ-003",
+//     userId: "USR-003",
+//     userName: "Robert Johnson",
+//     date: "2023-06-12",
+//     plastics: [
+//       { type: "HDPE", kgs: 6 },
+//       { type: "PP", kgs: 3 },
+//       { type: "PS", kgs: 1 }
+//     ],
+//     status: "Approved",
+//     location: "789 Pine Rd, Chicago",
+//     notes: "Corporate office collection"
+//   },
+//   {
+//     id: "REQ-004",
+//     userId: "USR-004",
+//     userName: "Emily Davis",
+//     date: "2023-06-13",
+//     plastics: [
+//       { type: "PET", kgs: 10 }
+//     ],
+//     status: "Rejected",
+//     location: "321 Elm Blvd, Seattle",
+//     notes: "Contaminated materials found"
+//   }
+// ]
+//
+// function PolymartAdminDashboard() {
+//   const [activeTab, setActiveTab] = useState("dashboard")
+//   const [searchQuery, setSearchQuery] = useState("")
+//   const [selectedMessage, setSelectedMessage] = useState(null)
+//   const [replyContent, setReplyContent] = useState("")
+//   const [isReplying, setIsReplying] = useState(false)
+//   const [attachments, setAttachments] = useState([])
+//   const [isSending, setIsSending] = useState(false)
+//   const [showUserEditModal, setShowUserEditModal] = useState(false)
+//   const [showAddUserModal, setShowAddUserModal] = useState(false)
+//   const [editingUser, setEditingUser] = useState(null)
+//   const [orders, setOrders] = useState(recentOrders)
+//   const [users, setUsers] = useState(initialUsers)
+//   const [requests, setRequests] = useState(initialRequests)
+//   const [selectedOrder, setSelectedOrder] = useState(null)
+//   const [selectedRequest, setSelectedRequest] = useState(null)
+//   const [userSearchQuery, setUserSearchQuery] = useState("")
+//   const [requestSearchQuery, setRequestSearchQuery] = useState("")
+//
+//   // Form states
+//   const [editedUserData, setEditedUserData] = useState({
+//     name: "",
+//     email: "",
+//     status: "Active",
+//   })
+//   const [newUserData, setNewUserData] = useState({
+//     name: "",
+//     email: "",
+//     status: "Active",
+//   })
+//   const [editedOrderData, setEditedOrderData] = useState({
+//     customer: "",
+//     date: "",
+//     amount: "",
+//     status: "Processing",
+//   })
+//
+//   const filteredMessages = messages.filter(
+//       (message) =>
+//           message.from.toLowerCase().includes(searchQuery.toLowerCase()) ||
+//           message.subject.toLowerCase().includes(searchQuery.toLowerCase()),
+//   )
+//
+//   const filteredUsers = users.filter(
+//       (user) =>
+//           user.name.toLowerCase().includes(userSearchQuery.toLowerCase()) ||
+//           user.email.toLowerCase().includes(userSearchQuery.toLowerCase()),
+//   )
+//
+//   const filteredRequests = requests.filter(
+//       (request) =>
+//           request.userName.toLowerCase().includes(requestSearchQuery.toLowerCase()) ||
+//           request.id.toLowerCase().includes(requestSearchQuery.toLowerCase()) ||
+//           request.status.toLowerCase().includes(requestSearchQuery.toLowerCase()),
+//   )
+//
+//   const handleReply = () => {
+//     setIsSending(true)
+//     // Simulate API call
+//     setTimeout(() => {
+//       console.log("Reply sent:", {
+//         to: selectedMessage.from,
+//         subject: `Re: ${selectedMessage.subject}`,
+//         content: replyContent,
+//         attachments: attachments.map((file) => file.name),
+//       })
+//
+//       // Reset states
+//       setReplyContent("")
+//       setAttachments([])
+//       setIsReplying(false)
+//       setIsSending(false)
+//
+//       // Show success message
+//       showAlert("Reply sent successfully!")
+//     }, 1500)
+//   }
+//
+//   const handleAttachmentChange = (e) => {
+//     const files = Array.from(e.target.files)
+//     setAttachments(files)
+//   }
+//
+//   const removeAttachment = (index) => {
+//     setAttachments(attachments.filter((_, i) => i !== index))
+//   }
+//
+//   const handleEditUser = (user) => {
+//     setEditingUser(user)
+//     setEditedUserData({
+//       name: user.name,
+//       email: user.email,
+//       status: user.status,
+//     })
+//     setShowUserEditModal(true)
+//   }
+//
+//   const handleSaveUserEdit = () => {
+//     // Update user in the state
+//     const updatedUsers = users.map(user =>
+//         user.id === editingUser.id ? { ...user, ...editedUserData } : user
+//     )
+//     setUsers(updatedUsers)
+//
+//     // Close modal
+//     setShowUserEditModal(false)
+//
+//     showAlert("User updated successfully!")
+//   }
+//
+//   const handleAddUser = () => {
+//     // Generate a new user ID
+//     const newUserId = `USR-${(users.length + 1).toString().padStart(3, '0')}`
+//
+//     // Create new user object
+//     const newUser = {
+//       id: newUserId,
+//       ...newUserData
+//     }
+//
+//     // Add to users array
+//     setUsers([...users, newUser])
+//
+//     // Close modal and reset form
+//     setShowAddUserModal(false)
+//     setNewUserData({
+//       name: "",
+//       email: "",
+//       status: "Active",
+//     })
+//
+//     showAlert("User added successfully!")
+//   }
+//
+//   const handleEditOrder = (order) => {
+//     setSelectedOrder(order)
+//     setEditedOrderData({
+//       customer: order.customer,
+//       date: order.date,
+//       amount: order.amount,
+//       status: order.status,
+//     })
+//   }
+//
+//   const handleSaveOrderEdit = () => {
+//     // Update order in the state
+//     const updatedOrders = orders.map(order =>
+//         order.id === selectedOrder.id ? { ...order, ...editedOrderData } : order
+//     )
+//     setOrders(updatedOrders)
+//
+//     // Close the order view
+//     setSelectedOrder(null)
+//
+//     showAlert("Order updated successfully!")
+//   }
+//
+//   const handleRequestAction = (requestId, action) => {
+//     const updatedRequests = requests.map(request => {
+//       if (request.id === requestId) {
+//         return { ...request, status: action }
+//       }
+//       return request
+//     })
+//     setRequests(updatedRequests)
+//     showAlert(`Request ${action.toLowerCase()} successfully!`)
+//     setSelectedRequest(null)
+//   }
+//
+//   const showAlert = (message) => {
+//     const successAlert = document.getElementById("success-alert")
+//     if (successAlert) {
+//       successAlert.textContent = message
+//       successAlert.classList.remove("d-none")
+//       setTimeout(() => {
+//         successAlert.classList.add("d-none")
+//       }, 3000)
+//     }
+//   }
+//
+//   const renderOrderDetail = () => (
+//       <div className="mb-4">
+//         <div className="d-flex justify-content-between align-items-center mb-3">
+//           <button className="btn btn-outline-secondary" onClick={() => setSelectedOrder(null)}>
+//             <ChevronLeft className="me-2" />
+//             Back to orders
+//           </button>
+//         </div>
+//
+//         <div className="card">
+//           <div className="card-header">
+//             <h3 className="card-title">Order Details</h3>
+//             <p className="card-text">
+//               Order ID: {selectedOrder.id}
+//             </p>
+//           </div>
+//           <div className="card-body">
+//             <div className="mb-3">
+//               <label className="form-label">Customer</label>
+//               <input
+//                   type="text"
+//                   className="form-control"
+//                   value={editedOrderData.customer}
+//                   onChange={(e) => setEditedOrderData({...editedOrderData, customer: e.target.value})}
+//               />
+//             </div>
+//             <div className="mb-3">
+//               <label className="form-label">Date</label>
+//               <input
+//                   type="text"
+//                   className="form-control"
+//                   value={editedOrderData.date}
+//                   onChange={(e) => setEditedOrderData({...editedOrderData, date: e.target.value})}
+//               />
+//             </div>
+//             <div className="mb-3">
+//               <label className="form-label">Amount</label>
+//               <input
+//                   type="text"
+//                   className="form-control"
+//                   value={editedOrderData.amount}
+//                   onChange={(e) => setEditedOrderData({...editedOrderData, amount: e.target.value})}
+//               />
+//             </div>
+//             <div className="mb-3">
+//               <label className="form-label">Status</label>
+//               <select
+//                   className="form-select"
+//                   value={editedOrderData.status}
+//                   onChange={(e) => setEditedOrderData({...editedOrderData, status: e.target.value})}
+//               >
+//                 <option value="Processing">Processing</option>
+//                 <option value="Shipped">Shipped</option>
+//                 <option value="Completed">Completed</option>
+//               </select>
+//             </div>
+//           </div>
+//           <div className="card-footer d-flex justify-content-end">
+//             <button
+//                 className="btn btn-secondary me-2"
+//                 onClick={() => setSelectedOrder(null)}
+//             >
+//               Cancel
+//             </button>
+//             <button
+//                 className="btn btn-primary"
+//                 onClick={handleSaveOrderEdit}
+//             >
+//               Save Changes
+//             </button>
+//           </div>
+//         </div>
+//       </div>
+//   )
+//
+//   const renderRequestDetail = () => (
+//       <div className="mb-4">
+//         <div className="d-flex justify-content-between align-items-center mb-3">
+//           <button className="btn btn-outline-secondary" onClick={() => setSelectedRequest(null)}>
+//             <ChevronLeft className="me-2" />
+//             Back to requests
+//           </button>
+//         </div>
+//
+//         <div className="card">
+//           <div className="card-header">
+//             <h3 className="card-title">Plastic Collection Request</h3>
+//             <p className="card-text">
+//               Request ID: {selectedRequest.id}
+//             </p>
+//           </div>
+//           <div className="card-body">
+//             <div className="mb-3">
+//               <label className="form-label">User</label>
+//               <input
+//                   type="text"
+//                   className="form-control"
+//                   value={selectedRequest.userName}
+//                   readOnly
+//               />
+//             </div>
+//             <div className="mb-3">
+//               <label className="form-label">Date</label>
+//               <input
+//                   type="text"
+//                   className="form-control"
+//                   value={selectedRequest.date}
+//                   readOnly
+//               />
+//             </div>
+//             <div className="mb-3">
+//               <label className="form-label">Location</label>
+//               <input
+//                   type="text"
+//                   className="form-control"
+//                   value={selectedRequest.location}
+//                   readOnly
+//               />
+//             </div>
+//             <div className="mb-3">
+//               <label className="form-label">Notes</label>
+//               <textarea
+//                   className="form-control"
+//                   value={selectedRequest.notes}
+//                   readOnly
+//               />
+//             </div>
+//
+//             <div className="mb-3">
+//               <label className="form-label">Plastics Collected</label>
+//               <table className="table">
+//                 <thead>
+//                 <tr>
+//                   <th>Type</th>
+//                   <th>Quantity (kgs)</th>
+//                 </tr>
+//                 </thead>
+//                 <tbody>
+//                 {selectedRequest.plastics.map((plastic, index) => (
+//                     <tr key={index}>
+//                       <td>{plastic.type}</td>
+//                       <td>{plastic.kgs}</td>
+//                     </tr>
+//                 ))}
+//                 <tr className="fw-bold">
+//                   <td>Total</td>
+//                   <td>
+//                     {selectedRequest.plastics.reduce((total, plastic) => total + plastic.kgs, 0)} kgs
+//                   </td>
+//                 </tr>
+//                 </tbody>
+//               </table>
+//             </div>
+//
+//             <div className="mb-3">
+//               <label className="form-label">Status</label>
+//               <div className="d-flex align-items-center">
+//               <span className={`badge ${
+//                   selectedRequest.status === "Approved" ? "bg-success" :
+//                       selectedRequest.status === "Rejected" ? "bg-danger" : "bg-warning"
+//               } me-3`}>
+//                 {selectedRequest.status}
+//               </span>
+//               </div>
+//             </div>
+//           </div>
+//           <div className="card-footer d-flex justify-content-end">
+//             {selectedRequest.status === "Pending" && (
+//                 <>
+//                   <button
+//                       className="btn btn-success me-2"
+//                       onClick={() => handleRequestAction(selectedRequest.id, "Approved")}
+//                   >
+//                     <Check className="me-1" />
+//                     Approve
+//                   </button>
+//                   <button
+//                       className="btn btn-danger"
+//                       onClick={() => handleRequestAction(selectedRequest.id, "Rejected")}
+//                   >
+//                     <X className="me-1" />
+//                     Reject
+//                   </button>
+//                 </>
+//             )}
+//           </div>
+//         </div>
+//       </div>
+//   )
+//
+//   const renderMessageDetail = () => (
+//       <div className="mb-4">
+//         <div className="d-flex justify-content-between align-items-center mb-3">
+//           <button className="btn btn-outline-secondary" onClick={() => setSelectedMessage(null)}>
+//             <ChevronLeft className="me-2" />
+//             Back to messages
+//           </button>
+//         </div>
+//
+//         <div className="card">
+//           <div className="card-header">
+//             <h3 className="card-title">{selectedMessage.subject}</h3>
+//             <p className="card-text">
+//               From: {selectedMessage.from} | Date: {selectedMessage.date}
+//             </p>
+//           </div>
+//           <div className="card-body">
+//             <div className="border rounded p-3 bg-light">
+//               <p>{selectedMessage.content}</p>
+//             </div>
+//           </div>
+//           <div className="card-footer d-flex justify-content-end">
+//             <button
+//                 className={`btn ${isReplying ? "btn-secondary" : "btn-outline-secondary"} me-2`}
+//                 onClick={() => setIsReplying(!isReplying)}
+//             >
+//               {isReplying ? "Cancel Reply" : "Reply"}
+//             </button>
+//             <button className="btn btn-outline-secondary me-2">Forward</button>
+//             <button className="btn btn-danger">Delete</button>
+//           </div>
+//         </div>
+//
+//         {isReplying && (
+//             <div className="card mt-3">
+//               <div className="card-header">
+//                 <h3 className="card-title">Reply to Message</h3>
+//                 <p className="card-text">Replying to: {selectedMessage.from}</p>
+//               </div>
+//               <div className="card-body">
+//                 <div className="mb-3">
+//                   <label className="form-label">Subject</label>
+//                   <input type="text" className="form-control bg-light" value={`Re: ${selectedMessage.subject}`} readOnly />
+//                 </div>
+//
+//                 <div className="mb-3">
+//                   <label className="form-label">Your Reply</label>
+//                   <textarea
+//                       className="form-control min-h-200"
+//                       value={replyContent}
+//                       onChange={(e) => setReplyContent(e.target.value)}
+//                       placeholder="Type your reply here..."
+//                   ></textarea>
+//                 </div>
+//
+//                 <div className="mb-3">
+//                   <label className="form-label">Attachments</label>
+//                   <div className="mb-2">
+//                     <div className="d-flex align-items-center">
+//                       <label className="cursor-pointer">
+//                         <input type="file" className="d-none" multiple onChange={handleAttachmentChange} />
+//                         <button className="btn btn-outline-secondary" type="button">
+//                           <Paperclip className="me-2" />
+//                           Add Attachment
+//                         </button>
+//                       </label>
+//                     </div>
+//                   </div>
+//
+//                   {attachments.length > 0 && (
+//                       <div className="border rounded p-2">
+//                         {attachments.map((file, index) => (
+//                             <div
+//                                 key={index}
+//                                 className="d-flex justify-content-between align-items-center p-2 bg-light rounded mb-1"
+//                             >
+//                               <div className="d-flex align-items-center">
+//                                 <Paperclip className="text-muted me-2" />
+//                                 <span>{file.name}</span>
+//                                 <span className="text-muted ms-2">({(file.size / 1024).toFixed(1)} KB)</span>
+//                               </div>
+//                               <button className="btn btn-link btn-sm" onClick={() => removeAttachment(index)}>
+//                                 Remove
+//                               </button>
+//                             </div>
+//                         ))}
+//                       </div>
+//                   )}
+//                 </div>
+//               </div>
+//               <div className="card-footer d-flex justify-content-end">
+//                 <button className="btn btn-primary" onClick={handleReply} disabled={isSending || !replyContent.trim()}>
+//                   {isSending ? (
+//                       <>
+//                         <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+//                         Sending...
+//                       </>
+//                   ) : (
+//                       <>
+//                         <Send className="me-2" />
+//                         Send Reply
+//                       </>
+//                   )}
+//                 </button>
+//               </div>
+//             </div>
+//         )}
+//       </div>
+//   )
+//
+//   const renderTabContent = () => {
+//     switch (activeTab) {
+//       case "dashboard":
+//         return (
+//             <div className="mb-4">
+//               <div className="row mb-4">
+//                 <div className="col-md-3">
+//                   <div className="card">
+//                     <div className="card-header">
+//                       <p className="card-text">Total Products</p>
+//                       <h3 className="card-title fs-1">1,234</h3>
+//                     </div>
+//                     <div className="card-body">
+//                       <div className="text-muted">+12% from last month</div>
+//                     </div>
+//                   </div>
+//                 </div>
+//                 <div className="col-md-3">
+//                   <div className="card">
+//                     <div className="card-header">
+//                       <p className="card-text">Active Sellers</p>
+//                       <h3 className="card-title fs-1">56</h3>
+//                     </div>
+//                     <div className="card-body">
+//                       <div className="text-muted">+5% from last month</div>
+//                     </div>
+//                   </div>
+//                 </div>
+//                 <div className="col-md-3">
+//                   <div className="card">
+//                     <div className="card-header">
+//                       <p className="card-text">Total Orders</p>
+//                       <h3 className="card-title fs-1">789</h3>
+//                     </div>
+//                     <div className="card-body">
+//                       <div className="text-muted">+18% from last month</div>
+//                     </div>
+//                   </div>
+//                 </div>
+//                 <div className="col-md-3">
+//                   <div className="card">
+//                     <div className="card-header">
+//                       <p className="card-text">Revenue</p>
+//                       <h3 className="card-title fs-1">$45,678</h3>
+//                     </div>
+//                     <div className="card-body">
+//                       <div className="text-muted">+22% from last month</div>
+//                     </div>
+//                   </div>
+//                 </div>
+//               </div>
+//
+//               <div className="row mb-4">
+//                 <div className="col-md-6">
+//                   <div className="card">
+//                     <div className="card-header">
+//                       <h3 className="card-title">Sales Overview</h3>
+//                     </div>
+//                     <div className="card-body" style={{ height: "300px" }}>
+//                       <ResponsiveContainer width="100%" height="100%">
+//                         <LineChart data={salesData}>
+//                           <CartesianGrid strokeDasharray="3 3" />
+//                           <XAxis dataKey="name" />
+//                           <YAxis />
+//                           <Tooltip />
+//                           <Legend />
+//                           <Line type="monotone" dataKey="sales" stroke="#8884d8" activeDot={{ r: 8 }} />
+//                           <Line type="monotone" dataKey="revenue" stroke="#82ca9d" />
+//                         </LineChart>
+//                       </ResponsiveContainer>
+//                     </div>
+//                   </div>
+//                 </div>
+//                 <div className="col-md-6">
+//                   <div className="card">
+//                     <div className="card-header">
+//                       <h3 className="card-title">Sales Distribution</h3>
+//                     </div>
+//                     <div className="card-body" style={{ height: "300px" }}>
+//                       <ResponsiveContainer width="100%" height="100%">
+//                         <PieChart>
+//                           <Pie
+//                               data={vendorData}
+//                               cx="50%"
+//                               cy="50%"
+//                               labelLine={false}
+//                               outerRadius={80}
+//                               fill="#8884d8"
+//                               dataKey="value"
+//                               label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+//                           >
+//                             {vendorData.map((entry, index) => (
+//                                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+//                             ))}
+//                           </Pie>
+//                           <Tooltip />
+//                         </PieChart>
+//                       </ResponsiveContainer>
+//                     </div>
+//                   </div>
+//                 </div>
+//               </div>
+//
+//               <div className="card">
+//                 <div className="card-header">
+//                   <div className="d-flex justify-content-between align-items-center">
+//                     <h3 className="card-title">Recent Orders</h3>
+//                     <button className="btn btn-link" onClick={() => setActiveTab("orders")}>
+//                       View all <ArrowRight className="ms-2" />
+//                     </button>
+//                   </div>
+//                 </div>
+//                 <div className="card-body">
+//                   <table className="table">
+//                     <thead>
+//                     <tr>
+//                       <th>Order ID</th>
+//                       <th>Customer</th>
+//                       <th>Date</th>
+//                       <th>Amount</th>
+//                       <th>Status</th>
+//                     </tr>
+//                     </thead>
+//                     <tbody>
+//                     {orders.slice(0, 4).map((order) => (
+//                         <tr key={order.id}>
+//                           <td>{order.id}</td>
+//                           <td>{order.customer}</td>
+//                           <td>{order.date}</td>
+//                           <td>{order.amount}</td>
+//                           <td>
+//                           <span
+//                               className={`badge ${
+//                                   order.status === "Completed"
+//                                       ? "bg-success"
+//                                       : order.status === "Processing"
+//                                           ? "bg-info"
+//                                           : "bg-warning"
+//                               }`}
+//                           >
+//                             {order.status}
+//                           </span>
+//                           </td>
+//                         </tr>
+//                     ))}
+//                     </tbody>
+//                   </table>
+//                 </div>
+//               </div>
+//
+//               <div className="card mt-4">
+//                 <div className="card-header">
+//                   <div className="d-flex justify-content-between align-items-center">
+//                     <h3 className="card-title">Recent Users</h3>
+//                     <button className="btn btn-link" onClick={() => setActiveTab("users")}>
+//                       View all <ArrowRight className="ms-2" />
+//                     </button>
+//                   </div>
+//                 </div>
+//                 <div className="card-body">
+//                   <table className="table">
+//                     <thead>
+//                     <tr>
+//                       <th>User ID</th>
+//                       <th>Name</th>
+//                       <th>Email</th>
+//                       <th>Status</th>
+//                     </tr>
+//                     </thead>
+//                     <tbody>
+//                     {users.slice(0, 4).map((user) => (
+//                         <tr key={user.id}>
+//                           <td>{user.id}</td>
+//                           <td>{user.name}</td>
+//                           <td>{user.email}</td>
+//                           <td>
+//                           <span className={`badge ${user.status === "Active" ? "bg-success" : "bg-danger"}`}>
+//                             {user.status}
+//                           </span>
+//                           </td>
+//                         </tr>
+//                     ))}
+//                     </tbody>
+//                   </table>
+//                 </div>
+//               </div>
+//             </div>
+//         )
+//
+//       case "users":
+//         return (
+//             <div className="mb-4">
+//               <div className="d-flex justify-content-between align-items-center mb-3">
+//                 <h2 className="h4">User Management</h2>
+//                 <div className="d-flex">
+//                   <input
+//                       type="text"
+//                       className="form-control me-2"
+//                       placeholder="Search users..."
+//                       value={userSearchQuery}
+//                       onChange={(e) => setUserSearchQuery(e.target.value)}
+//                   />
+//                   <button
+//                       className="btn btn-primary"
+//                       onClick={() => setShowAddUserModal(true)}
+//                   >
+//                     <Plus size={16} className="me-1" />
+//                     Add User
+//                   </button>
+//                 </div>
+//               </div>
+//               <div className="card">
+//                 <div className="card-body">
+//                   <table className="table">
+//                     <thead>
+//                     <tr>
+//                       <th>User ID</th>
+//                       <th>Name</th>
+//                       <th>Email</th>
+//                       <th>Status</th>
+//                       <th>Actions</th>
+//                     </tr>
+//                     </thead>
+//                     <tbody>
+//                     {filteredUsers.map((user) => (
+//                         <tr key={user.id}>
+//                           <td>{user.id}</td>
+//                           <td>{user.name}</td>
+//                           <td>{user.email}</td>
+//                           <td>
+//                           <span className={`badge ${user.status === "Active" ? "bg-success" : "bg-danger"}`}>
+//                             {user.status}
+//                           </span>
+//                           </td>
+//                           <td>
+//                             <div className="d-flex">
+//                               <button
+//                                   className="btn btn-outline-primary btn-sm me-2"
+//                                   onClick={() => handleEditUser(user)}
+//                               >
+//                                 <Edit size={16} className="me-1" />
+//                                 Edit
+//                               </button>
+//                               <button
+//                                   className="btn btn-outline-danger btn-sm"
+//                                   onClick={() => {
+//                                     setUsers(users.filter(u => u.id !== user.id))
+//                                     showAlert("User deleted successfully!")
+//                                   }}
+//                               >
+//                                 <Trash size={16} className="me-1" />
+//                                 Delete
+//                               </button>
+//                             </div>
+//                           </td>
+//                         </tr>
+//                     ))}
+//                     </tbody>
+//                   </table>
+//                 </div>
+//                 <div className="card-footer d-flex justify-content-between">
+//                   <div className="text-muted">Showing 1 to {filteredUsers.length} of {users.length} entries</div>
+//                   <div className="d-flex">
+//                     <button className="btn btn-outline-secondary btn-sm me-2">
+//                       <ChevronLeft size={16} />
+//                     </button>
+//                     <button className="btn btn-outline-secondary btn-sm">
+//                       <ChevronRight size={16} />
+//                     </button>
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+//         )
+//
+//       case "orders":
+//         return selectedOrder ? (
+//             renderOrderDetail()
+//         ) : (
+//             <div className="mb-4">
+//               <div className="d-flex justify-content-between align-items-center mb-3">
+//                 <h2 className="h4">Order Management</h2>
+//                 <div className="d-flex">
+//                   <input type="text" className="form-control me-2" placeholder="Search orders..." />
+//                 </div>
+//               </div>
+//               <div className="card">
+//                 <div className="card-body">
+//                   <table className="table">
+//                     <thead>
+//                     <tr>
+//                       <th>Order ID</th>
+//                       <th>Customer</th>
+//                       <th>Date</th>
+//                       <th>Amount</th>
+//                       <th>Status</th>
+//                       <th>Actions</th>
+//                     </tr>
+//                     </thead>
+//                     <tbody>
+//                     {orders.map((order) => (
+//                         <tr key={order.id}>
+//                           <td>{order.id}</td>
+//                           <td>{order.customer}</td>
+//                           <td>{order.date}</td>
+//                           <td>{order.amount}</td>
+//                           <td>
+//                           <span
+//                               className={`badge ${
+//                                   order.status === "Completed"
+//                                       ? "bg-success"
+//                                       : order.status === "Processing"
+//                                           ? "bg-info"
+//                                           : "bg-warning"
+//                               }`}
+//                           >
+//                             {order.status}
+//                           </span>
+//                           </td>
+//                           <td>
+//                             <div className="d-flex">
+//                               <button
+//                                   className="btn btn-outline-primary btn-sm me-2"
+//                                   onClick={() => handleEditOrder(order)}
+//                               >
+//                                 View
+//                               </button>
+//                               <button
+//                                   className="btn btn-outline-secondary btn-sm"
+//                                   onClick={() => handleEditOrder(order)}
+//                               >
+//                                 Edit
+//                               </button>
+//                             </div>
+//                           </td>
+//                         </tr>
+//                     ))}
+//                     </tbody>
+//                   </table>
+//                 </div>
+//                 <div className="card-footer d-flex justify-content-between">
+//                   <div className="text-muted">Showing 1 to {orders.length} of {orders.length} entries</div>
+//                   <div className="d-flex">
+//                     <button className="btn btn-outline-secondary btn-sm me-2">
+//                       <ChevronLeft size={16} />
+//                     </button>
+//                     <button className="btn btn-outline-secondary btn-sm">
+//                       <ChevronRight size={16} />
+//                     </button>
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+//         )
+//
+//       case "requests":
+//         return selectedRequest ? (
+//             renderRequestDetail()
+//         ) : (
+//             <div className="mb-4">
+//               <div className="d-flex justify-content-between align-items-center mb-3">
+//                 <h2 className="h4">Plastic Collection Requests</h2>
+//                 <div className="d-flex">
+//                   <input
+//                       type="text"
+//                       className="form-control me-2"
+//                       placeholder="Search requests..."
+//                       value={requestSearchQuery}
+//                       onChange={(e) => setRequestSearchQuery(e.target.value)}
+//                   />
+//                 </div>
+//               </div>
+//               <div className="card">
+//                 <div className="card-body">
+//                   <table className="table">
+//                     <thead>
+//                     <tr>
+//                       <th>Request ID</th>
+//                       <th>User</th>
+//                       <th>Date</th>
+//                       <th>Total Plastics (kgs)</th>
+//                       <th>Status</th>
+//                       <th>Actions</th>
+//                     </tr>
+//                     </thead>
+//                     <tbody>
+//                     {filteredRequests.map((request) => (
+//                         <tr key={request.id}>
+//                           <td>{request.id}</td>
+//                           <td>{request.userName}</td>
+//                           <td>{request.date}</td>
+//                           <td>
+//                             {request.plastics.reduce((total, plastic) => total + plastic.kgs, 0)} kgs
+//                           </td>
+//                           <td>
+//                           <span className={`badge ${
+//                               request.status === "Approved" ? "bg-success" :
+//                                   request.status === "Rejected" ? "bg-danger" : "bg-warning"
+//                           }`}>
+//                             {request.status}
+//                           </span>
+//                           </td>
+//                           <td>
+//                             <button
+//                                 className="btn btn-outline-primary btn-sm"
+//                                 onClick={() => setSelectedRequest(request)}
+//                             >
+//                               View Details
+//                             </button>
+//                           </td>
+//                         </tr>
+//                     ))}
+//                     </tbody>
+//                   </table>
+//                 </div>
+//                 <div className="card-footer d-flex justify-content-between">
+//                   <div className="text-muted">
+//                     Showing 1 to {filteredRequests.length} of {requests.length} entries
+//                   </div>
+//                   <div className="d-flex">
+//                     <button className="btn btn-outline-secondary btn-sm me-2">
+//                       <ChevronLeft size={16} />
+//                     </button>
+//                     <button className="btn btn-outline-secondary btn-sm">
+//                       <ChevronRight size={16} />
+//                     </button>
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+//         )
+//
+//       case "messages":
+//         return selectedMessage ? (
+//             renderMessageDetail()
+//         ) : (
+//             <div className="mb-4">
+//               <div className="d-flex justify-content-between align-items-center mb-3">
+//                 <h2 className="h4">Messages</h2>
+//                 <div className="d-flex">
+//                   <input
+//                       type="text"
+//                       className="form-control me-2"
+//                       placeholder="Search messages..."
+//                       value={searchQuery}
+//                       onChange={(e) => setSearchQuery(e.target.value)}
+//                   />
+//                 </div>
+//               </div>
+//               <div className="card">
+//                 <div className="card-body">
+//                   <table className="table">
+//                     <thead>
+//                     <tr>
+//                       <th>From</th>
+//                       <th>Subject</th>
+//                       <th>Date</th>
+//                       <th>Status</th>
+//                       <th>Actions</th>
+//                     </tr>
+//                     </thead>
+//                     <tbody>
+//                     {filteredMessages.map((message) => (
+//                         <tr key={message.id} className={!message.read ? "fw-bold" : ""}>
+//                           <td>{message.from}</td>
+//                           <td>{message.subject}</td>
+//                           <td>{message.date}</td>
+//                           <td>
+//                             {message.read ? (
+//                                 <span className="text-muted">Read</span>
+//                             ) : (
+//                                 <span className="text-primary">Unread</span>
+//                             )}
+//                           </td>
+//                           <td>
+//                             <button
+//                                 className="btn btn-outline-primary btn-sm"
+//                                 onClick={() => setSelectedMessage(message)}
+//                             >
+//                               View
+//                             </button>
+//                           </td>
+//                         </tr>
+//                     ))}
+//                     </tbody>
+//                   </table>
+//                 </div>
+//                 <div className="card-footer d-flex justify-content-between">
+//                   <div className="text-muted">
+//                     Showing 1 to {filteredMessages.length} of {messages.length} entries
+//                   </div>
+//                   <div className="d-flex">
+//                     <button className="btn btn-outline-secondary btn-sm me-2">
+//                       <ChevronLeft size={16} />
+//                     </button>
+//                     <button className="btn btn-outline-secondary btn-sm">
+//                       <ChevronRight size={16} />
+//                     </button>
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+//         )
+//
+//       default:
+//         return null
+//     }
+//   }
+//
+//   return (
+//       <div className="d-flex min-vh-100">
+//         {/* Sidebar */}
+//         <div className="bg-light border-end" style={{ width: "250px" }}>
+//           <div className="p-3">
+//             <h1 className="h5">Polymart Admin</h1>
+//           </div>
+//           <nav className="nav flex-column p-2">
+//             <button
+//                 className={`btn d-flex align-items-center mb-1 ${
+//                     activeTab === "dashboard" ? "btn-secondary" : "btn-link text-decoration-none text-dark"
+//                 }`}
+//                 onClick={() => setActiveTab("dashboard")}
+//             >
+//               <Home className="me-2" />
+//               Dashboard
+//             </button>
+//             <button
+//                 className={`btn d-flex align-items-center mb-1 ${
+//                     activeTab === "users" ? "btn-secondary" : "btn-link text-decoration-none text-dark"
+//                 }`}
+//                 onClick={() => setActiveTab("users")}
+//             >
+//               <Users className="me-2" />
+//               Users
+//             </button>
+//             <button
+//                 className={`btn d-flex align-items-center mb-1 ${
+//                     activeTab === "orders" ? "btn-secondary" : "btn-link text-decoration-none text-dark"
+//                 }`}
+//                 onClick={() => setActiveTab("orders")}
+//             >
+//               <ShoppingCart className="me-2" />
+//               Orders
+//             </button>
+//             <button
+//                 className={`btn d-flex align-items-center mb-1 ${
+//                     activeTab === "requests" ? "btn-secondary" : "btn-link text-decoration-none text-dark"
+//                 }`}
+//                 onClick={() => setActiveTab("requests")}
+//             >
+//               <Recycle className="me-2" />
+//               Plastic Requests
+//             </button>
+//             <button
+//                 className={`btn d-flex align-items-center mb-1 ${
+//                     activeTab === "messages" ? "btn-secondary" : "btn-link text-decoration-none text-dark"
+//                 }`}
+//                 onClick={() => setActiveTab("messages")}
+//             >
+//               <Mail className="me-2" />
+//               Messages
+//             </button>
+//           </nav>
+//         </div>
+//
+//         {/* Main Content */}
+//         <div className="flex-grow-1 p-4">
+//           {/* Success Alert */}
+//           <div className="alert alert-success alert-dismissible fade show d-none" role="alert" id="success-alert">
+//             Operation completed successfully!
+//             <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+//           </div>
+//
+//           {renderTabContent()}
+//         </div>
+//
+//         {/* User Edit Modal */}
+//         {showUserEditModal && (
+//             <div className="modal show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+//               <div className="modal-dialog">
+//                 <div className="modal-content">
+//                   <div className="modal-header">
+//                     <h5 className="modal-title">Edit User</h5>
+//                     <button type="button" className="btn-close" onClick={() => setShowUserEditModal(false)}></button>
+//                   </div>
+//                   <div className="modal-body">
+//                     <div className="mb-3">
+//                       <label className="form-label">User ID</label>
+//                       <input type="text" className="form-control" value={editingUser.id} disabled />
+//                     </div>
+//                     <div className="mb-3">
+//                       <label className="form-label">Name</label>
+//                       <input
+//                           type="text"
+//                           className="form-control"
+//                           value={editedUserData.name}
+//                           onChange={(e) => setEditedUserData({ ...editedUserData, name: e.target.value })}
+//                       />
+//                     </div>
+//                     <div className="mb-3">
+//                       <label className="form-label">Email</label>
+//                       <input
+//                           type="email"
+//                           className="form-control"
+//                           value={editedUserData.email}
+//                           onChange={(e) => setEditedUserData({ ...editedUserData, email: e.target.value })}
+//                       />
+//                     </div>
+//                     <div className="mb-3">
+//                       <label className="form-label">Status</label>
+//                       <select
+//                           className="form-select"
+//                           value={editedUserData.status}
+//                           onChange={(e) => setEditedUserData({ ...editedUserData, status: e.target.value })}
+//                       >
+//                         <option value="Active">Active</option>
+//                         <option value="Suspended">Suspended</option>
+//                       </select>
+//                     </div>
+//                   </div>
+//                   <div className="modal-footer">
+//                     <button type="button" className="btn btn-secondary" onClick={() => setShowUserEditModal(false)}>
+//                       Cancel
+//                     </button>
+//                     <button type="button" className="btn btn-primary" onClick={handleSaveUserEdit}>
+//                       Save changes
+//                     </button>
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+//         )}
+//
+//         {/* Add User Modal */}
+//         {showAddUserModal && (
+//             <div className="modal show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+//               <div className="modal-dialog">
+//                 <div className="modal-content">
+//                   <div className="modal-header">
+//                     <h5 className="modal-title">Add New User</h5>
+//                     <button type="button" className="btn-close" onClick={() => setShowAddUserModal(false)}></button>
+//                   </div>
+//                   <div className="modal-body">
+//                     <div className="mb-3">
+//                       <label className="form-label">Name</label>
+//                       <input
+//                           type="text"
+//                           className="form-control"
+//                           value={newUserData.name}
+//                           onChange={(e) => setNewUserData({ ...newUserData, name: e.target.value })}
+//                           placeholder="Enter user name"
+//                       />
+//                     </div>
+//                     <div className="mb-3">
+//                       <label className="form-label">Email</label>
+//                       <input
+//                           type="email"
+//                           className="form-control"
+//                           value={newUserData.email}
+//                           onChange={(e) => setNewUserData({ ...newUserData, email: e.target.value })}
+//                           placeholder="Enter user email"
+//                       />
+//                     </div>
+//                     <div className="mb-3">
+//                       <label className="form-label">Status</label>
+//                       <select
+//                           className="form-select"
+//                           value={newUserData.status}
+//                           onChange={(e) => setNewUserData({ ...newUserData, status: e.target.value })}
+//                       >
+//                         <option value="Active">Active</option>
+//                         <option value="Suspended">Suspended</option>
+//                       </select>
+//                     </div>
+//                   </div>
+//                   <div className="modal-footer">
+//                     <button type="button" className="btn btn-secondary" onClick={() => setShowAddUserModal(false)}>
+//                       Cancel
+//                     </button>
+//                     <button
+//                         type="button"
+//                         className="btn btn-primary"
+//                         onClick={handleAddUser}
+//                         disabled={!newUserData.name || !newUserData.email}
+//                     >
+//                       Add User
+//                     </button>
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+//         )}
+//       </div>
+//   )
+// }
+//
+// function App() {
+//   return (
+//       <div className="App">
+//         <PolymartAdminDashboard />
+//       </div>
+//   )
+// }
+//
+// export default App

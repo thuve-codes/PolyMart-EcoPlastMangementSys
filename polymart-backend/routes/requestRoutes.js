@@ -4,8 +4,7 @@ const {
   getRequests,
   getRequest,
   createRequest,
-  updateRequest,
-  getRequestStats
+  updateRequest, deleteRequest,
 } = require('../controllers/requestController');
 const { protect, authorize, verified } = require('../middleware/auth');
 const advancedResults = require('../middleware/advancedResults');
@@ -20,22 +19,23 @@ router.use('/:requestId/chats', chatRouter);
 router
   .route('/')
   .get(
-    protect,
-    advancedResults(PlasticRequest, {
-      path: 'user processedBy',
-      select: 'name email'
-    }),
+    // protect,
+    // advancedResults(PlasticRequest, {
+    //   path: 'user processedBy',
+    //   select: 'name email'
+    // }),
     getRequests
   )
-  .post(protect, verified, createRequest);
+  .post(createRequest);
 
 router
   .route('/:id')
-  .get(protect, getRequest)
-  .put(protect, authorize('admin'), updateRequest);
+  .get(getRequest)
+  .put(updateRequest)
+  .delete(deleteRequest);
 
-router
-  .route('/stats')
-  .get(protect, authorize('admin'), getRequestStats);
+// router
+//   .route('/stats')
+//   .get(protect, authorize('admin'), getRequestStats);
 
 module.exports = router;
