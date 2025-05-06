@@ -11,4 +11,7 @@
 body{
     background: #e1e1e7;
     background-image: url('./assets/back4.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
 }
