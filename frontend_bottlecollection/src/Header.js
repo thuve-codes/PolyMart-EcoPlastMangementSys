@@ -81,7 +81,7 @@ export default function Header() {
               <li><Link to="http://localhost:3002/PickupForm">Pickup Request</Link></li>
               <li><Link to="http://localhost:3002/RecyclingTrackingPage">Pickup Status</Link></li>
               <li><Link to="http://localhost:3002/RecyclerDashboard">Recycler Dashboard</Link></li>
-              <li><Link to="http://localhost:3002/notifications">Notifications</Link></li>
+              <li><Link to="http://localhost:3002/PickupStatusPage">Notifications</Link></li>
             </ul>
           )}
         </li>

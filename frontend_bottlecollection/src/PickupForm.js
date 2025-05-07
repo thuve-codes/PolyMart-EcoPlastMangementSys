@@ -58,7 +58,7 @@ function PickupForm() {
     const namePattern = /^[A-Za-z\s]+$/;
     const contactPattern = /^\d{10}$/;
     const addressPattern = /[A-Za-z]/;
-
+  
     localStorage.setItem('userEmail', formData.email);
     localStorage.setItem('userName', formData.name);
   
@@ -73,13 +73,12 @@ function PickupForm() {
       return;
     }
   
-      // Address validation - must contain at least one letter
     if (!addressPattern.test(formData.address)) {
       alert("Please provide a valid address. It should not consist of only numbers.");
       return;
     }
-    const today = new Date().toISOString().split("T")[0];
   
+    const today = new Date().toISOString().split("T")[0];
     if (formData.pickupDate && formData.pickupDate < today) {
       alert("Pickup date must be today or in the future.");
       return;
@@ -87,7 +86,7 @@ function PickupForm() {
   
     const formDataWithPoints = { ...formData, points: redeemPoints };
   
-    // Submit form data to the backend (for database storage)
+    // First submit form
     fetch('http://localhost:5002/api/bottles', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -98,27 +97,34 @@ function PickupForm() {
         alert(`Form submitted successfully! You earned ${redeemPoints} points.`);
         console.log('Server Response:', data);
   
-        // Now send the email after form data submission
-        return fetch('http://localhost:5002/api/send-email', {
+        // Navigate immediately
+        navigate('/PickupFormUpdate');
+  
+        // Fire and forget email request (don't wait)
+        fetch('http://localhost:5002/api/send-email', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            email: formData.email, // The email address from the form
-            name: formData.name, // The name from the form
-            redeemPoints: redeemPoints, // Points earned
+            email: formData.email,
+            name: formData.name,
+            redeemPoints: redeemPoints,
           }),
-        });
-      })
-      .then((emailResponse) => emailResponse.json())
-      .then((emailData) => {
-        console.log('Email sent:', emailData); // Check the server response
-        navigate('/PickupFormUpdate'); // Navigate after success
+        })
+          .then((emailResponse) => emailResponse.json())
+          .then((emailData) => {
+            console.log('Email sent:', emailData);
+          })
+          .catch((error) => {
+            console.error('Email error (but form is submitted):', error);
+          });
       })
       .catch((error) => {
-        console.error('Error:', error);
-        alert('An error occurred while submitting the form or sending the email.');
+        console.error('Form submission error:', error);
+        alert('An error occurred while submitting the form.');
       });
   };
+  
+  
   
 
   return (
