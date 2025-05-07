@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect } from 'react';
 import Footer from './components/Footer';
 import Header from './components/Header';
 import AboutUs from './pages/AboutUs'; // Changed import to match the file name
@@ -29,6 +29,27 @@ console.log(`"${stripepubkey}"`);  // Log the public key to confirm it's correct
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
+
+  useEffect(() => {
+    const loginChannel = new BroadcastChannel('auth_channel');
+
+    loginChannel.onmessage = (event) => {
+      const { type, username, token } = event.data;
+
+      if (type === 'LOGIN') {
+        localStorage.setItem('username', username);
+        localStorage.setItem('token', token);
+        window.location.reload(); // Refresh app to reflect login
+      }
+
+      if (type === 'LOGOUT') {
+        localStorage.clear();
+        window.location.href = '/';
+      }
+    };
+
+    return () => loginChannel.close(); // Cleanup on unmount
+  }, []);
 
   return (
     <div className="App">

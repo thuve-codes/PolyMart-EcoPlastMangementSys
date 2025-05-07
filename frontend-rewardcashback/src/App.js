@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import './App.css';
 
@@ -18,6 +18,26 @@ function Layout() {
 
   // Example: don't show navbar on "/login" or "/register" pages
   const hideHeader = location.pathname === "/login" || location.pathname === "/register";
+  useEffect(() => {
+    const loginChannel = new BroadcastChannel('auth_channel');
+
+    loginChannel.onmessage = (event) => {
+      const { type, username, token } = event.data;
+
+      if (type === 'LOGIN') {
+        localStorage.setItem('username', username);
+        localStorage.setItem('token', token);
+        window.location.reload(); // Refresh app to reflect login
+      }
+
+      if (type === 'LOGOUT') {
+        localStorage.clear();
+        window.location.href = '/';
+      }
+    };
+
+    return () => loginChannel.close(); // Cleanup on unmount
+  }, []);
 
   return (
     <>

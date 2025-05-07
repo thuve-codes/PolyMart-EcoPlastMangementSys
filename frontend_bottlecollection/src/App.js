@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import React,{useEffect } from 'react';
 import Home from './Homepage';
 import PickupForm from './PickupForm'
 import CollectionTracking from './CollectionTracking';
@@ -14,7 +15,26 @@ import Footer from '../src/Components/Footer';
 
 
 function App() {
-  
+  useEffect(() => {
+    const loginChannel = new BroadcastChannel('auth_channel');
+
+    loginChannel.onmessage = (event) => {
+      const { type, username, token } = event.data;
+
+      if (type === 'LOGIN') {
+        localStorage.setItem('username', username);
+        localStorage.setItem('token', token);
+        window.location.reload(); // Refresh app to reflect login
+      }
+
+      if (type === 'LOGOUT') {
+        localStorage.clear();
+        window.location.href = '/';
+      }
+    };
+
+    return () => loginChannel.close(); // Cleanup on unmount
+  }, []);
   return(
     
   <BrowserRouter>
