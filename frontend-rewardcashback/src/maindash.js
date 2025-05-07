@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './App.css';
 
-axios.defaults.baseURL = 'http://localhost:5004'; // Adjust for production
+axios.defaults.baseURL = 'http://localhost:5004'; // Your backend server URL
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -12,8 +12,7 @@ function Dashboard() {
   const [chatMessages, setChatMessages] = useState([
     {
       role: 'assistant',
-      content:
-        "Hi! I'm your AI assistant. Ask me anything about recycling, rewards, or how to earn more points!",
+      content: "Hi! I'm your Polymart AI assistant powered by DeepSeek. Ask me anything about recycling, rewards, or how to earn more points!",
     },
   ]);
   const [isLoading, setIsLoading] = useState(false);
@@ -50,31 +49,32 @@ function Dashboard() {
   }, []);
 
   const handleSend = async () => {
-    if (!chatInput.trim()) return;
+    if (!chatInput.trim() || isLoading) return;
 
     const userMessage = { role: 'user', content: chatInput };
-    setChatMessages((prev) => [...prev, userMessage]);
+    const updatedMessages = [...chatMessages, userMessage];
+    setChatMessages(updatedMessages);
     setChatInput('');
     setIsLoading(true);
 
     try {
       const response = await axios.post('/api/chatbot', {
-        messages: [userMessage],
+        messages: updatedMessages, // Send entire conversation history
       });
 
       const aiResponse = response.data?.choices?.[0]?.message;
       if (aiResponse) {
-        setChatMessages((prev) => [...prev, aiResponse]);
+        setChatMessages(prev => [...prev, aiResponse]);
       } else {
-        throw new Error('Invalid response structure');
+        throw new Error('No response from AI');
       }
     } catch (error) {
-      console.error('Error fetching AI response:', error);
-      setChatMessages((prev) => [
+      console.error('Chatbot error:', error);
+      setChatMessages(prev => [
         ...prev,
         {
           role: 'assistant',
-          content: "Sorry, I couldn't get a response. Try again later.",
+          content: "Sorry, I'm having trouble responding. Please try again later.",
         },
       ]);
     } finally {
@@ -88,10 +88,7 @@ function Dashboard() {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (
-        showChatbot &&
-        !event.target.closest('.chatbot-popup, .chatbot-button')
-      ) {
+      if (showChatbot && !event.target.closest('.chatbot-popup, .chatbot-button')) {
         setShowChatbot(false);
       }
     };
@@ -110,21 +107,12 @@ function Dashboard() {
       <div className="dashboard-container">
         <div className="user-profile">
           <h3>👋 Welcome, {username || 'Guest'}!</h3>
-          <p>
-            Membership Level: <span className="membership">Gold</span>
-          </p>
-          <p>
-            Your Current Points: <span className="points">{points}</span>
-          </p>
+          <p>Membership Level: <span className="membership">Gold</span></p>
+          <p>Your Current Points: <span className="points">{points}</span></p>
           <div className="progress-bar">
-            <div
-              className="progress"
-              style={{ width: `${(points / 200) * 100}%` }}
-            />
+            <div className="progress" style={{ width: `${(points / 200) * 100}%` }} />
           </div>
-          <p>
-            🔥 Earn <b>{200 - points}</b> more points for the next reward!
-          </p>
+          <p>🔥 Earn <b>{200 - points}</b> more points for the next reward!</p>
           <button className="redeem-btn" onClick={() => navigate('/Claim')}>
             Redeem Rewards
           </button>
@@ -167,11 +155,8 @@ function Dashboard() {
       {showChatbot && (
         <div className="chatbot-popup">
           <div className="chatbot-header">
-            <h3>Polymart AI Assistant</h3>
-            <button
-              className="close-chatbot"
-              onClick={() => setShowChatbot(false)}
-            >
+            <h3>Polymart AI Assistant (DeepSeek)</h3>
+            <button className="close-chatbot" onClick={() => setShowChatbot(false)}>
               ✕
             </button>
           </div>
@@ -182,8 +167,18 @@ function Dashboard() {
               </div>
             ))}
             {isLoading && (
-              <div className="typing-indicator">AI is typing...</div>
-            )}
+  <div className="message assistant loading-message">
+    <span className="message-content">🤖 AI is thinking...</span>
+    <div className="typing-indicator">
+      <div className="typing-dots">
+        <div className="dot"></div>
+        <div className="dot"></div>
+        <div className="dot"></div>
+      </div>
+    </div>
+  </div>
+)}
+
             <div ref={chatEndRef} />
           </div>
           <div className="chat-input-container">
@@ -191,7 +186,7 @@ function Dashboard() {
               type="text"
               value={chatInput}
               onChange={(e) => setChatInput(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && !isLoading && handleSend()}
+              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
               placeholder="Ask about recycling, rewards..."
               className="chat-input"
               disabled={isLoading}
@@ -201,7 +196,7 @@ function Dashboard() {
               className="send-button"
               disabled={isLoading}
             >
-              {isLoading ? '✉️...' : 'Send'}
+              {isLoading ? '...' : 'Send'}
             </button>
           </div>
         </div>
