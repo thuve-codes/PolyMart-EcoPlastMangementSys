@@ -10,5 +10,7 @@
 
 body{
     background: #e1e1e7;
-    background-image: url('./assets/Background.png');
+    background-image: url('./assets/Untitled-1.png');
+    background-size: cover;
+    background-repeat: no-repeat;
 }
