@@ -48,7 +48,7 @@ export default function Register() {
 
       <Toaster position='top-center' reverseOrder={false}></Toaster>
 
-      <div className='flex justify-center items-center h-screen'>
+      <div className='flex justify-left items-center h-screen'>
         <div className={styles.glass} style={{ width: "45%", paddingTop: '3em'}}>
 
           <div className="title flex flex-col items-center">

@@ -10,9 +10,9 @@ function Redeem() {
   const [calculationDetails, setCalculationDetails] = useState('');
 
   const pointRates = {
-    plastic: 10,
-    glass: 8,
-    metal: 15,
+    PlasticLDPE: 10,
+    PlasticPVC: 8,
+    PlasticHDPE: 15,
     other: 5,
   };
 
@@ -64,9 +64,9 @@ function Redeem() {
                   <td>
                     <select value={bottleType} onChange={(e) => setBottleType(e.target.value)}>
                       <option value="">Select</option>
-                      <option value="plastic">Plastic</option>
-                      <option value="glass">Glass</option>
-                      <option value="metal">Metal</option>
+                      <option value="PlasticLDPE">Plastic type 1(LDPE)</option>
+                      <option value="PlasticPVC">Plastic type 2(PVC)</option>
+                      <option value="PlasticHDPE">Plastic type 3(HDPE)</option>
                       <option value="other">Other</option>
                     </select>
                   </td>
