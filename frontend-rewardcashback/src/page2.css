@@ -1,0 +1,150 @@
+/* Overall reward-container styles */
+.reward-container {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+    text-align: center;
+  }
+  
+  .reward-container h1 {
+    color: #28a745;
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+  
+  .reward-container h2 {
+    color: #007bff;
+    font-size: 1.5rem;
+    margin-top: 10px;
+  }
+  
+  .reward-container h3 {
+    color: #dc3545;
+    font-size: 1.25rem;
+    margin-top: 20px;
+  }
+  
+  /* Form group and table styles */
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .bottle-selection-table {
+    width: 100%;
+    margin: 0 auto;
+    border-collapse: collapse;
+  }
+  
+  .bottle-selection-table td {
+    padding: 10px;
+  }
+  
+  .bottle-selection-table label {
+    font-weight: bold;
+    font-size: 1rem;
+  }
+  
+  .bottle-selection-table select,
+  .bottle-selection-table input {
+    padding: 8px;
+    font-size: 1rem;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .bottle-selection-table select {
+    background-color: #fff;
+  }
+  
+  .bottle-selection-table input {
+    background-color: #f1f1f1;
+  }
+  
+  /* Button styles */
+  button {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Offer styles */
+  ul {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 10px;
+  }
+  
+  li {
+    font-size: 1rem;
+    margin: 5px 0;
+  }
+  
+  .available {
+    color: #28a745;
+  }
+  
+  .unavailable {
+    color: #dc3545;
+  }
+  
+  .special-deals {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    color: #343a40;
+  }
+  
+  /* Reward image container (if used for images) */
+  .reward-image-container {
+    margin-top: 20px;
+  }
+  
+  .reward-image-container img {
+    max-width: 100%;
+    border-radius: 10px;
+  }
+  
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .reward-container {
+      padding: 15px;
+    }
+  
+    .reward-container h1 {
+      font-size: 1.8rem;
+    }
+  
+    .reward-container h2 {
+      font-size: 1.3rem;
+    }
+  
+    .reward-container h3 {
+      font-size: 1.1rem;
+    }
+  
+    .bottle-selection-table {
+      width: 100%;
+    }
+  
+    .bottle-selection-table td {
+      padding: 8px;
+    }
+  
+    button {
+      font-size: 1rem;
+      padding: 8px 15px;
+    }
+  }
+  

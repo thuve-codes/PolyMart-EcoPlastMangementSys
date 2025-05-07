@@ -1,0 +1,35 @@
+{
+  "name": "polymart-ecoplastmangementsys",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start:frontend-ecomm": "cd frontend-ecomm &&  npm start",
+    "start:frontend-bottlecollection": "cd frontend_bottlecollection && npm start",
+    "start:frontend-admindb": "cd frontend-admindb  && npm start",
+    "start:frontend-rewardcashback": "cd frontend-rewardcashback && npm start",
+    "start:frontend-usermang": "cd frontend-usermang  && npm start",
+    "start:backend-ecomm": "cd backend-ecomm && npm start",
+    "start:backend-bottlecollection": "cd backend_bottlecollection && npm start",
+    "start:backend-admindb": "cd backend-admindb && npm start",
+    "start:backend-reward": "cd backend-reward && npm start",
+    "start:backend-usermang": "cd backend-usermang && npm start",
+    "start-all": "npm-run-all --parallel start:backend-* start:frontend-*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thuve-codes/PolyMart-EcoPlastMangementSys.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/thuve-codes/PolyMart-EcoPlastMangementSys/issues"
+  },
+  "homepage": "https://github.com/thuve-codes/PolyMart-EcoPlastMangementSys#readme",
+  "description": "",
+  "devDependencies": {
+    "nodemon": "^3.1.10",
+    "npm-run-all": "^4.1.5"
+  }
+}

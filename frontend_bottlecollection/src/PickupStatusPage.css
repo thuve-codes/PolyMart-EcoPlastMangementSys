@@ -1,0 +1,80 @@
+/* PickupStatusPage.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f4f4;
+  }
+  
+  h1 {
+    color: #333;
+  }
+  
+  h2 {
+    color: #555;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  
+  th, td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+  }
+  
+  th {
+    background-color: #f4f4f4;
+  }
+  
+  /* Container for the notifications */
+.notifications {
+  margin-top: 20px;
+  padding-left: 10px; /* Align notifications to the left */
+}
+
+/* Individual notification card styles */
+.notification {
+  background-color: #e9f7fa; /* Soft blue background */
+  padding: 15px;
+  margin-bottom: 12px;
+  border-radius: 8px; /* Rounder corners for a more modern look */
+  cursor: pointer;
+  transition: all 0.3s ease; /* Smooth transition for hover effects */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+}
+
+/* Different statuses with unique backgrounds */
+.status-pending {
+  background-color: #fce4e4; /* Light pink for pending */
+}
+
+.status-in-progress {
+  background-color: #fff3cd; /* Light yellow for in-progress */
+}
+
+.status-completed {
+  background-color: #d4edda; /* Light green for completed */
+}
+
+.status-canceled {
+  background-color: #f8d7da; /* Light red for canceled */
+}
+
+/* Hover effect for notifications */
+.notification:hover {
+  opacity: 0.9;
+  transform: translateX(5px); /* Slight movement for hover */
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow on hover */
+}
+
+/* Notification text styles */
+.notification p {
+  margin: 0;
+  font-size: 1rem;
+  color: #2c3e50; /* Dark text for better readability */
+  font-weight: 500; /* Slightly bold text */
+}

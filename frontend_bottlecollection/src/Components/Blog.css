@@ -1,0 +1,71 @@
+.blog-section {
+  text-align: left; /* Align the text to the left */
+  width: 100%; /* Full width of the container */
+  padding: 20px;
+  margin-left: 0;
+  background-color: #f9f9f9; /* Subtle background for the section */
+  border-radius: 8px; /* Rounded corners for the section */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow around the section */
+}
+
+.blog-section h3 {
+  font-size: 2.4rem; /* Larger title for better emphasis */
+  font-family: 'Georgia', serif; /* Elegant font style */
+  color: #2d6a4f; /* Primary green color */
+  margin-bottom: 30px;
+  text-align: center; /* Centered title for a more organized look */
+  text-transform: uppercase; /* Uppercase for a more structured feel */
+  letter-spacing: 2px; /* Spacing between letters for a neat effect */
+}
+
+.article {
+  margin-top: 20px;
+  padding: 20px; /* Increased padding for better readability */
+  background: #ffffff; /* White background for better contrast */
+  border-radius: 10px; /* Rounded corners for a modern feel */
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1); /* Subtle shadow with more depth */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Hover effect for interaction */
+}
+
+.article:hover {
+  transform: translateY(-5px); /* Lift the article on hover for a dynamic feel */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Darker shadow when hovered */
+}
+
+.article h4 {
+  font-size: 1.6rem; /* Larger title for articles */
+  color: #333; /* Darker text for readability */
+  font-weight: 600; /* Bold title for emphasis */
+  margin-bottom: 12px; /* Spacing between title and content */
+  font-family: 'Arial', sans-serif; /* Clean sans-serif font for the titles */
+}
+
+.article p {
+  font-size: 1.1rem; /* Slightly larger text for better readability */
+  color: #555; /* Light gray text color for body */
+  line-height: 1.7; /* Increased line height for better readability */
+  margin-bottom: 20px; /* Spacing between paragraphs for clarity */
+}
+
+.article p::before {
+  content: "📚 "; /* Adds a little icon before paragraphs for extra visual appeal */
+}
+
+@media (max-width: 768px) {
+  .blog-section h3 {
+    font-size: 2rem; /* Smaller font for responsive design */
+    text-align: center; /* Center align on smaller screens */
+  }
+
+  .article {
+    padding: 15px; /* Reduced padding on smaller screens */
+  }
+
+  .article h4 {
+    font-size: 1.4rem; /* Slightly smaller font for the article titles */
+  }
+
+  .article p {
+    font-size: 1rem; /* Smaller text size for better responsiveness */
+  }
+}
