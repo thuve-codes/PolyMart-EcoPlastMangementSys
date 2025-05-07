@@ -1,3 +1,4 @@
+// Password.js (Port 3001)
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import avatar from '../assets/profile.png';
@@ -10,14 +11,12 @@ import { verifyPassword } from '../helper/helper'
 import styles from '../styles/Username.module.css';
 
 export default function Password() {
-  const navigate = useNavigate();
-  const { username } = useAuthStore(state => state.auth);
-  const [{ isLoading, apiData, serverError }] = useFetch(`/user/${username}`);
+  const navigate = useNavigate()
+  const { username } = useAuthStore(state => state.auth)
+  const [{ isLoading, apiData, serverError }] = useFetch(`/user/${username}`)
 
   const formik = useFormik({
-    initialValues: {
-      password: ''
-    },
+    initialValues: { password: '' },
     validate: passwordValidate,
     validateOnBlur: false,
     validateOnChange: false,
@@ -38,31 +37,32 @@ export default function Password() {
           return;
         }
 
-        // Store token and username
+        // Store user data
         localStorage.setItem('token', token);
         localStorage.setItem('username', username);
+        localStorage.setItem('profile', profile);
 
-        // ✅ Broadcast login to other tabs/sites
-        const loginChannel = new BroadcastChannel('auth_channel');
-        loginChannel.postMessage({ type: 'LOGIN', username, token });
+        // Broadcast login to other ports
+        window.postMessage({
+          type: 'LOGIN',
+          username,
+          profile
+        }, '*');
 
-        // Redirect to homepage
+        // Redirect to main app with query params
         setTimeout(() => {
-          window.location.href = `http://localhost:3000?username=${username}`;
-        }, 1000);
-      }).catch(error => {
-        console.error("Login error:", error);
+          window.location.href = `http://localhost:3000?username=${username}&profile=${encodeURIComponent(profile)}`;
+        }, 200);
       });
     }
   });
 
-  if (isLoading) return <h1 className='text-2xl font-bold'>Loading...</h1>;
-  if (serverError) return <h1 className='text-xl text-red-500'>{serverError.message}</h1>;
+  if (isLoading) return <h1 className='text-2xl font-bold'>isLoading</h1>;
+  if (serverError) return <h1 className='text-xl text-red-500'>{serverError.message}</h1>
 
   return (
     <div className="container mx-auto">
-      <Toaster position='top-center' reverseOrder={false} />
-
+      <Toaster position='top-center' reverseOrder={false}></Toaster>
       <div className='flex justify-center items-center h-screen'>
         <div className={styles.glass}>
           <div className="title flex flex-col items-center">
@@ -71,23 +71,14 @@ export default function Password() {
               Explore More by connecting with us.
             </span>
           </div>
-
           <form className='py-1' onSubmit={formik.handleSubmit}>
             <div className='profile flex justify-center py-4'>
               <img src={apiData?.profile || avatar} className={styles.profile_img} alt="avatar" />
             </div>
-
             <div className="textbox flex flex-col items-center gap-6">
-              <input
-                {...formik.getFieldProps('password')}
-                className={styles.textbox}
-                type="password"
-                placeholder='Password'
-                autoComplete="current-password"
-              />
+              <input {...formik.getFieldProps('password')} className={styles.textbox} type="password" placeholder='Password' />
               <button className={styles.btn} type='submit'>Sign In</button>
             </div>
-
             <div className="text-center py-4">
               <span className='text-gray-500'>Forgot Password? <Link className='text-red-500' to="/recovery">Recover Now</Link></span>
             </div>
@@ -95,5 +86,5 @@ export default function Password() {
         </div>
       </div>
     </div>
-  );
+  )
 }

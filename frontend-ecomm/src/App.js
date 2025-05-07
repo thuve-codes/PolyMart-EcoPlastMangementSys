@@ -31,6 +31,7 @@ function App() {
   const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
+    // 1. BroadcastChannel for same-origin communication
     const loginChannel = new BroadcastChannel('auth_channel');
 
     loginChannel.onmessage = (event) => {
@@ -48,7 +49,35 @@ function App() {
       }
     };
 
-    return () => loginChannel.close(); // Cleanup on unmount
+    // 2. Storage event listener for cross-origin communication
+    const handleStorageChange = (e) => {
+      if (e.key === 'auth_event') {
+        try {
+          const eventData = JSON.parse(e.newValue);
+          if (!eventData) return;
+          
+          if (eventData.type === 'LOGIN') {
+            localStorage.setItem('username', eventData.username);
+            localStorage.setItem('token', eventData.token);
+            window.location.reload();
+          }
+          
+          if (eventData.type === 'LOGOUT') {
+            localStorage.clear();
+            window.location.href = '/';
+          }
+        } catch (error) {
+          console.error('Error processing auth event:', error);
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      loginChannel.close(); // Cleanup BroadcastChannel
+      window.removeEventListener('storage', handleStorageChange); // Cleanup storage listener
+    };
   }, []);
 
   return (

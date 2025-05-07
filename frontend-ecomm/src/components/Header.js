@@ -1,97 +1,111 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import polymartLogo from './images/polymart-logo.png';
-import { FaShoppingCart } from 'react-icons/fa';
+import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import polymartLogo from "./images/polymart-logo.png";
+import { FaShoppingCart } from "react-icons/fa";
 import '../App.css';
 
 export default function Header({ cartItems }) {
   const location = useLocation();
-  const [username, setUsername] = useState(localStorage.getItem('username'));
+  const [username, setUsername] = useState(null);
 
+  // Sync auth state across tabs/windows
   useEffect(() => {
-    const handleStorageChange = () => {
-      const storedUsername = localStorage.getItem('username');
-      setUsername(storedUsername);
+    // Check initial state
+    const storedUsername = localStorage.getItem('username');
+    setUsername(storedUsername);
+
+    // Handle storage changes
+    const handleStorageChange = (e) => {
+      if (e.key === 'username' && !e.newValue) {
+        setUsername(null);
+        // Redirect to home if logged out
+        if (window.location.pathname !== '/') {
+          window.location.href = "http://localhost:3000";
+        }
+      }
     };
 
-    const handleMessage = (event) => {
-      if (
-        !['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'http://localhost:3004'].includes(
-          event.origin
-        )
-      ) {
-        return;
-      }
-      if (event.data.type === 'LOGOUT') {
+    // Handle cross-window logout messages
+    const handleMessage = (e) => {
+      if (e.data.type === 'LOGOUT') {
         localStorage.removeItem('username');
         localStorage.removeItem('profile');
-        localStorage.removeItem('token');
         setUsername(null);
-      } else if (event.data.type === 'LOGIN') {
-        localStorage.setItem('username', event.data.username);
-        localStorage.setItem('profile', event.data.profile || '');
-        setUsername(event.data.username);
+        window.location.href = "http://localhost:3000";
       }
     };
-
-    const params = new URLSearchParams(window.location.search);
-    const userFromURL = params.get('username');
-    const profileFromURL = params.get('profile');
-    if (userFromURL) {
-      localStorage.setItem('username', userFromURL);
-      if (profileFromURL) localStorage.setItem('profile', profileFromURL);
-      setUsername(userFromURL);
-      const url = new URL(window.location);
-      url.search = '';
-      window.history.replaceState({}, document.title, url);
-    }
 
     window.addEventListener('storage', handleStorageChange);
     window.addEventListener('message', handleMessage);
+
     return () => {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('message', handleMessage);
     };
   }, []);
 
-  const broadcastLogout = () => {
-    localStorage.removeItem('username');
-    localStorage.removeItem('profile');
-    localStorage.removeItem('token');
-    window.dispatchEvent(new Event('storage'));
+  // Handle URL params on initial load
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const userFromURL = params.get('username');
+    const profileFromURL = params.get('profile');
 
-    const message = { type: 'LOGOUT' };
-    const targetOrigins = [
-      'http://localhost:3000',
-      'http://localhost:3001',
-      'http://localhost:3002',
-      'http://localhost:3004',
-    ];
-    targetOrigins.forEach((origin) => {
-      window.postMessage(message, origin);
-    });
-  };
+    if (userFromURL) {
+      localStorage.setItem('username', userFromURL);
+      if (profileFromURL) localStorage.setItem('profile', profileFromURL);
+      setUsername(userFromURL);
 
-  const handleLogout = () => {
-    broadcastLogout();
-    window.location.href = 'http://localhost:3000';
+      // Clean up URL
+      const url = new URL(window.location);
+      url.search = "";
+      window.history.replaceState({}, document.title, url);
+    }
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      // Clear local storage
+      localStorage.removeItem('username');
+      localStorage.removeItem('profile');
+      sessionStorage.clear();
+
+      // Broadcast logout to other tabs/windows
+      window.postMessage({ type: 'LOGOUT' }, '*');
+
+      // Notify other apps (optional: call a centralized logout endpoint)
+      await fetch('http://localhost:3001/logout', {
+        method: 'POST',
+        credentials: 'include', // Include cookies if server-side session exists
+      });
+
+      // Redirect to home
+      window.location.href = "http://localhost:3000";
+    } catch (error) {
+      console.error('Logout failed:', error);
+      // Fallback redirect
+      window.location.href = "http://localhost:3000";
+    }
   };
 
   const isLoggedIn = !!username;
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark custom-navbar" id="navbar">
       <div className="container-fluid">
-        <Link className="navbar-brand" to="/">
-          <img
-            src={polymartLogo}
-            alt="Polymart Logo"
-            className="logo"
-            style={{ maxHeight: '50px', objectFit: 'contain', marginRight: '10px' }}
-          />
-          Poly EStore
-        </Link>
+        {/* Brand Logo */}
+        <div className="navbar-brand navname" href="#">
+          <Link to="/" className="nav-brand-link">
+            <img
+              src={polymartLogo}
+              alt="Polymart Logo"
+              className="logo"
+              style={{ maxHeight: '50px', objectFit: 'contain' }}
+            />{" "}
+            <span className="brand-text">Poly EStore</span>
+          </Link>
+        </div>
 
+        {/* Navbar Toggle Button */}
         <button
           className="navbar-toggler"
           type="button"
@@ -104,18 +118,23 @@ export default function Header({ cartItems }) {
           <span className="navbar-toggler-icon"></span>
         </button>
 
+        {/* Navbar Links */}
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <div className="col-12 col-md-6 mt-2 mt-md-0"></div>
 
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0" id="navbar">
             <li className="nav-item">
-              <Link to="/" className={`nav-link navname ${location.pathname === '/' ? 'active' : ''}`}>
+              <Link 
+                to="/" 
+                className={`nav-link navname ${location.pathname === '/' ? 'active' : ''}`}
+              >
                 Home
               </Link>
             </li>
+
             <li className="nav-item">
-              <Link
-                to="/orders"
+              <Link 
+                to="/orders" 
                 className={`nav-link navname ${location.pathname === '/orders' ? 'active' : ''}`}
               >
                 My Orders
@@ -123,102 +142,66 @@ export default function Header({ cartItems }) {
             </li>
 
             <li className="nav-item dropdown">
-              <a
-                className={`nav-link navname dropdown-toggle ${location.pathname === '/Home' ? 'active' : ''}`}
-                href={username ? `http://localhost:3002/Home?username=${username}` : 'http://localhost:3002/Home'}
-                id="ecoUserDropdown"
-                role="button"
-                data-bs-toggle="dropdown"
+              <Link 
+                className={`nav-link navname ${location.pathname === '/Home' ? 'active' : ''}`} 
+                to={username ? `http://localhost:3002/Home?username=${username}` : "http://localhost:3002/Home"}
+                id="ecoUserDropdown" 
+                role="button" 
                 aria-expanded="false"
+                onClick={(e) => {
+                  if (username === null) {
+                    e.preventDefault();
+                    window.location.href = "http://localhost:3002/Home";
+                  }
+                }}
               >
                 EcoUser
-              </a>
+              </Link>
               <ul className="dropdown-menu" aria-labelledby="ecoUserDropdown">
                 <li>
-                  <a
-                    href={`http://localhost:3002/PickupForm${username ? `?username=${username}` : ''}`}
-                    className="dropdown-item"
-                  >
-                    Pickup Request
-                  </a>
+                  <Link to="http://localhost:3002/PickupForm" className="dropdown-item">Pickup Request</Link>
                 </li>
                 <li>
-                  <a
-                    href={`http://localhost:3002/RecyclingTrackingPage${username ? `?username=${username}` : ''}`}
-                    className="dropdown-item"
-                  >
-                    Pickup Status
-                  </a>
+                  <Link to="http://localhost:3002/RecyclingTrackingPage" className="dropdown-item">Pickup Status</Link>
                 </li>
                 <li>
-                  <a
-                    href={`http://localhost:3002/RecyclerDashboard${username ? `?username=${username}` : ''}`}
-                    className="dropdown-item"
-                  >
-                    Recycler Dashboard
-                  </a>
+                  <Link to="http://localhost:3002/RecyclerDashboard" className="dropdown-item">Recycler Dashboard</Link>
                 </li>
                 <li>
-                  <a
-                    href={`http://localhost:3002/PickupStatusPage${username ? `?username=${username}` : ''}`}
-                    className="dropdown-item"
-                  >
-                    Notifications
-                  </a>
+                  <Link to="http://localhost:3002/PickupStatusPage" className="dropdown-item">Notifications</Link>
                 </li>
               </ul>
             </li>
 
             <li className="nav-item dropdown">
-              <a
-                className="nav-link navname dropdown-toggle"
-                href={username ? `http://localhost:3004/?username=${username}` : 'http://localhost:3004'}
+              <Link
+                className="nav-link navname"
+                to={username ? `http://localhost:3004/?username=${username}` : "http://localhost:3004"}
                 id="rewardDropdown"
                 role="button"
-                data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
                 Reward & CashBack
-              </a>
+              </Link>
               <ul className="dropdown-menu" aria-labelledby="rewardDropdown">
                 <li>
-                  <a
-                    href={`http://localhost:3004/Calculator${username ? `?username=${username}` : ''}`}
-                    className="dropdown-item"
-                  >
-                    Calculator
-                  </a>
+                  <a href={`http://localhost:3004/Calculator?username=${username}`} className="dropdown-item">Calculator</a>
                 </li>
                 <li>
-                  <a
-                    href={`http://localhost:3004/leaderboard${username ? `?username=${username}` : ''}`}
-                    className="dropdown-item"
-                  >
-                    Leaderboard
-                  </a>
+                  <a href={`http://localhost:3004/leaderboard?username=${username}`} className="dropdown-item">Leaderboard</a>
                 </li>
                 <li>
-                  <a
-                    href={`http://localhost:3004/Claim${username ? `?username=${username}` : ''}`}
-                    className="dropdown-item"
-                  >
-                    Claim Redeem
-                  </a>
+                  <a href={`http://localhost:3004/Claim?username=${username}`} className="dropdown-item">Claim Redeem</a>
                 </li>
                 <li>
-                  <a
-                    href={`http://localhost:3004/Ecolocation${username ? `?username=${username}` : ''}`}
-                    className="dropdown-item"
-                  >
-                    Eco Locations
-                  </a>
+                  <a href={`http://localhost:3004/Ecolocation?username=${username}`} className="dropdown-item">Eco Locations</a>
                 </li>
               </ul>
             </li>
 
             <li className="nav-item">
-              <Link
-                to="/aboutus"
+              <Link 
+                to="/aboutus"  
                 className={`nav-link navname ${location.pathname === '/aboutus' ? 'active' : ''}`}
               >
                 About Us
@@ -229,37 +212,40 @@ export default function Header({ cartItems }) {
 
         <div className="col-12 col-md-3 mt-4 mt-md-0 text-left d-flex justify-content-end align-items-center">
           {isLoggedIn ? (
-            <div className="d-flex align-items-center" style={{ padding: '8px' }}>
-              <div
-                className="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center me-2"
-                style={{ width: '30px', height: '30px', marginRight: '8px' }}
-              >
-                {username.charAt(0).toUpperCase()}
+            <>
+              <div className="d-flex align-items-center" style={{ padding: '8px' }}>
+                <div
+                  className="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center me-2"
+                  style={{ width: '30px', height: '30px', marginRight: '8px' }}
+                >
+                  {username.charAt(0).toUpperCase()}
+                </div>
+                <span 
+                  className="navname me-2 pa" 
+                  style={{ marginRight: '8px', padding: '4px' }}
+                  onClick={() => {
+                    window.location.href = "http://localhost:3001/profile";
+                  }}
+                >
+                  {username}
+                </span>
+                <button
+                  className="btn btn-outline-danger navname p-2"
+                  id="logout_btn"
+                  onClick={handleLogout}
+                  Preserve the existing styling
+                  style={{ padding: '8px' }}
+                >
+                  Logout
+                </button>
               </div>
-              <span
-                className="navname me-2 pa"
-                style={{ marginRight: '8px', padding: '4px', cursor: 'pointer' }}
-                onClick={() => {
-                  window.location.href = 'http://localhost:3001/profile';
-                }}
-              >
-                {username}
-              </span>
-              <button
-                className="btn btn-outline-danger navname p-2"
-                id="logout_btn"
-                onClick={handleLogout}
-                style={{ padding: '8px' }}
-              >
-                Logout
-              </button>
-            </div>
+            </>
           ) : (
             <button
               className="btn navname"
               id="login_btn"
               onClick={() => {
-                window.location.href = 'http://localhost:3001';
+                window.location.href = "http://localhost:3001";
               }}
             >
               Login
@@ -269,17 +255,13 @@ export default function Header({ cartItems }) {
             <span id="cart" className="ml-3 navname">
               <FaShoppingCart size={20} />
             </span>
-            <span className="ml-1 navname" id="cart_count">
-              {cartItems.length}
-            </span>
+            <span className="ml-1 navname" id="cart_count">{cartItems.length}</span>
           </Link>
         </div>
       </div>
     </nav>
   );
 }
-
-
 
 
 // import React, { useState, useEffect } from "react";

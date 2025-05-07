@@ -65,7 +65,7 @@ function HeaderRedeem() {
 
   const handleLogout = () => {
     broadcastLogout();
-    window.location.href = 'http://localhost:3004';
+    window.location.href = 'http://localhost:3001';
   };
 
   const navStyles = {
@@ -190,7 +190,7 @@ function HeaderRedeem() {
             to="http://localhost:3000/"
             style={{
               ...navStyles.link,
-              ...(location.pathname === '/' && navStyles.activeLink),
+              ...(location.pathname === '/Hii' && navStyles.activeLink),
             }}
           >
             Home
@@ -343,7 +343,7 @@ function HeaderRedeem() {
               borderRadius: '20px',
             }}
             onClick={() => {
-              window.location.href = 'http://localhost:3001';
+              window.location.href = 'http://localhost:3000';
             }}
           >
             Login
