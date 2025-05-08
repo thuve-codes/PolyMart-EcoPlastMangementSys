@@ -28,6 +28,7 @@ function Redeem() {
     { id: 3, title: 'Priority Collection Service' },
   ];
 
+  //validation for bottle type and weight
   const calcPoints = () => {
     if (!bottleType || weight === '') {
       alert('Please select a bottle type and enter weight!');

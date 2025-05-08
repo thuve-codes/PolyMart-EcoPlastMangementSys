@@ -7,6 +7,7 @@ import jsPDF from 'jspdf';
 import QRCode from 'qrcode';
 import logo from './Assests/images/polymart-logo.png';
 
+
 const RecyclerDashboard = () => {
   const storedEmail = localStorage.getItem('userEmail') || '';
   const storedName = localStorage.getItem('userName') || 'Recycler';
@@ -454,6 +455,7 @@ const RecyclerDashboard = () => {
   return (
     <div style={{ padding: '20px' }}>
       <h1>{storedName}'s Recycler Dashboard</h1>
+    
 
       {/* Recycler Info */}
       <section>

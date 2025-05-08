@@ -141,7 +141,7 @@ function Leaderboard() {
       <img src={logo} alt="Polymart Logo" className="logo" />
 
       <section>
-        <h2 className="section-heading">🏆 Top 3 Achievers</h2>
+        <h2 className="section-heading">🏆 Top 3 your past Achievements</h2>
         <div className="top-achievers">
           {topThree.map((entry, index) => (
             <div className="top-card" key={entry._id}>
@@ -153,7 +153,7 @@ function Leaderboard() {
       </section>
 
       <section>
-        <h1 className="section-heading2">🏅 Join the PolyMart lottery  🎯</h1>
+        <h1 className="section-heading2">🏅 Add New Redeemption Request 🎯</h1>
         <button className="download-pdf-btn" onClick={generatePDF}>📄 Download PDF</button>
         <table className="leaderboard-table">
           <thead>
@@ -212,7 +212,7 @@ function Leaderboard() {
         value={formData[key]}
         onChange={handleChange}
         placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
-        min={key === "pickupDate" ? new Date().toISOString().split("T")[0] : undefined} // ⬅️ set today's date as min
+        min={key === "pickupDate" ? new Date().toISOString().split("T")[0] : undefined} // ⬅️ set today's date as min (validation)
         required // optional: adds HTML5 validation
       />
     ) : (

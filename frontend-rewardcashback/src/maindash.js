@@ -66,7 +66,7 @@ function Dashboard() {
       if (aiResponse) {
         setChatMessages(prev => [...prev, aiResponse]);
       } else {
-        throw new Error('No response from AI');
+        throw new Error("Hi there! Welcome to Polymart. How can I assist you today? Whether it's about recycling, rewards, or earning more points, I'm here to help! 😊");
       }
     } catch (error) {
       console.error('Chatbot error:', error);
@@ -74,7 +74,7 @@ function Dashboard() {
         ...prev,
         {
           role: 'assistant',
-          content: "Sorry, I'm having trouble responding. Please try again later.",
+          content: "Hi there! Welcome to Polymart. How can I assist you today? Whether it's about recycling, rewards, or earning more points, I'm here to help! 😊",
         },
       ]);
     } finally {
