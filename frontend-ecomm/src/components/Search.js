@@ -11,7 +11,7 @@ export default function Search() {
     }
     return (
        <div className="input-group">
-                            <input
+            <input
                                 type="text"
                                 id="search_field"
                                 onChange={(e) => setKeyword(e.target.value)}

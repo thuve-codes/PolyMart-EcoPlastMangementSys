@@ -90,7 +90,7 @@ router.post('/', async (req, res) => {
       },
       {
         headers: {
-          'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY || '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'}`,
+          'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY || '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'}`,
           'Content-Type': 'application/json',
           'HTTP-Referer': 'http://localhost:5004', // Required by OpenRouter
           'X-Title': 'Your App Name' // Required by OpenRouter
