@@ -197,33 +197,47 @@ function Leaderboard() {
       <section>
         <h2>{editingId ? "Edit Entry" : "Add New Entry"}</h2>
         <form className="leaderboard-form" onSubmit={handleSubmit}>
-          {Object.keys(formData).map((key) =>
-            key !== "status" ? (
-              <input
-                key={key}
-                type={key === "pickupDate" ? "date" : key === "points" || key === "weight" ? "number" : "text"}
-                name={key}
-                value={formData[key]}
-                onChange={handleChange}
-                placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
-              />
-            ) : (
-              <select key={key} name="status" value={formData.status} onChange={handleChange}>
-                <option value="Pending">Pending</option>
-                <option value="Picked Up">Picked Up</option>
-                <option value="Completed">Completed</option>
-              </select>
-            )
-          )}
+  {Object.keys(formData).map((key) =>
+    key !== "status" ? (
+      <input
+        key={key}
+        type={
+          key === "pickupDate"
+            ? "date"
+            : key === "points" || key === "weight"
+            ? "number"
+            : "text"
+        }
+        name={key}
+        value={formData[key]}
+        onChange={handleChange}
+        placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
+        min={key === "pickupDate" ? new Date().toISOString().split("T")[0] : undefined} // ⬅️ set today's date as min
+        required // optional: adds HTML5 validation
+      />
+    ) : (
+      <select
+        key={key}
+        name="status"
+        value={formData.status}
+        onChange={handleChange}
+      >
+        <option value="Pending">Pending</option>
+        <option value="Picked Up">Picked Up</option>
+        <option value="Completed">Completed</option>
+      </select>
+    )
+  )}
 
-          <div className="form-actions">
-            <button type="submit">{editingId ? "Update" : "Add"}</button>
-          </div>
+  <div className="form-actions">
+    <button type="submit">{editingId ? "Update" : "Add"}</button>
+  </div>
 
-          <div className="form-clear">
-            <button type="button" onClick={resetForm}>Clear</button>
-          </div>
-        </form>
+  <div className="form-clear">
+    <button type="button" onClick={resetForm}>Clear</button>
+  </div>
+</form>
+
       </section>
     </div>
   );
