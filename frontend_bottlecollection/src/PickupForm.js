@@ -128,6 +128,7 @@ function PickupForm() {
   
 
   return (
+    
     <div className="App">
       <header className="App-header">
         <h1 className="headingPrimary">Plastic Bottle Collection</h1>
@@ -219,9 +220,13 @@ function PickupForm() {
         </div>
 
         <img src={bannerImage} alt="Reward Program Banner" className="reward-banner" />
+      
       </header>
     </div>
+   
   );
 }
 
 export default PickupForm;
+
+

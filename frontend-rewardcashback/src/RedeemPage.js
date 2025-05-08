@@ -39,6 +39,7 @@ function RedeemPage() {
     const hasVisited = localStorage.getItem('hasVisitedRedeemPage');
     let initialBalance = parseInt(localStorage.getItem('balance') || '0', 10);
 
+    //validation for initial balance
     if (!hasVisited) {
       initialBalance += 100;
       localStorage.setItem('hasVisitedRedeemPage', 'true');

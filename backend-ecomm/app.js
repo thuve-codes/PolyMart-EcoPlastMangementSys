@@ -25,7 +25,7 @@ const orders = require('./routes/order');
 connectDatabase();
 
 app.use(express.json());
-app.use(cors()); // Middleware for handling cross-origin requests
+app.use(cors()); // Middleware for handling cross-origin requests // Security feature for resource shareing accoress the diff ports
 
 // Use existing routes
 app.use('/api/v1/', products);

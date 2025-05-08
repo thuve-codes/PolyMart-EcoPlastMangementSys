@@ -17,8 +17,10 @@ exports.getProducts=async (req, res, next) => {
 
     
 }
+
+
 //Get products api - /api/v1/product/:id
-    exports.getSingleproduct= async(req, res, next) => {
+exports.getSingleproduct= async(req, res, next) => {
 
         try {
             //console.log(req.params.id,'ID');
@@ -36,7 +38,7 @@ exports.getProducts=async (req, res, next) => {
             })
         }
         
-    }
+}
 
 
     
