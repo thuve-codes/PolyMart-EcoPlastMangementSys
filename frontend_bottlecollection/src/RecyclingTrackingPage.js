@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './RecyclingTrackingPage.css';
 import Tracking from "./Components/Tracking";
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 const RecyclingCenters = [
   { id: 1, name: "Green Earth Recycling", status: "Open", rating: 4.5, description: "A trusted center for recycling plastic, metal, and glass waste.", address: "123 Green St, Eco City" },
@@ -27,21 +25,18 @@ const RecyclingTrackingPage = () => {
         if (userEmail) {
           const response = await fetch(`http://localhost:5002/api/collections/pickup-requests/${userEmail}`);
           const data = await response.json();
-          console.log("Received pickup requests:", data);  // Add this log
+          console.log("Received pickup requests:", data);
           setPickupRequests(data);
         }
       } catch (error) {
         console.error('Error fetching pickup requests:', error);
       }
     };
-    
 
     fetchPickupRequests();
   }, [userEmail]);
 
   const userPickupRequests = pickupRequests.filter(request => request.email === userEmail);
-  console.log("Filtered Pickup Requests:", userPickupRequests);
-
 
   useEffect(() => {
     const savedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
@@ -72,28 +67,8 @@ const RecyclingTrackingPage = () => {
           let newStatus = request.status;
           if (request.status === 'Scheduled') {
             newStatus = 'In Progress';
-            toast.info(`Pickup ID ${request.id} is now In Progress 🚚`, {
-              position: "top-right",
-              autoClose: 3000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "colored",
-            });
           } else if (request.status === 'In Progress') {
             newStatus = 'Completed';
-            toast.success(`Pickup ID ${request.id} has been Completed ✅`, {
-              position: "top-right",
-              autoClose: 3000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "colored",
-            });
           }
           return { ...request, status: newStatus };
         }
@@ -106,75 +81,74 @@ const RecyclingTrackingPage = () => {
   }, [pickupRequests, userEmail]);
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h1>Recycling Pickup Tracking & History</h1>
+    
+    <div className="page-background">
+      <div style={{ padding: '20px' }}>
+        <h1>Recycling Pickup Tracking & History</h1>
 
-      <ToastContainer />
-
-      <section>
-        <h2>Real-Time Pickup Tracking</h2>
-        <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
-          <thead>
-            <tr>
-              <th>Tracking ID</th>
-              <th>Scheduled Time</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {userPickupRequests.map((request) => (
-              <tr key={request._id}>
-                <td>{request._id}</td>
-                <td>
-                  {new Date(new Date(request.createdAt).getTime() + 6 * 60 * 60 * 1000).toLocaleString()}
-                </td>
-
-                <td>{request.status}</td>
+        <section>
+          <h2>Real-Time Pickup Tracking</h2>
+          <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
+            <thead>
+              <tr>
+                <th>Tracking ID</th>
+                <th>Scheduled Time</th>
+                <th>Status</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {userPickupRequests.map((request) => (
+                <tr key={request._id}>
+                  <td>{request._id}</td>
+                  <td>
+                    {new Date(new Date(request.createdAt).getTime() + 6 * 60 * 60 * 1000).toLocaleString()}
+                  </td>
+                  <td>{request.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p>Pickup status is updated in real-time. Please refresh the page or wait for updates.</p>
+        </section>
 
-        <p>Pickup status is updated in real-time. Please refresh the page or wait for updates.</p>
-      </section>
+        <aside className="sidebar">
+          <Tracking />
+        </aside>
 
-      <aside className="sidebar">
-        <Tracking />
-      </aside>
+        <div className="container">
+          <h1>Nearby Recycling Centers ♻️</h1>
 
-      <div className="container">
-        <h1>Nearby Recycling Centers ♻️</h1>
+          <div className="search-container">
+            <input
+              type="text"
+              placeholder="Search for a recycling center..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
 
-        <div className="search-container">
-          <input
-            type="text"
-            placeholder="Search for a recycling center..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
+          <div className="recycling-list">
+            {filteredCenters.map((center) => (
+              <div key={center.id} className="recycling-item">
+                <div>
+                  <h3>{center.name}</h3>
+                  <p className={`status ${center.status.toLowerCase()}`}>
+                    {center.status === "Open" ? "✅ Open" : "❌ Closed"}
+                  </p>
+                  <p>{center.description}</p>
+                  <p>⭐ {center.rating}</p>
+                  <p><strong>Address:</strong> {center.address}</p>
+                </div>
 
-        <div className="recycling-list">
-          {filteredCenters.map((center) => (
-            <div key={center.id} className="recycling-item">
-              <div>
-                <h3>{center.name}</h3>
-                <p className={`status ${center.status.toLowerCase()}`}>
-                  {center.status === "Open" ? "✅ Open" : "❌ Closed"}
-                </p>
-                <p>{center.description}</p>
-                <p>⭐ {center.rating}</p>
-                <p><strong>Address:</strong> {center.address}</p>
+                <button
+                  className={`favorite-btn ${favorites.includes(center.id) ? "active" : ""}`}
+                  onClick={() => toggleFavorite(center.id)}
+                >
+                  {favorites.includes(center.id) ? "❤️" : "🤍"}
+                </button>
               </div>
-
-              <button
-                className={`favorite-btn ${favorites.includes(center.id) ? "active" : ""}`}
-                onClick={() => toggleFavorite(center.id)}
-              >
-                {favorites.includes(center.id) ? "❤️" : "🤍"}
-              </button>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </div>
