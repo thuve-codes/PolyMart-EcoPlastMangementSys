@@ -210,3 +210,5 @@ process.on('unhandledRejection', (err, promise) => {
   // Close server & exit process
   server.close(() => process.exit(1));
 });
+
+//Fixed the error handling middleware to be commented out

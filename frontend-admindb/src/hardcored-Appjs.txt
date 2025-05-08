@@ -1,5 +1,5 @@
 "use client"
-
+//Hard core
 import { useState } from "react"
 import {
   Home,
