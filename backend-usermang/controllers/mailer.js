@@ -25,7 +25,7 @@ let MailGenerator = new Mailgen({
     }
 })
 
-/** POST: http://localhost:8080/api/registerMail 
+/** POST: http://localhost:5000/api/registerMail 
  * @param: {
   "username" : "example123",
   "userEmail" : "admin123",
